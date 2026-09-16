@@ -304,4 +304,4 @@ Tentativas: 2 | Erros: 0
 ### Commit
 
 feat: header mobile com menu dropdown abaixo de 1280px  
-Hash: (preenchido após o commit)
+Hash: `1cb3f43`
