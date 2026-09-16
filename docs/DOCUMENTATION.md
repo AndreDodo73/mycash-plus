@@ -465,7 +465,7 @@ Tentativas: 1 | Erros: 0
 ### Commit
 
 feat: home com carrossel, fluxo, cartões e próximas despesas  
-Hash: (preenchido após o commit)
+Hash: `8e8dd94`
 
 ---
 
@@ -506,7 +506,7 @@ Tentativas: 2 | Erros: 1 (tipos Tooltip Recharts 3) → corrigido
 ### Commit
 
 feat: home com carrossel, fluxo, cartões e próximas despesas  
-Hash: (preenchido após o commit)
+Hash: `8e8dd94`
 
 ---
 
@@ -546,7 +546,7 @@ Tentativas: 1 | Erros: 0
 ### Commit
 
 feat: home com carrossel, fluxo, cartões e próximas despesas  
-Hash: (preenchido após o commit)
+Hash: `8e8dd94`
 
 ---
 
@@ -586,4 +586,4 @@ Tentativas: 1 | Erros: 0
 ### Commit
 
 feat: home com carrossel, fluxo, cartões e próximas despesas  
-Hash: (preenchido após o commit)
+Hash: `8e8dd94`
