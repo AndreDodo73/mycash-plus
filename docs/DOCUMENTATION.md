@@ -342,4 +342,4 @@ Tentativas: 1 | Erros: 0
 ### Commit
 
 feat: context useFinance com mock e cálculos em memória  
-Hash: (preenchido após o commit)
+Hash: `d38dcf4`
