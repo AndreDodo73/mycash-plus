@@ -141,7 +141,8 @@ Tentativas: 0 | Erros: 0 | Código ainda não gerado
 
 ### Commit
 
-Aguardando aprovação: “Fazer commit e documentar”
+feat: estrutura Vite do mycash+ e sidebar desktop  
+Hash: `72c20d7`
 
 ---
 
@@ -210,7 +211,8 @@ Tentativas: 1 | Erros: 0
 
 ### Commit
 
-Aguardando aprovação: “Fazer commit e documentar”
+feat: estrutura Vite do mycash+ e sidebar desktop  
+Hash: `72c20d7`
 
 ---
 
@@ -253,4 +255,5 @@ Tentativas: 1 | Erros: 0
 
 ### Commit
 
-Aguardando aprovação: “Fazer commit e documentar”
+feat: estrutura Vite do mycash+ e sidebar desktop  
+Hash: `72c20d7`
