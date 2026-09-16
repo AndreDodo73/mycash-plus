@@ -16,7 +16,7 @@ Playbook de execução (decisões, breakpoints, conflitos): `docs/playbook-promp
 - [x] PROMPT 3: Layout e navegação mobile
 - [x] PROMPT 4: Context global e estado
 - [x] PROMPT 5: Cards de resumo financeiro
-- [ ] PROMPT 6: Header do dashboard
+- [x] PROMPT 6: Header do dashboard
 - [ ] PROMPT 7: Carrossel de categorias
 - [ ] PROMPT 8: Gráfico de fluxo financeiro
 - [ ] PROMPT 9: Widget de cartões
@@ -385,3 +385,43 @@ Tentativas: 1 | Erros: 0
 
 feat: cards de resumo financeiro e ícone target de Objetivos  
 Hash: `c363166`
+
+---
+
+## PROMPT 6: Header do dashboard
+
+Status: ✅ | Data: 16/09/2026 | Build: ✅ (2 tentativas)
+
+Playbook: ficha P6. Figma: `navbar` `42:3099`.
+
+### Implementado
+
+- `DashboardHeader`: busca em tempo real → `searchText`
+- `FilterPopover` (desktop): glass + tipo Todos/Receitas/Despesas
+- Stub mobile de filtros (sheet + Aplicar; expansão no P16)
+- `DateRangePicker`: atalhos, 2 meses no desktop / 1 no mobile, range + OK
+- `FamilyAvatars`: seleção/desseleção de membro, botão + (callback P13)
+- CTA “Nova transação” (callback P12)
+- Layout fluido: wrap no tablet, busca `w-full` + `max-w` no desktop, CTA full width no mobile
+
+### Tokens
+
+Semânticas: `--color-surface`, `--color-secondary`, `--color-secondary-50`
+
+Primitivas: `--color-neutral-1100/300/200/600`, `--color-green-600`, `--spacing-space-*`, `--radius-shape-20/100`, `--text-paragraph-small`, `--text-label-*`
+
+Conversões:
+
+- Borda Figma search `#1e2302` → `--color-neutral-1100` (borda escura do pill)
+- Busca 175px Figma → `w-full max-w-[220px] xl:max-w-[280px]`
+- Avatar 44px → `size-11` (44px Tailwind)
+- CTA preto → `--color-neutral-1100` + texto `surface`
+
+### Build
+
+Tentativas: 2 | Erros: 0
+
+### Commit
+
+feat: header do dashboard com filtros, período e avatares  
+Hash: (preenchido após o commit)

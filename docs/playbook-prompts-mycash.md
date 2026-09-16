@@ -230,6 +230,8 @@ A página placeholder de `/objetivos` pode permanecer até lá.
 
 ## PROMPT 6 — Header do dashboard
 
+**Status:** feito. Auditoria em [`DOCUMENTATION.md`](DOCUMENTATION.md).
+
 **Objetivo.** Busca, filtros, período, membros, Nova Transação.
 
 **Desktop ≥1280.** Barra horizontal. Busca com `max-width` (não width fixa 100% da página). `FilterPopover` glass (`surface` + blur). Calendário dois meses. Avatares empilhados. CTA “Nova Transação” à direita.

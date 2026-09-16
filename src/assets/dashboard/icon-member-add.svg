@@ -1,0 +1,14 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Members">
+<rect x="1" y="1" width="46" height="46" rx="23" stroke="white" style="stroke:white;stroke-opacity:1;" stroke-width="2"/>
+<circle id="avatar" cx="24" cy="24" r="22" fill="#4B4F35" style="fill:#4B4F35;fill:color(display-p3 0.2941 0.3098 0.2078);fill-opacity:1;"/>
+<g id="fi-rr-plus" clip-path="url(#clip0_0_4673)">
+<path id="icon" d="M35 23H25V13C25 12.7348 24.8946 12.4804 24.7071 12.2929C24.5196 12.1054 24.2652 12 24 12V12C23.7348 12 23.4804 12.1054 23.2929 12.2929C23.1054 12.4804 23 12.7348 23 13V23H13C12.7348 23 12.4804 23.1054 12.2929 23.2929C12.1054 23.4804 12 23.7348 12 24V24C12 24.2652 12.1054 24.5196 12.2929 24.7071C12.4804 24.8946 12.7348 25 13 25H23V35C23 35.2652 23.1054 35.5196 23.2929 35.7071C23.4804 35.8946 23.7348 36 24 36C24.2652 36 24.5196 35.8946 24.7071 35.7071C24.8946 35.5196 25 35.2652 25 35V25H35C35.2652 25 35.5196 24.8946 35.7071 24.7071C35.8946 24.5196 36 24.2652 36 24C36 23.7348 35.8946 23.4804 35.7071 23.2929C35.5196 23.1054 35.2652 23 35 23Z" fill="#080B12" style="fill:#080B12;fill:color(display-p3 0.0314 0.0431 0.0706);fill-opacity:1;"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_0_4673">
+<rect width="24" height="24" fill="white" style="fill:white;fill-opacity:1;" transform="translate(12 12)"/>
+</clipPath>
+</defs>
+</svg>
