@@ -32,6 +32,8 @@ export interface Goal {
 
 export type CardTheme = "black" | "lime" | "white";
 
+export type BankAccountType = "checking" | "savings" | "other";
+
 export interface CreditCard {
   id: string;
   name: string;
@@ -43,9 +45,9 @@ export interface CreditCard {
   logoUrl?: string;
   lastFourDigits?: string;
   expenseIds: string[];
+  /** Titular do cartão — usado no saldo filtrado por membro. */
+  holderId: string;
 }
-
-export type BankAccountType = "checking" | "savings" | "other";
 
 export interface BankAccount {
   id: string;
@@ -53,6 +55,8 @@ export interface BankAccount {
   type: BankAccountType;
   balance: number;
   color: string;
+  /** Membro titular da conta (filtro de saldo / P14). */
+  holderId: string;
 }
 
 export interface FamilyMember {
@@ -61,6 +65,13 @@ export interface FamilyMember {
   role: string;
   avatarUrl: string;
   monthlyIncome?: number;
+  email?: string;
+}
+
+export interface CategoryDef {
+  name: string;
+  color: string;
+  kind: TransactionType;
 }
 
 export type TransactionTypeFilter = "all" | TransactionType;

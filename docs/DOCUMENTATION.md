@@ -14,7 +14,7 @@ Playbook de execução (decisões, breakpoints, conflitos): `docs/playbook-promp
 - [x] PROMPT 1: Estrutura base e configuração
 - [x] PROMPT 2: Layout e navegação desktop
 - [x] PROMPT 3: Layout e navegação mobile
-- [ ] PROMPT 4: Context global e estado
+- [x] PROMPT 4: Context global e estado
 - [ ] PROMPT 5: Cards de resumo financeiro
 - [ ] PROMPT 6: Header do dashboard
 - [ ] PROMPT 7: Carrossel de categorias
@@ -305,3 +305,41 @@ Tentativas: 2 | Erros: 0
 
 feat: header mobile com menu dropdown abaixo de 1280px  
 Hash: `1cb3f43`
+
+---
+
+## PROMPT 4: Context global e estado (`useFinance`)
+
+Status: ✅ | Data: 16/09/2026 | Build: ✅ (1 tentativa)
+
+Playbook: ficha P4.
+
+### Implementado
+
+- `FinanceProvider` no topo de `App.tsx` (envolve o router)
+- Estado em memória (só React state): `transactions`, `goals`, `creditCards`, `bankAccounts`, `familyMembers`
+- CRUD completo por entidade + filtros: `selectedMember`, `dateRange` (mês atual), `transactionType`, `searchText`
+- Cálculos em `financeCalculations.ts`: filtragem AND, saldo, receitas/despesas, categorias, %, taxa de economia
+- Hook `useFinance` como único acesso (também reexportado em `hooks`)
+- Mock BR: 3 membros (Lucas/Maria/Pedro), 3 contas + 3 cartões (Nubank/Inter/PicPay), 30 transações (~3 meses), 4 objetivos, categorias
+- Tipos: `BankAccount.holderId`, `CreditCard.holderId`, `FamilyMember.email?`, `CategoryDef`
+- Sem `localStorage` / storage API (comentário TODO Supabase)
+
+### Tokens / dados
+
+Cores de categoria e contas no mock usam variáveis CSS (`var(--color-*)`), não hex soltos.
+
+Conversões (marcas de banco → primitivas):
+
+- Nubank `#820AD1` → `--color-purple-600`
+- Inter `#FF7A00` → `--color-orange-600`
+- PicPay `#21C25E` → `--color-green-600`
+
+### Build
+
+Tentativas: 1 | Erros: 0
+
+### Commit
+
+feat: context useFinance com mock e cálculos em memória  
+Hash: (preenchido após o commit)

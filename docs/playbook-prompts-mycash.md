@@ -178,6 +178,8 @@ A página placeholder de `/objetivos` pode permanecer até lá.
 
 ## PROMPT 4 — Context `useFinance`
 
+**Status:** feito. Auditoria em [`DOCUMENTATION.md`](DOCUMENTATION.md).
+
 **Objetivo.** `FinanceProvider` no topo da árvore. Arrays: `transactions`, `goals`, `creditCards`, `bankAccounts`, `familyMembers`. CRUD. Filtros: `selectedMember`, `dateRange`, `transactionType`, `searchText`. Funções derivadas listadas no prompt. Hook `useFinance` como único acesso.
 
 **Todos os viewports.** Sem UI nova. Só estado em memória.
