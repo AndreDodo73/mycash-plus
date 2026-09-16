@@ -424,4 +424,4 @@ Tentativas: 2 | Erros: 0
 ### Commit
 
 feat: header do dashboard com filtros, período e avatares  
-Hash: (preenchido após o commit)
+Hash: `71617ac`
