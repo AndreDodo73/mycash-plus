@@ -384,4 +384,4 @@ Tentativas: 1 | Erros: 0
 ### Commit
 
 feat: cards de resumo financeiro e ícone target de Objetivos  
-Hash: (preenchido após o commit)
+Hash: `c363166`
