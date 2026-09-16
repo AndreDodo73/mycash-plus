@@ -1,0 +1,177 @@
+@import "tailwindcss";
+
+/*
+  Primitivas: docs/tokens-primitivos.md
+  Semânticas: Figma home-dashboard-responsive (42:3096)
+  CSS: color/neutral/1100 → --color-neutral-1100
+*/
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* Breakpoints: Prompt 1 (640 / 1024) + rules do projeto (768 / 1280 / 1920) */
+  --breakpoint-sm: 40.0625rem; /* 641px tablet */
+  --breakpoint-md: 48rem; /* 768px */
+  --breakpoint-lg: 64rem; /* 1024px desktop (prompts 1–3) */
+  --breakpoint-xl: 80rem; /* 1280px */
+  --breakpoint-2xl: 120rem; /* 1920px */
+
+  /* Semânticas (Figma) */
+  --color-primary: #d7ff00;
+  --color-secondary: #060a11;
+  --color-secondary-50: #e7e8ea;
+  --color-surface: #ffffff;
+  --color-background: #f5f6f8;
+
+  /* Neutral */
+  --color-neutral-0: #ffffff;
+  --color-neutral-100: #f9fafb;
+  --color-neutral-200: #f3f4f6;
+  --color-neutral-300: #e5e7eb;
+  --color-neutral-400: #d1d5db;
+  --color-neutral-500: #9ca3af;
+  --color-neutral-600: #6b7280;
+  --color-neutral-700: #4b5563;
+  --color-neutral-800: #374151;
+  --color-neutral-900: #1f2937;
+  --color-neutral-1000: #111827;
+  --color-neutral-1100: #080b12;
+
+  /* Brand */
+  --color-brand-100: #fbffe6;
+  --color-brand-200: #f3ffb1;
+  --color-brand-300: #edff8b;
+  --color-brand-400: #e4fe56;
+  --color-brand-500: #dffe35;
+  --color-brand-600: #d7fe03;
+  --color-brand-700: #c4e703;
+  --color-brand-800: #99b402;
+  --color-brand-900: #768c02;
+  --color-brand-1000: #5a6b01;
+
+  /* Purple */
+  --color-purple-100: #f4ecfe;
+  --color-purple-200: #e8d8fd;
+  --color-purple-300: #d2b1fb;
+  --color-purple-400: #bb8bf9;
+  --color-purple-500: #a564f7;
+  --color-purple-600: #8e3df5;
+  --color-purple-700: #7231c4;
+  --color-purple-800: #552593;
+  --color-purple-900: #391862;
+  --color-purple-1000: #1c0c31;
+
+  /* Pink */
+  --color-pink-100: #fdeaf9;
+  --color-pink-200: #fad5f2;
+  --color-pink-300: #f6abe5;
+  --color-pink-400: #f182d9;
+  --color-pink-500: #ed58cc;
+  --color-pink-600: #e82ebf;
+  --color-pink-700: #ba2599;
+  --color-pink-800: #8b1c73;
+  --color-pink-900: #5d124c;
+  --color-pink-1000: #2e0926;
+
+  /* Red */
+  --color-red-100: #fde9eb;
+  --color-red-200: #fad2d6;
+  --color-red-300: #f5a5ad;
+  --color-red-400: #f07884;
+  --color-red-500: #eb4b5b;
+  --color-red-600: #e61e32;
+  --color-red-700: #b81828;
+  --color-red-800: #8a121e;
+  --color-red-900: #5c0c14;
+  --color-red-1000: #2e060a;
+
+  /* Orange */
+  --color-orange-100: #fff3e7;
+  --color-orange-200: #ffe7ce;
+  --color-orange-300: #ffce9d;
+  --color-orange-400: #ffb66c;
+  --color-orange-500: #ff9d3b;
+  --color-orange-600: #ff850a;
+  --color-orange-700: #cc6a08;
+  --color-orange-800: #995006;
+  --color-orange-900: #663504;
+  --color-orange-1000: #331b02;
+
+  /* Yellow */
+  --color-yellow-100: #fef7e7;
+  --color-yellow-200: #feeecf;
+  --color-yellow-300: #fddd9f;
+  --color-yellow-400: #fbcd70;
+  --color-yellow-500: #fabc40;
+  --color-yellow-600: #f9ab10;
+  --color-yellow-700: #c7890d;
+  --color-yellow-800: #95670a;
+  --color-yellow-900: #644406;
+  --color-yellow-1000: #322203;
+
+  /* Green */
+  --color-green-100: #e8f9f2;
+  --color-green-200: #d0f2e4;
+  --color-green-300: #a1e5c9;
+  --color-green-400: #73d8ae;
+  --color-green-500: #44cb93;
+  --color-green-600: #15be78;
+  --color-green-700: #119860;
+  --color-green-800: #0d7248;
+  --color-green-900: #084c30;
+  --color-green-1000: #042618;
+
+  /* Blue */
+  --color-blue-100: #eaf3fd;
+  --color-blue-200: #d4e7fc;
+  --color-blue-300: #aad0f9;
+  --color-blue-400: #7fb8f5;
+  --color-blue-500: #55a1f2;
+  --color-blue-600: #2a89ef;
+  --color-blue-700: #226ebf;
+  --color-blue-800: #19528f;
+  --color-blue-900: #113760;
+  --color-blue-1000: #081b30;
+
+  /* space/* → p-space-8, gap-space-16 */
+  --spacing-space-0: 0px;
+  --spacing-space-2: 2px;
+  --spacing-space-4: 4px;
+  --spacing-space-6: 6px;
+  --spacing-space-8: 8px;
+  --spacing-space-12: 12px;
+  --spacing-space-16: 16px;
+  --spacing-space-20: 20px;
+  --spacing-space-24: 24px;
+  --spacing-space-32: 32px;
+  --spacing-space-56: 56px;
+
+  /* shape/* */
+  --radius-shape-2: 2px;
+  --radius-shape-20: 20px;
+  --radius-shape-100: 100px;
+
+  --size-72: 72px;
+
+  /* Tipo Inter (Figma) */
+  --text-heading-medium: 28px;
+  --text-heading-medium--line-height: 36px;
+  --text-heading-small: 24px;
+  --text-heading-small--line-height: 32px;
+  --text-heading-x-small: 20px;
+  --text-heading-x-small--line-height: 28px;
+  --text-label-large: 18px;
+  --text-label-large--line-height: 24px;
+  --text-label-medium: 16px;
+  --text-label-medium--line-height: 20px;
+  --text-label-small: 14px;
+  --text-label-small--line-height: 16px;
+  --text-label-x-small: 12px;
+  --text-label-x-small--line-height: 16px;
+  --text-paragraph-large: 18px;
+  --text-paragraph-large--line-height: 28px;
+  --text-paragraph-small: 14px;
+  --text-paragraph-small--line-height: 20px;
+  --text-paragraph-x-small: 12px;
+  --text-paragraph-x-small--line-height: 20px;
+}

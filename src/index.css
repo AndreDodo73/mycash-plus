@@ -1,0 +1,16 @@
+@import "./styles/tokens.css";
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-background);
+  color: var(--color-neutral-1100);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}

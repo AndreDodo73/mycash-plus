@@ -1,0 +1,32 @@
+---
+description: Spec de produto do dashboard Mycash+ — comportamento, telas, cálculos e fluxos
+alwaysApply: true
+---
+
+# Spec Mycash+
+
+Ao implementar, corrigir ou revisar o dashboard, siga o documento de produto:
+
+@docs/documento-descritivo-mycash.md
+
+Figma (Home): [home-dashboard-responsive](https://www.figma.com/design/Ge7zSB1zC6baUJFqrpGN09/Workshop---Do-figma-MCP-ao-Cursor-AI-v.3--Community-?node-id=42-3096) (`fileKey` `Ge7zSB1zC6baUJFqrpGN09`, `nodeId` `42:3096`)
+
+Primitivas: @docs/tokens-primitivos.md · [planilha](https://docs.google.com/spreadsheets/d/1icfTxXdSbtd029FfOYnrlMs2pC8HJqk5PDuEmQF5Zjo/edit?gid=0#gid=0)
+
+Sequência: @docs/sequencia-prompts-mycash.md · [Google Docs](https://docs.google.com/document/d/1s-KKXi3hROSBsgfxXOKpeMOxD318U7z9hSJ0UiIRT4Q/edit?tab=t.0)
+
+Executar **um prompt por vez**. Após cada um, aguardar “Fazer commit e documentar” ou “Próximo”.
+
+Interface: [React](https://react.dev/)
+Estilos: [Tailwind CSS](https://tailwindcss.com/)
+Build: [Vite](https://vite.dev/)
+Backend: [Supabase](https://supabase.com/docs)
+
+Regras:
+
+- Este spec define **como** cada tela, componente, filtro, modal e cálculo deve funcionar.
+- O Figma define **como parece**. Se visual e spec conflitarem no layout, priorize o Figma; se conflitarem no comportamento, priorize este spec.
+- Não invente seções, campos ou fluxos que não estejam no spec ou no Figma.
+- As cinco seções são: Dashboard, Objetivos, Cartões, Transações e Perfil.
+- Dados ficam no contexto global `useFinance`.
+- Sidebar só no desktop (`≥1280px`). No mobile/tablet use Header Mobile. Nunca os dois juntos.

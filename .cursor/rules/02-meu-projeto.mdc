@@ -1,0 +1,226 @@
+---
+description: Regras do projeto — pre-flight, stack, layout fluido, tokens e formato de resposta
+alwaysApply: true
+---
+
+# meu-projeto
+
+Antes de gerar qualquer código, execute mentalmente este pre-flight check:
+
+- Confirme que está seguindo todas as User Rules e Project Rules
+- Considere layout fluido e abordagem mobile-first
+- Priorize variáveis semânticas; se não existirem, use variáveis primitivas
+- Garanta que o componente pai seja totalmente responsivo e fluido
+
+## Stack e ferramentas
+
+Este projeto utiliza:
+- [React](https://react.dev/) com TypeScript
+- [Vite](https://vite.dev/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Supabase](https://supabase.com/docs) como backend
+
+Tokens primitivos: [Primitives - Tokens de Figma](https://docs.google.com/spreadsheets/d/1icfTxXdSbtd029FfOYnrlMs2pC8HJqk5PDuEmQF5Zjo/edit?gid=0#gid=0) · @docs/tokens-primitivos.md
+
+## Arquitetura e organização
+
+Arquitetura baseada em componentes.
+
+- Componentes devem ser pequenos e reutilizáveis
+- Páginas apenas compõem componentes, sem lógica de negócio
+- Lógica de negócio deve ficar em hooks ou services
+- Evitar duplicação de lógica
+
+## Layout fluido e containers (REGRA CRÍTICA)
+
+Layout fluido é obrigatório.
+
+- Não gerar larguras fixas para containers de nível de página
+- Containers principais devem sempre usar `width: 100%`
+- Quando necessário limitar largura, usar `max-width`, nunca `width` fixa
+- Layout deve ser fluido e se adaptar ao viewport
+- Prevenir qualquer tipo de overflow horizontal
+
+## Figma → Código
+
+O frame pai do Figma NÃO representa um container fixo no código.
+
+- Frames principais do Figma devem ser interpretados como wrappers fluidos
+- Componentes pais copiados do Figma devem preencher a largura disponível
+- Nunca assumir tamanhos fixos baseados no frame do Figma
+- Auto Layout deve ser traduzido para flex/grid responsivo
+- Containers devem crescer e encolher conforme o viewport
+
+## Responsividade e breakpoints
+
+Este projeto é totalmente responsivo e mobile-first.
+
+- Usar breakpoints explícitos para desktop, tablet e mobile
+- Nunca assumir apenas desktop
+- Ajustar grid, tipografia e espaçamentos por breakpoint
+- Garantir que todo layout caiba no tamanho do device do usuário
+- Nunca gerar barra de rolagem horizontal
+
+Breakpoints oficiais:
+- Mobile (base): `< 768px`
+- Tablet: `≥ 768px` e `< 1280px`
+- Desktop: `≥ 1280px` e `< 1920px`
+- Wide / 4K: `≥ 1920px`
+
+O design base SEMPRE parte do mobile. Breakpoints apenas evoluem o layout, nunca o recriam.
+
+## Regras globais de layout
+
+- Layout 100% fluido
+- Containers principais: `width: 100%` (NUNCA fixo)
+- Limitação de leitura: usar `max-width`, nunca `width`
+- Overflow horizontal é proibido em qualquer resolução
+- Frames do Figma NÃO representam containers fixos
+- Sidebar afeta o layout apenas no desktop
+
+Tailwind screens:
+- `md`: `768px` (Tablet)
+- `lg`: `1280px` (Desktop)
+- `xl`: `1920px` (Wide / 4K)
+
+Padding do conteúdo principal (`main`):
+- Mobile: `px-4` (16px)
+- Tablet: `px-6` (24px)
+- Desktop: `px-8` (32px)
+
+Limites de largura:
+- Desktop: `max-w-[1400px]`
+- Wide / 4K: `max-w-[1600px]`
+
+## Sidebar (REGRA IMPORTANTE)
+
+A sidebar NÃO EXISTE no mobile e tablet.
+
+Desktop (`≥1280px`):
+- Sidebar visível por padrão
+- Expanded (larga, com texto) ou Collapsed (estreita, apenas ícones)
+- Empurra o conteúdo, não sobrepõe
+
+Mobile e Tablet (`<1280px`):
+- Sidebar não renderiza
+- Navegação via Header Mobile
+- Menu aparece como overlay / drawer
+
+Regras críticas:
+- NUNCA renderizar Sidebar + Header Mobile juntos
+- Sidebar nunca deve causar overflow horizontal
+- Sidebar não deve existir como `display: none` no mobile; ela simplesmente não deve ser renderizada
+
+## Header Mobile
+
+Aparece apenas em `<1280px`.
+Contém botão de menu (abre drawer) e ações principais (ex: nova transação).
+Some completamente no desktop.
+
+## Grids padrão (dashboard)
+
+- Mobile: 1 coluna, cards empilhados
+- Tablet: 2 colunas quando fizer sentido
+- Desktop: 3 ou 4 colunas dependendo do componente
+- Grids devem ser `auto-fit` / `auto-fill`, nunca hardcoded
+
+## Tipografia responsiva
+
+- Mobile: reduzir ~15% dos tamanhos base
+- Escala progressiva: `text-base md:text-lg lg:text-xl`
+- Prioridade: legibilidade > densidade
+
+## Interações touch (obrigatório)
+
+- Touch target mínimo: 44x44px
+- Espaço entre elementos clicáveis: ≥ 8px
+- Inputs no mobile: altura mínima 48px, font-size mínimo 16px (evita zoom no iOS)
+
+## Teste obrigatório de implementação
+
+Toda feature DEVE ser validada em:
+- 375px – Mobile pequeno (iPhone SE)
+- 768px – Tablet (iPad)
+- 1280px – Desktop (laptop)
+- 1920px – Wide (Full HD)
+
+## Mobile (padrão obrigatório)
+
+- Layout em coluna única por padrão
+- Seguir o base design system da Uber para tamanhos e espaçamentos
+- Priorizar legibilidade, toque e hierarquia visual
+- Nunca reutilizar grids ou tamanhos de desktop
+
+## Design system, variables e tokens (REGRA CRÍTICA)
+
+Ao converter qualquer estilo do Figma para código, siga esta ordem:
+
+1. Variável SEMÂNTICA aplicada no Figma → usar diretamente (`--color-primary`)
+2. Variável PRIMITIVA aplicada no Figma → usar diretamente (`--gray-900`)
+3. Valor local (hex, px, rem) → converter para o token mais próximo da família
+4. NUNCA usar valores hardcoded. Se chegou aqui, revisar as etapas anteriores.
+
+Regras de conversão:
+- Cores hex: escolher a primitiva MAIS PRÓXIMA (ex: `#E5E5E5` → `--gray-200`). Nunca inventar tokens (`--gray-195`)
+- Espaçamentos: arredondar para o token mais próximo (ex: `28px` → `--spacing-lg` se lg=32px). Nunca `--spacing-28`
+- Tipografia: 400→normal, 600→semibold, 700→bold; mapear tamanho para a escala
+
+Exemplos:
+- `var(--color-primary)` → `var(--color-primary)`
+- `var(--gray-900)` → `var(--gray-900)`
+- `#E5E5E5` → `--gray-200` (nunca `#E5E5E5`)
+- `24px` → `--spacing-md` (nunca `28px` solto)
+
+Regras adicionais:
+- Nunca inventar novas variáveis sem solicitação explícita
+- Documentar TODAS as conversões no formato de resposta
+- Priorizar semântica sobre primitiva SEMPRE
+- Quando em dúvida, perguntar antes de converter
+
+## Formato de resposta obrigatório (após cada prompt)
+
+```markdown
+✅ PROMPT [N]: [Nome do Prompt] — CONCLUÍDO
+
+📚 PRÉ-EXECUÇÃO
+✓ Rules relidas e aplicadas
+✓ Figma consultado e analisado
+✓ Hierarquia de variáveis verificada
+
+📦 IMPLEMENTADO
+- [Lista de funcionalidades/componentes implementados]
+
+🎨 TOKENS UTILIZADOS
+Semânticas: [listar]
+Primitivas: [listar]
+Conversões realizadas:
+- [valor original] → [token escolhido] (justificativa breve)
+
+📁 ARQUIVOS CRIADOS/MODIFICADOS
+- [caminho/do/arquivo.tsx]
+
+🔨 BUILD STATUS
+✅ Sucesso (tentativas: [número])
+
+💾 COMMIT REALIZADO
+[tipo]: [descrição curta]
+Hash: [abc123]
+
+🤔 PRÓXIMOS PASSOS
+⏭️ PROMPT [N+1]: [Nome do Próximo Prompt]
+```
+
+Comandos disponíveis: `Próximo` · `Revisar [arquivo]` · `Refazer` · `Status` · `Tokens`.
+
+Este formato é obrigatório e não pode ser omitido ou simplificado.
+Não commitar a menos que o usuário peça.
+
+## Qualidade, performance e segurança
+
+- Evitar re-renderizações desnecessárias
+- Usar memoização apenas quando fizer sentido
+- Código deve ser previsível e fácil de debugar
+- Não adicionar novas dependências sem solicitação explícita
+- Não refatorar código fora do escopo pedido
+- Nunca expor chaves, tokens ou segredos
+- Considerar toda entrada do usuário como não confiável

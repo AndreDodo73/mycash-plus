@@ -1,0 +1,21 @@
+---
+description: Responder sempre em português brasileiro, com tom claro e direto
+alwaysApply: false
+---
+# Comunicação em português
+
+Responda sempre em **português brasileiro**.
+
+- Use linguagem clara, direta e profissional.
+- Nomes de arquivos, componentes, funções, tokens CSS, rotas e comandos permanecem no original (`Sidebar`, `useTransactions`, `npm run build`).
+- Termos técnicos comuns podem ficar em inglês quando forem o nome usual no código (`hook`, `props`, `commit`, `breakpoint`).
+- Não misture idiomas na prosa. Evite frases em inglês, salvo citações, logs e trechos de código.
+- Siga o formato de resposta do projeto quando um prompt de implementação for executado.
+
+```markdown
+❌ BAD
+The dashboard layout is broken on mobile. I'll fix the overflow.
+
+✅ GOOD
+O layout do dashboard quebra no mobile. Vou corrigir o overflow.
+```
