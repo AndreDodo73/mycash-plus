@@ -5,6 +5,7 @@ import {
   CardsPage,
   DashboardPage,
   GoalsPage,
+  MotionLabPage,
   ProfilePage,
   TransactionsPage,
 } from "./pages";
@@ -20,6 +21,7 @@ export default function App() {
             <Route path="/cartoes" element={<CardsPage />} />
             <Route path="/transacoes" element={<TransactionsPage />} />
             <Route path="/perfil" element={<ProfilePage />} />
+            <Route path="/lab" element={<MotionLabPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>

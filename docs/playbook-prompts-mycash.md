@@ -254,6 +254,8 @@ A página placeholder de `/objetivos` pode permanecer até lá.
 
 ## PROMPT 7 — Carrossel de categorias
 
+**Status:** feito. Auditoria em [`DOCUMENTATION.md`](DOCUMENTATION.md).
+
 **Objetivo.** `ExpensesByCategoryCarousel` + `CategoryDonutCard`. Dados de `calculateExpensesByCategory` / `calculateCategoryPercentage`. 0% se receita = 0.
 
 **Desktop.** Scroll horizontal, wheel → x, drag, setas circulares no hover (~200px). Fade nas bordas. Hover da borda → `primary`. Donut 64px; card `max-width` próximo de 160px, não grid de página.
@@ -275,6 +277,8 @@ A página placeholder de `/objetivos` pode permanecer até lá.
 ---
 
 ## PROMPT 8 — Fluxo financeiro
+
+**Status:** feito. Auditoria em [`DOCUMENTATION.md`](DOCUMENTATION.md).
 
 **Objetivo.** `FinancialFlowChart` área receitas/despesas. Mock 7 meses, código pronto para agregar transações depois.
 
@@ -298,6 +302,8 @@ A página placeholder de `/objetivos` pode permanecer até lá.
 
 ## PROMPT 9 — Widget de cartões
 
+**Status:** feito. Auditoria em [`DOCUMENTATION.md`](DOCUMENTATION.md).
+
 **Objetivo.** Lista resumida de `creditCards`. Clique abre detalhes (P15). “+” abre criar (P14). Uso = fatura ÷ limite.
 
 **Desktop.** Widget coluna (Figma “Cards & contas”). Hover eleva o item. Paginação se >3.
@@ -319,6 +325,8 @@ A página placeholder de `/objetivos` pode permanecer até lá.
 ---
 
 ## PROMPT 10 — Próximas despesas
+
+**Status:** feito. Auditoria em [`DOCUMENTATION.md`](DOCUMENTATION.md).
 
 **Objetivo.** Despesas `isPaid === false`, ordenadas por data. Check marca paga; recorrente gera próxima; parcelada avança parcela; toast.
 

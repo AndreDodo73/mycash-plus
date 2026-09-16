@@ -1,8 +1,12 @@
 export { BalanceCard } from "./BalanceCard";
+export { CategoryDonutCard } from "./CategoryDonutCard";
 export { DashboardHeader } from "./DashboardHeader";
 export { DateRangePicker } from "./DateRangePicker";
 export { ExpenseCard } from "./ExpenseCard";
+export { ExpensesByCategoryCarousel } from "./ExpensesByCategoryCarousel";
 export { FamilyAvatars } from "./FamilyAvatars";
 export { FilterPopover } from "./FilterPopover";
+export { FinancialFlowChart } from "./FinancialFlowChart";
 export { IncomeCard } from "./IncomeCard";
 export { SummaryCards } from "./SummaryCards";
+export { UpcomingExpensesWidget } from "./UpcomingExpensesWidget";

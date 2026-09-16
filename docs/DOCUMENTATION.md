@@ -17,10 +17,10 @@ Playbook de execução (decisões, breakpoints, conflitos): `docs/playbook-promp
 - [x] PROMPT 4: Context global e estado
 - [x] PROMPT 5: Cards de resumo financeiro
 - [x] PROMPT 6: Header do dashboard
-- [ ] PROMPT 7: Carrossel de categorias
-- [ ] PROMPT 8: Gráfico de fluxo financeiro
-- [ ] PROMPT 9: Widget de cartões
-- [ ] PROMPT 10: Widget de próximas despesas
+- [x] PROMPT 7: Carrossel de categorias
+- [x] PROMPT 8: Gráfico de fluxo financeiro
+- [x] PROMPT 9: Widget de cartões
+- [x] PROMPT 10: Widget de próximas despesas
 - [ ] PROMPT 11: Tabela de transações
 - [ ] PROMPT 12: Modal de nova transação
 - [ ] PROMPT 13: Modal de adicionar membro
@@ -425,3 +425,165 @@ Tentativas: 2 | Erros: 0
 
 feat: header do dashboard com filtros, período e avatares  
 Hash: `71617ac`
+
+---
+
+## PROMPT 7: Carrossel de categorias
+
+Status: ✅ | Data: 16/09/2026 | Build: ✅ (1 tentativa)
+
+Playbook: ficha P7. Figma: `cards/card-despesa` na Home (`42:3096`), ordem Header → Carrossel → Resumo.
+
+### Implementado
+
+- `CategoryDonutCard`: donut SVG 72px (Figma; playbook cita 64), % no centro, nome truncado, valor BRL
+- `ExpensesByCategoryCarousel`: dados de `calculateExpensesByCategory` + `calculateCategoryPercentage` (0% se receita = 0)
+- Navegação: wheel → horizontal, drag, setas circulares no hover (≥768px, ~200px)
+- Fade mask nas bordas; hover da borda do card → `primary`
+- Cores do anel em rotação: primary → secondary → neutrals → blue/green/orange/purple
+- Layout: carrossel acima dos cards de resumo (prioridade Figma sobre spec textual)
+- Empty state quando não há despesas no período
+
+### Tokens
+
+Semânticas: `--color-primary`, `--color-secondary`, `--color-surface`, `--color-secondary-50`
+
+Primitivas: `--color-neutral-300/400/500/600/1100`, `--color-blue-600`, `--color-green-600`, `--color-orange-600`, `--color-purple-600`, `--size-72`, `--spacing-space-4/12/16/24`, `--radius-shape-20/100`, `--text-paragraph-x-small/small`, `--text-heading-x-small`
+
+Conversões:
+
+- Donut 72px Figma → `--size-72` (playbook 64px cede ao Figma no visual)
+- Card ~160px → `max-w-[160px] min-w-[140px] w-full` (fluido no slide)
+- Gap entre cards ~18px Figma → `--spacing-space-16`
+- Track fade 24px → máscara CSS com `24px`
+- Stroke anel 8px → constante SVG alinhada ao visual do card
+
+### Build
+
+Tentativas: 1 | Erros: 0
+
+### Commit
+
+feat: home com carrossel, fluxo, cartões e próximas despesas  
+Hash: (preenchido após o commit)
+
+---
+
+## PROMPT 8: Gráfico de fluxo financeiro
+
+Status: ✅ | Data: 16/09/2026 | Build: ✅ (2 tentativas)
+
+Playbook: ficha P8. Figma: `Frame 194` / Fluxo financeiro (`42:3123`).
+
+### Implementado
+
+- `FinancialFlowChart` com Recharts (`AreaChart` + gradientes)
+- Título + ícone Figma (`fi-rr-chart-histogram`) + legenda Receitas/Despesas
+- Mock 12 meses (eixo Figma JAN–DEZ) em `financialFlowMock.ts` + stub `buildFinancialFlowFromTransactions`
+- Altura responsiva do plot: 220 / 260 / 300 (`useChartHeight`)
+- Tooltip com mês, receitas e despesas formatados
+- Card fluido `w-full`, sem overflow horizontal
+
+### Tokens
+
+Semânticas: `--color-primary`, `--color-surface`
+
+Primitivas: `--color-red-600`, `--color-green-700`, `--color-neutral-100/300/400/600/1100`, `--spacing-space-*`, `--radius-shape-20/100`, `--text-heading-x-small`, `--text-label-x-small`, `--text-paragraph-x-small`
+
+Conversões:
+
+- Receitas lime Figma → `--color-primary`
+- Despesas vermelho Figma → `--color-red-600` (playbook citava preto; visual Figma prevalece)
+- Fundo plot suave → `--color-neutral-100`
+- Padding card 32 → `--spacing-space-32` (desktop), menor no mobile
+- Radius 20 → `--radius-shape-20`
+- Stroke área 3px → `strokeWidth={3}` Recharts
+
+### Build
+
+Tentativas: 2 | Erros: 1 (tipos Tooltip Recharts 3) → corrigido
+
+### Commit
+
+feat: home com carrossel, fluxo, cartões e próximas despesas  
+Hash: (preenchido após o commit)
+
+---
+
+## PROMPT 9: Widget de cartões
+
+Status: ✅ | Data: 16/09/2026 | Build: ✅ (1 tentativa)
+
+Playbook: ficha P9. Figma: `Cards & contas` (`42:3111`).
+
+### Implementado
+
+- `CreditCardsWidget` + `CreditCardListItem` com dados de `creditCards` (`useFinance`)
+- Layout Figma: logo do banco, nome, fatura, “Vence dia DD”, `**** dígitos`
+- Título “Cards & contas”; `+` (callback P14); seta → `/cartoes`
+- Uso `(fatura ÷ limite) × 100` no `aria-label` / `getCardUsagePercent` (badge do spec cede ao layout Figma)
+- Hover eleva o item (`-translate-y-1` ~4px)
+- Paginação se `> 3` cartões
+- Grid desktop: coluna esquerda (carrossel + resumo) | widget à direita
+
+### Tokens
+
+Semânticas: `--color-surface`, `--color-primary`, `--color-secondary`
+
+Primitivas: `--color-neutral-100/300/600/1100`, `--spacing-space-*`, `--radius-shape-2/20/100`, `--text-heading-x-small/small`, `--text-paragraph-small`, `--text-label-x-small`
+
+Conversões:
+
+- Título/cards Figma → tokens tipográficos heading/paragraph/label
+- Logos Nubank/Inter/PicPay → assets baixados do MCP
+- Botões 32px Figma → `size-space-32` (desktop); touch `size-11` (44px) no mobile
+- Hover elevação 4px → `-translate-y-1`
+
+### Build
+
+Tentativas: 1 | Erros: 0
+
+### Commit
+
+feat: home com carrossel, fluxo, cartões e próximas despesas  
+Hash: (preenchido após o commit)
+
+---
+
+## PROMPT 10: Widget de próximas despesas
+
+Status: ✅ | Data: 16/09/2026 | Build: ✅ (1 tentativa)
+
+Playbook: ficha P10. Figma: `Frame 195` / Próximas despesas (`42:3163`).
+
+### Implementado
+
+- `UpcomingExpensesWidget` com despesas `isPaid === false` do `useFinance` (mock P4)
+- Ordenação por data crescente; até 5 itens visíveis; filtro por membro selecionado
+- Item: descrição, “Vence dia DD/MM”, origem (conta ou `Crédito X **** digitos`), valor, check
+- Check marca paga + remove com fade; recorrente/parcelada agenda próxima ocorrência (+1 mês)
+- Toast “Despesa marcada como paga!”
+- Empty state com borda tracejada
+- `+` → callback P12; layout ao lado do Fluxo no desktop
+
+### Tokens
+
+Semânticas: `--color-surface`
+
+Primitivas: `--color-neutral-300/600/1100`, `--color-green-100/600/700`, `--spacing-space-*`, `--radius-shape-20/100`, tipografia heading/label
+
+Conversões:
+
+- Padding widget 32 → `space-32` (desktop)
+- Check 32px Figma → `size-space-32` / touch `size-11`
+- Divisores entre itens → `divide-neutral-300`
+- Hover check → `green-100`
+
+### Build
+
+Tentativas: 1 | Erros: 0
+
+### Commit
+
+feat: home com carrossel, fluxo, cartões e próximas despesas  
+Hash: (preenchido após o commit)
