@@ -204,6 +204,8 @@ A página placeholder de `/objetivos` pode permanecer até lá.
 
 ## PROMPT 5 — Cards de resumo
 
+**Status:** feito. Auditoria em [`DOCUMENTATION.md`](DOCUMENTATION.md).
+
 **Objetivo.** `BalanceCard`, `IncomeCard`, `ExpenseCard` no topo do dashboard. Valores do context. Contagem 800ms.
 
 **Desktop ≥1280.** Três cards em linha; saldo pode ser um pouco maior (`flex` / `fr`, não width fixa).

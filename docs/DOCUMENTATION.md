@@ -15,7 +15,7 @@ Playbook de execução (decisões, breakpoints, conflitos): `docs/playbook-promp
 - [x] PROMPT 2: Layout e navegação desktop
 - [x] PROMPT 3: Layout e navegação mobile
 - [x] PROMPT 4: Context global e estado
-- [ ] PROMPT 5: Cards de resumo financeiro
+- [x] PROMPT 5: Cards de resumo financeiro
 - [ ] PROMPT 6: Header do dashboard
 - [ ] PROMPT 7: Carrossel de categorias
 - [ ] PROMPT 8: Gráfico de fluxo financeiro
@@ -343,3 +343,45 @@ Tentativas: 1 | Erros: 0
 
 feat: context useFinance com mock e cálculos em memória  
 Hash: `d38dcf4`
+
+---
+
+## PROMPT 5: Cards de resumo financeiro
+
+Status: ✅ | Data: 16/09/2026 | Build: ✅ (1 tentativa)
+
+Playbook: ficha P5. Figma: `resumo-saldo` (`42:3108`–`42:3110`) em `42:3107`.
+
+### Implementado
+
+- `BalanceCard`, `IncomeCard`, `ExpenseCard` + `SummaryCards` + shell compartilhado
+- Valores via `useFinance` (`calculateTotalBalance` / income / expenses do período filtrado)
+- Contagem animada 800ms (`useCountUp`)
+- `formatCurrency` com `Intl` pt-BR / BRL
+- Layout: 1 col mobile · 2 cols tablet · 3 cols desktop (`xl`)
+- Visual Figma: cards brancos, saldo em `--color-blue-600`, sem blob lime / card preto
+- Ícones Figma: dollar, seta receita (verde), seta despesa (vermelha)
+
+### Tokens
+
+Semânticas: `--color-surface`
+
+Primitivas: `--color-neutral-300`, `--color-neutral-1100`, `--color-blue-600`, `--spacing-space-4/20/24/32`, `--radius-shape-20`, `--text-paragraph-large`, `--text-heading-medium`
+
+Conversões:
+
+- Border Figma `#686c55` → `--color-neutral-300` (já mapeado no projeto)
+- Gap 20px → `--spacing-space-20`
+- Padding 24px → `--spacing-space-24`
+- Radius 20 → `--radius-shape-20`
+- Valor saldo `#2a89ef` → `--color-blue-600`
+- Label 18 / valor 28 → `paragraph-large` / `heading-medium`
+
+### Build
+
+Tentativas: 1 | Erros: 0
+
+### Commit
+
+feat: cards de resumo financeiro e ícone target de Objetivos  
+Hash: (preenchido após o commit)
