@@ -154,6 +154,8 @@ A página placeholder de `/objetivos` pode permanecer até lá.
 
 ## PROMPT 3 — Header mobile
 
+**Status:** feito. Auditoria em [`DOCUMENTATION.md`](DOCUMENTATION.md).
+
 **Objetivo.** `HeaderMobile` + `MenuDropdown` abaixo de 1280. Nunca junto com a Sidebar.
 
 **Desktop ≥1280.** Não renderizar header nem dropdown.

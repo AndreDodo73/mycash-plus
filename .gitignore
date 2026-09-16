@@ -12,6 +12,16 @@ dist
 dist-ssr
 *.local
 
+# Segredos (nunca versionar)
+.secrets/*
+!.secrets/README.md
+.env
+.env.*
+!.env.example
+*.token
+*.pem
+*.key
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

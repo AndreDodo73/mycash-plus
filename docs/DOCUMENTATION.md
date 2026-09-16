@@ -13,7 +13,7 @@ Playbook de execução (decisões, breakpoints, conflitos): `docs/playbook-promp
 - [x] PROMPT 0: Análise e planejamento
 - [x] PROMPT 1: Estrutura base e configuração
 - [x] PROMPT 2: Layout e navegação desktop
-- [ ] PROMPT 3: Layout e navegação mobile
+- [x] PROMPT 3: Layout e navegação mobile
 - [ ] PROMPT 4: Context global e estado
 - [ ] PROMPT 5: Cards de resumo financeiro
 - [ ] PROMPT 6: Header do dashboard
@@ -231,7 +231,7 @@ Playbook: ficha P2.
 - Item ativo: pill `bg-primary` (Figma, não fundo preto)
 - 5 seções (spec); perfil placeholder Lucas Marte
 - `BREAKPOINTS.desktopMin` = **1280**; `useIsDesktop` atualizado
-- Abaixo de 1280: Sidebar **não renderiza**; header placeholder permanece até o P3
+- Abaixo de 1280: Sidebar **não renderiza**; HeaderMobile no P3
 
 ### Tokens
 
@@ -257,3 +257,51 @@ Tentativas: 1 | Erros: 0
 
 feat: estrutura Vite do mycash+ e sidebar desktop  
 Hash: `72c20d7`
+
+---
+
+## PROMPT 3: Layout e navegação mobile (HeaderMobile)
+
+Status: ✅ | Data: 16/09/2026 | Build: ✅ (2 tentativas)
+
+Playbook: ficha P3.
+
+### Implementado
+
+- `HeaderMobile` só abaixo de 1280: sticky, largura 100%, logo à esquerda, avatar à direita (trigger 56×56)
+- `MenuDropdown` desliza abaixo do header (não fullscreen): 5 seções ícone + texto, X, overlay, Escape
+- Item ativo no overlay: fundo `--color-secondary` (preto) + texto/ícones invertidos — não há menu mobile no DS Figma
+- Botão **Sair** `--color-red-600` (fecha o menu; sem auth)
+- `AppShell`: `isDesktop ? Sidebar : HeaderMobile` — nunca os dois juntos
+- Ícone X: `fi-rr-cross` Figma `30:526`
+
+### Verificação no browser
+
+- 375px: header 375px, dropdown ~489px de 812 (não fullscreen), Home ativo `rgb(6, 10, 17)`, Sair `rgb(230, 30, 50)`, alvos 56px
+- Fecha: item (navegou `/cartoes`), X, Escape, overlay
+- 768px: HeaderMobile, sem Sidebar, sem overflow horizontal
+- 1280px: Sidebar, sem HeaderMobile, sem overflow horizontal
+
+### Tokens
+
+Semânticas: `--color-surface`, `--color-secondary`, `--color-background`
+
+Primitivas: `--color-neutral-300`, `--color-neutral-600`, `--color-red-600`, `--spacing-space-8/12/16/24/32/56`, `--radius-shape-100`, `--text-label-large`
+
+Conversões:
+
+- Frames `Header` 360×120 no Figma (`0:3029` / `0:3197` / `27:11577`) são date picker, não o nav — spec + tokens da Home
+- Logo desktop 140×30 → `112×24` (`h-space-24` + `w-[112px]`, ~80% no mobile)
+- Overlay 50% → `bg-secondary/50`
+- Sombra do painel → `shadow-sm` (igual ao toggle da Sidebar)
+- Touch 44×44 → `--spacing-space-56` (56px)
+- `fi-rr-cross` 24px → `--spacing-space-24`
+
+### Build
+
+Tentativas: 2 | Erros: 0
+
+### Commit
+
+feat: header mobile com menu dropdown abaixo de 1280px  
+Hash: (preenchido após o commit)
