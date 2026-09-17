@@ -22,8 +22,8 @@ Playbook de execução (decisões, breakpoints, conflitos): `docs/playbook-promp
 - [x] PROMPT 9: Widget de cartões
 - [x] PROMPT 10: Widget de próximas despesas
 - [x] PROMPT 11: Tabela de transações
-- [ ] PROMPT 12: Modal de nova transação
-- [ ] PROMPT 13: Modal de adicionar membro
+- [x] PROMPT 12: Modal de nova transação
+- [x] PROMPT 13: Modal de adicionar membro
 - [ ] PROMPT 14: Modal de adicionar cartão
 - [ ] PROMPT 15: Modal de detalhes do cartão
 - [ ] PROMPT 16: Modal de filtros mobile
@@ -627,3 +627,78 @@ Tentativas: 1 | Erros: 0
 
 feat: extrato detalhado e check de próximas despesas  
 Hash: `a59afa5`
+
+## PROMPT 12: Modal de nova transação
+
+Status: ✅ | Data: 17/09/2026 | Build: ✅ (1 tentativa)
+
+Playbook: ficha P12. Figma: `Dashboard-modal-receita` (`0:3311`) / `Dashboard-modal-despesa` (`0:3645`).
+
+### Implementado
+
+- `NewTransactionModal` fullscreen (viewport) com header / body scroll / footer
+- Toggle Receita/Despesas; valor formatado BRL; data; descrição; categoria (+ nova inline)
+- Responsável (Familiar = null) e Conta/cartão agrupados
+- Parcelas 1–12 só se despesa + cartão; mutuamente exclusivo com recorrente
+- Checkbox “Despesa recorrente” (tokens blue-100 / blue-600)
+- Validação sem submit inválido; `addTransaction` no contexto; toast de sucesso
+- Wiring: header “Nova transação” e “+” em Próximas despesas
+
+### Tokens
+
+Semânticas: `--color-surface`, `--color-background`, `--color-primary`, `--color-secondary` (overlay implícito via fullscreen)
+
+Primitivas: `--color-neutral-1100/600/500/300/100`, `--color-blue-100/600`, `--color-red-600`, `--color-green-100/800`, `--spacing-space-*`, `--radius-shape-100/20`, tipografia heading/label/paragraph
+
+Conversões:
+
+- Modal 100vw Figma → `fixed inset-0` fluido (sem width fixa de página)
+- Conteúdo ~600–700px → `max-w-[700px] w-full`
+- Inputs 56px / radius ~18.6 → `min-h-14` + `rounded-[20px]` (`shape-20`)
+- `#3247FF` (prompt) → `bg-blue-100` + `border-blue-600`
+- Ícone tipo 64px → `size-16` (64px) + assets Figma
+
+### Build
+
+Tentativas: 1 | Erros: 0
+
+### Commit
+
+feat: modais de nova transação e novo familiar  
+Hash: (preenchido após o commit)
+
+## PROMPT 13: Modal de adicionar membro
+
+Status: ✅ | Data: 17/09/2026 | Build: ✅ (2 tentativas)
+
+Playbook: ficha P13. Figma: `Dashboard-modal-novofamiliar` (`0:3532`).
+
+### Implementado
+
+- `AddMemberModal` centralizado com overlay (`max-w-[500px]` desktop; quase fullscreen no mobile)
+- Campos: Nome, Função/Parentesco (combobox + sugestões), Renda opcional (BRL)
+- Avatar: abas URL / Upload (JPG/PNG ≤5MB → data URL em memória); fallback avatar padrão
+- Validação nome ≥3 e função obrigatória; `addFamilyMember`; toast de sucesso
+- Wiring no “+” dos avatares do header
+
+### Tokens
+
+Semânticas: `--color-surface`, `--color-secondary` (overlay)
+
+Primitivas: `--color-neutral-1100/600/500/300`, `--color-red-600`, `--color-green-100/800`, `--spacing-space-*`, `--radius-shape-100/20`, tipografia heading/label/paragraph
+
+Conversões:
+
+- Modal ~500px Figma/prompt → `md:max-w-[500px] w-full`
+- Inputs 56px / radius ~18.6 → `min-h-14` + `rounded-[20px]`
+- Ícone users 40px → asset Figma em caixa `size-16` (64px)
+- Overlay escuro → `bg-secondary/50`
+
+### Build
+
+Tentativas: 2 | Erros: 1 (asset `icon-users.svg` ausente) → corrigido na tentativa 2
+
+### Commit
+
+feat: modais de nova transação e novo familiar  
+Hash: (preenchido após o commit)

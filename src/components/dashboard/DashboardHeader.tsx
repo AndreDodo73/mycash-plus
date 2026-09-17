@@ -14,7 +14,15 @@ const TYPE_OPTIONS: { value: TransactionTypeFilter; label: string }[] = [
   { value: "expense", label: "Despesas" },
 ];
 
-export function DashboardHeader() {
+type DashboardHeaderProps = {
+  onNewTransaction?: () => void;
+  onAddMember?: () => void;
+};
+
+export function DashboardHeader({
+  onNewTransaction,
+  onAddMember,
+}: DashboardHeaderProps) {
   const isDesktop = useIsDesktop();
   const {
     searchText,
@@ -128,19 +136,13 @@ export function DashboardHeader() {
             <DateRangePicker value={dateRange} onChange={setDateRange} />
           </div>
 
-          <FamilyAvatars
-            onAddMember={() => {
-              // Modal P13
-            }}
-          />
+          <FamilyAvatars onAddMember={() => onAddMember?.()} />
         </div>
 
         <button
           type="button"
           className="flex min-h-12 w-full shrink-0 items-center justify-center gap-space-8 rounded-shape-100 bg-neutral-1100 px-space-16 py-space-12 text-label-large font-semibold tracking-[0.3px] text-surface whitespace-nowrap lg:w-auto"
-          onClick={() => {
-            // Modal P12
-          }}
+          onClick={() => onNewTransaction?.()}
         >
           <img
             src={iconPlus}
