@@ -626,4 +626,4 @@ Tentativas: 1 | Erros: 0
 ### Commit
 
 feat: extrato detalhado e check de próximas despesas  
-Hash: (preenchido após o commit)
+Hash: `a59afa5`
