@@ -1,6 +1,5 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import iconAdd from "../../assets/dashboard/icon-add-circle.svg";
-import iconCheck from "../../assets/dashboard/icon-check.svg";
 import iconCreditCard from "../../assets/cards/icon-credit-card.svg";
 import { useFinance } from "../../hooks";
 import type { BankAccount, CreditCard, Transaction } from "../../types/finance";
@@ -65,7 +64,9 @@ export function UpcomingExpensesWidget({
   } = useFinance();
 
   const [leavingIds, setLeavingIds] = useState<string[]>([]);
+  const [confirmingIds, setConfirmingIds] = useState<string[]>([]);
   const [toast, setToast] = useState<string | null>(null);
+  const processingRef = useRef<Set<string>>(new Set());
 
   const pending = useMemo(() => {
     return transactions
@@ -105,21 +106,34 @@ export function UpcomingExpensesWidget({
       isRecurring: tx.isRecurring,
       isPaid: false,
     });
+    return nextDate;
   }
 
   function markAsPaid(tx: Transaction) {
-    setLeavingIds((current) => [...current, tx.id]);
+    if (processingRef.current.has(tx.id)) {
+      return;
+    }
+    processingRef.current.add(tx.id);
+    setConfirmingIds((current) => [...current, tx.id]);
 
     window.setTimeout(() => {
-      updateTransaction(tx.id, { isPaid: true, status: "completed" });
+      setLeavingIds((current) => [...current, tx.id]);
+      setConfirmingIds((current) => current.filter((id) => id !== tx.id));
 
-      if (tx.isRecurring || tx.installments > 1) {
-        scheduleNextOccurrence(tx);
-      }
+      window.setTimeout(() => {
+        updateTransaction(tx.id, { isPaid: true, status: "completed" });
 
-      setLeavingIds((current) => current.filter((id) => id !== tx.id));
-      showToast("Despesa marcada como paga!");
-    }, 220);
+        let message = "Despesa marcada como paga!";
+        if (tx.isRecurring || tx.installments > 1) {
+          const nextDate = scheduleNextOccurrence(tx);
+          message = `Paga! Próxima em ${pad2(nextDate.getDate())}/${pad2(nextDate.getMonth() + 1)}`;
+        }
+
+        setLeavingIds((current) => current.filter((id) => id !== tx.id));
+        processingRef.current.delete(tx.id);
+        showToast(message);
+      }, 280);
+    }, 180);
   }
 
   return (
@@ -175,6 +189,7 @@ export function UpcomingExpensesWidget({
         <ul className="flex w-full flex-col divide-y divide-neutral-300">
           {visible.map((tx) => {
             const leaving = leavingIds.includes(tx.id);
+            const confirming = confirmingIds.includes(tx.id);
             return (
               <li
                 key={tx.id}
@@ -206,18 +221,25 @@ export function UpcomingExpensesWidget({
                   <button
                     type="button"
                     onClick={() => markAsPaid(tx)}
-                    disabled={leaving}
+                    disabled={leaving || confirming}
+                    aria-pressed={confirming}
                     aria-label={`Marcar ${tx.description} como paga`}
-                    className="flex size-11 items-center justify-center rounded-shape-100 transition-colors hover:bg-green-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600 md:size-space-32"
+                    className={[
+                      "flex size-11 items-center justify-center rounded-shape-100 border transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600 md:size-space-32",
+                      confirming
+                        ? "scale-110 border-green-600 bg-green-600 text-surface"
+                        : "border-neutral-300 bg-surface text-transparent hover:border-green-600 hover:bg-green-100 hover:text-green-700",
+                    ].join(" ")}
                   >
-                    <img
-                      src={iconCheck}
-                      alt=""
-                      width={32}
-                      height={32}
-                      className="size-full"
+                    <span
+                      className={[
+                        "text-label-medium font-bold leading-none",
+                        confirming ? "text-surface" : "text-inherit",
+                      ].join(" ")}
                       aria-hidden="true"
-                    />
+                    >
+                      ✓
+                    </span>
                   </button>
                 </div>
               </li>

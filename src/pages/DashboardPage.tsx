@@ -4,6 +4,7 @@ import {
   ExpensesByCategoryCarousel,
   FinancialFlowChart,
   SummaryCards,
+  TransactionsTable,
   UpcomingExpensesWidget,
 } from "../components/dashboard";
 
@@ -36,6 +37,8 @@ export function DashboardPage() {
           }}
         />
       </div>
+
+      <TransactionsTable />
     </section>
   );
 }

@@ -352,6 +352,8 @@ A página placeholder de `/objetivos` pode permanecer até lá.
 
 ## PROMPT 11 — Tabela de transações (dashboard)
 
+**Status:** feito. Auditoria em [`DOCUMENTATION.md`](DOCUMENTATION.md).
+
 **Objetivo.** `TransactionsTable` no Home. 7 colunas. Filtros globais + busca/tipo locais (AND). 5 por página. Ordenar data desc.
 
 **Desktop ≥1280.** Tabela completa, sem scroll horizontal da página.

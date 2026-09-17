@@ -9,4 +9,7 @@ export { FilterPopover } from "./FilterPopover";
 export { FinancialFlowChart } from "./FinancialFlowChart";
 export { IncomeCard } from "./IncomeCard";
 export { SummaryCards } from "./SummaryCards";
+export { TransactionCard } from "./TransactionCard";
+export { TransactionRow } from "./TransactionRow";
+export { TransactionsTable } from "./TransactionsTable";
 export { UpcomingExpensesWidget } from "./UpcomingExpensesWidget";

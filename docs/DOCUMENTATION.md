@@ -21,7 +21,7 @@ Playbook de execução (decisões, breakpoints, conflitos): `docs/playbook-promp
 - [x] PROMPT 8: Gráfico de fluxo financeiro
 - [x] PROMPT 9: Widget de cartões
 - [x] PROMPT 10: Widget de próximas despesas
-- [ ] PROMPT 11: Tabela de transações
+- [x] PROMPT 11: Tabela de transações
 - [ ] PROMPT 12: Modal de nova transação
 - [ ] PROMPT 13: Modal de adicionar membro
 - [ ] PROMPT 14: Modal de adicionar cartão
@@ -587,3 +587,43 @@ Tentativas: 1 | Erros: 0
 
 feat: home com carrossel, fluxo, cartões e próximas despesas  
 Hash: `8e8dd94`
+
+---
+
+## PROMPT 11: Tabela de transações
+
+Status: ✅ | Data: 16/09/2026 | Build: ✅ (1 tentativa)
+
+Playbook: ficha P11. Figma: Extrato detalhado (`42:3215`).
+
+### Implementado
+
+- `TransactionsTable` + `TransactionRow` + `TransactionCard` (mobile)
+- Filtros globais (membro + período) AND locais (busca descrição/categoria + tipo)
+- 7 colunas no desktop; tablet oculta Conta/cartão e Parcelas; mobile em cards
+- 5 por página, ordenação por data desc, paginação com números
+- Valores com `+`/`-`; empty state “Nenhum lançamento encontrado.”
+- Reset de página ao mudar filtros
+
+### Tokens
+
+Semânticas: `--color-surface`
+
+Primitivas: `--color-neutral-100/200/300/600/1100`, `--color-green-700`, `--spacing-space-*`, `--radius-shape-20/100`, tipografia heading/label/paragraph
+
+Conversões:
+
+- Busca 256px → `sm:max-w-[256px]` + `w-full`
+- Select tipo 140px → `sm:w-[140px]`
+- Header tabela cinza → `bg-neutral-100`
+- Zebra / hover → `neutral-100` / `neutral-200`
+- Avatar 24px → `size-space-24`
+
+### Build
+
+Tentativas: 1 | Erros: 0
+
+### Commit
+
+feat: extrato detalhado e check de próximas despesas  
+Hash: (preenchido após o commit)
