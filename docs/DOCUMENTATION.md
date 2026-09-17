@@ -665,7 +665,7 @@ Tentativas: 1 | Erros: 0
 ### Commit
 
 feat: modais de nova transação e novo familiar  
-Hash: (preenchido após o commit)
+Hash: `fe64687`
 
 ## PROMPT 13: Modal de adicionar membro
 
@@ -701,4 +701,4 @@ Tentativas: 2 | Erros: 1 (asset `icon-users.svg` ausente) → corrigido na tenta
 ### Commit
 
 feat: modais de nova transação e novo familiar  
-Hash: (preenchido após o commit)
+Hash: `fe64687`
