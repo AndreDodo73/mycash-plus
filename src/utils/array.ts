@@ -14,6 +14,10 @@ export type CategoryGroup = Record<string, number>;
  * // { Mercado: 15 }
  */
 export function groupByCategory(transactions: Transaction[]): CategoryGroup {
+  if (!transactions?.length) {
+    return {};
+  }
+
   return transactions.reduce<CategoryGroup>((acc, tx) => {
     acc[tx.category] = (acc[tx.category] ?? 0) + tx.amount;
     return acc;
@@ -34,6 +38,10 @@ export function filterByDateRange(
   transactions: Transaction[],
   range: DateRange,
 ): Transaction[] {
+  if (!transactions?.length) {
+    return [];
+  }
+
   const start = startOfDay(range.startDate).getTime();
   const end = endOfDay(range.endDate).getTime();
 
@@ -57,6 +65,10 @@ export function sortByDate(
   transactions: Transaction[],
   direction: "asc" | "desc" = "desc",
 ): Transaction[] {
+  if (!transactions?.length) {
+    return [];
+  }
+
   const factor = direction === "asc" ? 1 : -1;
   return [...transactions].sort(
     (a, b) => (a.date.getTime() - b.date.getTime()) * factor,

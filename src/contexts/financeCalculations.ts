@@ -44,6 +44,10 @@ export function getFilteredTransactions(
   transactions: Transaction[],
   filters: FinanceFilters,
 ): Transaction[] {
+  if (!transactions?.length) {
+    return [];
+  }
+
   const rangeStart = startOfDay(filters.dateRange.startDate);
   const rangeEnd = endOfDay(filters.dateRange.endDate);
   const query = filters.searchText.trim().toLowerCase();
@@ -81,12 +85,12 @@ export function calculateTotalBalance(
   selectedMember: string | null = null,
 ): number {
   const accounts = selectedMember
-    ? bankAccounts.filter((account) => account.holderId === selectedMember)
-    : bankAccounts;
+    ? (bankAccounts ?? []).filter((account) => account.holderId === selectedMember)
+    : (bankAccounts ?? []);
 
   const cards = selectedMember
-    ? creditCards.filter((card) => card.holderId === selectedMember)
-    : creditCards;
+    ? (creditCards ?? []).filter((card) => card.holderId === selectedMember)
+    : (creditCards ?? []);
 
   const accountsSum = accounts.reduce((sum, account) => sum + account.balance, 0);
   const invoicesSum = cards.reduce((sum, card) => sum + card.currentInvoice, 0);
@@ -95,13 +99,13 @@ export function calculateTotalBalance(
 }
 
 export function calculateIncomeForPeriod(transactions: Transaction[]): number {
-  return transactions
+  return (transactions ?? [])
     .filter((tx) => tx.type === "income")
     .reduce((sum, tx) => sum + tx.amount, 0);
 }
 
 export function calculateExpensesForPeriod(transactions: Transaction[]): number {
-  return transactions
+  return (transactions ?? [])
     .filter((tx) => tx.type === "expense")
     .reduce((sum, tx) => sum + tx.amount, 0);
 }
@@ -109,6 +113,10 @@ export function calculateExpensesForPeriod(transactions: Transaction[]): number 
 export function calculateExpensesByCategory(
   transactions: Transaction[],
 ): CategoryExpense[] {
+  if (!transactions?.length) {
+    return [];
+  }
+
   const totals = new Map<string, number>();
 
   for (const tx of transactions) {
