@@ -28,7 +28,7 @@ Playbook de execução (decisões, breakpoints, conflitos): `docs/playbook-promp
 - [x] PROMPT 15: Modal de detalhes do cartão
 - [x] PROMPT 16: Modal de filtros mobile
 - [x] PROMPT 17: View completa de cartões
-- [ ] PROMPT 18: View completa de transações
+- [x] PROMPT 18: View completa de transações
 - [ ] PROMPT 19: Perfil — informações
 - [ ] PROMPT 20: Perfil — configurações
 - [ ] PROMPT 21: Animações e transições
@@ -850,5 +850,42 @@ Tentativas: 1
 
 ### Commit
 
-Não realizado (aguardando “Fazer commit e documentar”)
+feat: view completa de cartões e contas em /cartoes  
+Hash: `05e322c`
+
+## PROMPT 18: View completa de transações
+
+Status: ✅ | Data: 18/09/2026 | Build: ✅ (1 tentativa)
+
+Playbook: ficha P18. Exportação: **CSV apenas** (sem PDF).
+
+### Implementado
+
+- `TransactionsView` em `/transacoes` via `TransactionsPage`
+- Header: título “Transações”, “Exportar CSV”, “Nova Transação” (abre P12)
+- Filtros avançados AND com `getFilteredTransactions`: busca, tipo, categoria, conta/cartão, membro, status, período local (`DateRangePicker`)
+- Resumo das filtradas: receitas, despesas, diferença (verde/vermelho), quantidade
+- `TransactionsTable` expandido: `pageSize={10}`, `sortable` nos headers, toolbar local oculta, empty state + CTA
+- CSV via `Blob` + BOM UTF-8 (`exportTransactionsCsv.ts`)
+- `location.state.accountId` pré-seleciona filtro de conta/cartão
+
+### Tokens
+
+Semânticas: `--color-surface`, `--color-secondary`, `--color-background`
+
+Primitivas: `--color-neutral-*`, `--color-green-600`, `--color-red-600`, `--spacing-space-*`, `--radius-shape-20/100`
+
+Conversões:
+
+- Export PDF do prompt original → CSV apenas (playbook)
+- 10 linhas/página → prop `pageSize={10}` no componente reutilizado do dashboard
+- Filtros desktop wrap / mobile coluna → `flex-col` + `lg:flex-row lg:flex-wrap`
+
+### Build
+
+Tentativas: 1
+
+### Commit
+
+(aguardando hash do commit feat)
 

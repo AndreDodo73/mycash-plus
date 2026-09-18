@@ -12,4 +12,6 @@ export { SummaryCards } from "./SummaryCards";
 export { TransactionCard } from "./TransactionCard";
 export { TransactionRow } from "./TransactionRow";
 export { TransactionsTable } from "./TransactionsTable";
+export type { TransactionSort, TransactionSortKey } from "./TransactionsTable";
+export { TransactionsView } from "./TransactionsView";
 export { UpcomingExpensesWidget } from "./UpcomingExpensesWidget";

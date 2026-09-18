@@ -1,5 +1,9 @@
 export { formatCurrency } from "./formatCurrency";
 export {
+  buildTransactionsCsv,
+  downloadTransactionsCsv,
+} from "./exportTransactionsCsv";
+export {
   addMonths,
   endOfDay,
   endOfMonth,
