@@ -37,10 +37,11 @@ export function CardDetailsModal({
 }: CardDetailsModalProps) {
   const titleId = useId();
   const navigate = useNavigate();
-  const { creditCards, transactions, setTransactionType, setSearchText } =
+  const { creditCards, transactions, setTransactionType, setSearchText, deleteCreditCard } =
     useFinance();
   const [page, setPage] = useState(1);
   const [closing, setClosing] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   const card = useMemo(
     () => creditCards.find((item) => item.id === cardId) ?? null,
@@ -69,6 +70,7 @@ export function CardDetailsModal({
     }
     setPage(1);
     setClosing(false);
+    setConfirmDelete(false);
   }, [open, cardId]);
 
   useEffect(() => {
@@ -364,41 +366,81 @@ export function CardDetailsModal({
           </div>
         </div>
 
-        <footer className="flex w-full shrink-0 flex-col gap-space-8 border-t border-neutral-300 px-space-16 py-space-16 md:flex-row md:flex-wrap md:justify-end md:gap-space-12 md:px-space-24">
-          <button
-            type="button"
-            className="motion-tap flex min-h-12 items-center justify-center rounded-shape-100 border border-neutral-1100 bg-transparent px-space-16 text-label-medium font-bold tracking-[0.3px] text-neutral-1100 hover:bg-neutral-100"
-            onClick={handleViewStatement}
-          >
-            Ver Extrato Completo
-          </button>
-          <button
-            type="button"
-            className="motion-tap flex min-h-12 items-center justify-center gap-space-8 rounded-shape-100 border border-neutral-1100 bg-transparent px-space-16 text-label-medium font-bold tracking-[0.3px] text-neutral-1100 hover:bg-neutral-100"
-            onClick={() => {
-              onAddExpense(card.id);
-              requestClose();
-            }}
-          >
-            Adicionar Despesa
-          </button>
-          <button
-            type="button"
-            className="motion-tap flex min-h-12 items-center justify-center rounded-shape-100 border border-neutral-1100 bg-transparent px-space-16 text-label-medium font-bold tracking-[0.3px] text-neutral-1100 hover:bg-neutral-100"
-            onClick={() => {
-              onEditCard(card.id);
-              requestClose();
-            }}
-          >
-            Editar Cartão
-          </button>
-          <button
-            type="button"
-            className="motion-tap flex min-h-12 items-center justify-center rounded-shape-100 bg-neutral-1100 px-space-24 text-label-medium font-bold tracking-[0.3px] text-surface hover:bg-secondary"
-            onClick={requestClose}
-          >
-            Fechar
-          </button>
+        <footer className="flex w-full shrink-0 flex-col gap-space-12 border-t border-neutral-300 px-space-16 py-space-16 md:px-space-24">
+          {confirmDelete ? (
+            <div className="flex w-full flex-col gap-space-12 rounded-shape-20 border border-red-600/30 bg-red-600/5 p-space-16 sm:flex-row sm:items-center sm:justify-between">
+              <p className="min-w-0 text-label-medium text-neutral-1100">
+                Excluir “{card.name}”? Não dá para desfazer.
+              </p>
+              <div className="flex shrink-0 gap-space-8">
+                <button
+                  type="button"
+                  className="motion-tap flex min-h-12 flex-1 items-center justify-center rounded-shape-100 border border-neutral-1100 bg-surface px-space-16 text-label-medium font-bold tracking-[0.3px] text-neutral-1100 hover:bg-neutral-100 sm:flex-none"
+                  onClick={() => setConfirmDelete(false)}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  className="motion-tap flex min-h-12 flex-1 items-center justify-center rounded-shape-100 bg-red-600 px-space-16 text-label-medium font-bold tracking-[0.3px] text-surface hover:bg-red-700 sm:flex-none"
+                  onClick={() => {
+                    deleteCreditCard(card.id);
+                    setConfirmDelete(false);
+                    requestClose();
+                  }}
+                >
+                  Excluir
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="flex w-full flex-col gap-space-12 md:flex-row md:items-center md:justify-between">
+              <button
+                type="button"
+                className="motion-tap order-last flex min-h-12 items-center justify-center self-start rounded-shape-100 px-space-12 text-label-medium font-semibold tracking-[0.3px] text-red-600 hover:bg-red-600/10 md:order-first"
+                onClick={() => setConfirmDelete(true)}
+              >
+                Excluir cartão
+              </button>
+
+              <div className="flex w-full flex-col gap-space-8 sm:flex-row sm:flex-wrap sm:justify-end md:w-auto">
+                <button
+                  type="button"
+                  className="motion-tap flex min-h-12 items-center justify-center rounded-shape-100 border border-neutral-1100 bg-transparent px-space-16 text-label-medium font-bold tracking-[0.3px] text-neutral-1100 hover:bg-neutral-100"
+                  onClick={handleViewStatement}
+                >
+                  Ver Extrato
+                </button>
+                <button
+                  type="button"
+                  className="motion-tap flex min-h-12 items-center justify-center rounded-shape-100 border border-neutral-1100 bg-transparent px-space-16 text-label-medium font-bold tracking-[0.3px] text-neutral-1100 hover:bg-neutral-100"
+                  onClick={() => {
+                    onAddExpense(card.id);
+                    requestClose();
+                  }}
+                >
+                  Adicionar Despesa
+                </button>
+                <button
+                  type="button"
+                  className="motion-tap flex min-h-12 items-center justify-center rounded-shape-100 border border-neutral-1100 bg-transparent px-space-16 text-label-medium font-bold tracking-[0.3px] text-neutral-1100 hover:bg-neutral-100"
+                  onClick={() => {
+                    onEditCard(card.id);
+                    requestClose();
+                  }}
+                >
+                  Editar
+                </button>
+                <button
+                  type="button"
+                  className="motion-tap flex min-h-12 items-center justify-center rounded-shape-100 bg-neutral-1100 px-space-24 text-label-medium font-bold tracking-[0.3px] text-surface hover:bg-secondary"
+                  onClick={requestClose}
+                >
+                  Fechar
+                </button>
+              </div>
+            </div>
+          )}
         </footer>
       </div>
     </div>

@@ -7,7 +7,7 @@ import {
 } from "../../constants/goalImages";
 import { useFinance } from "../../hooks";
 import { formatCurrency } from "../../utils/currency";
-import { ChevronIcon, ModalCloseButton } from "../ui";
+import { FieldSelect, ModalCloseButton } from "../ui";
 
 type FormErrors = {
   name?: string;
@@ -348,54 +348,38 @@ export function AddGoalModal({
                   </div>
 
                   <div className="flex flex-col gap-space-8">
-                    <label
-                      htmlFor="goal-category"
-                      className="text-label-small font-semibold tracking-[0.3px] text-neutral-600"
-                    >
+                    <span className="text-label-small font-semibold tracking-[0.3px] text-neutral-600">
                       Categoria
-                    </label>
-                    <div className="relative">
-                      <select
-                        id="goal-category"
-                        value={form.category}
-                        onChange={(event) => {
-                          setForm((current) => ({
-                            ...current,
-                            category: event.target.value,
-                          }));
-                          setErrors((current) => ({
-                            ...current,
-                            category: undefined,
-                          }));
-                        }}
-                        className={[
-                          "min-h-12 w-full appearance-none rounded-shape-20 border border-neutral-300 bg-surface px-space-16 pr-space-32 text-base outline-none focus:border-neutral-1100",
-                          form.category
-                            ? "text-neutral-1100"
-                            : "text-neutral-600",
-                        ].join(" ")}
-                      >
-                        <option value="" disabled>
-                          Selecione a categoria
-                        </option>
-                        {form.category &&
+                    </span>
+                    <FieldSelect
+                      id="goal-category"
+                      value={form.category}
+                      onChange={(value) => {
+                        setForm((current) => ({
+                          ...current,
+                          category: value,
+                        }));
+                        setErrors((current) => ({
+                          ...current,
+                          category: undefined,
+                        }));
+                      }}
+                      options={[
+                        ...(form.category &&
                         !(CATEGORY_SUGGESTIONS as readonly string[]).includes(
                           form.category,
-                        ) ? (
-                          <option value={form.category}>{form.category}</option>
-                        ) : null}
-                        {CATEGORY_SUGGESTIONS.map((item) => (
-                          <option key={item} value={item}>
-                            {item}
-                          </option>
-                        ))}
-                      </select>
-                      <ChevronIcon
-                        direction="down"
-                        size={14}
-                        className="pointer-events-none absolute right-space-16 top-1/2 -translate-y-1/2 text-neutral-1100"
-                      />
-                    </div>
+                        )
+                          ? [{ value: form.category, label: form.category }]
+                          : []),
+                        ...CATEGORY_SUGGESTIONS.map((item) => ({
+                          value: item,
+                          label: item,
+                        })),
+                      ]}
+                      placeholder="Selecione a categoria"
+                      error={Boolean(errors.category)}
+                      size="lg"
+                    />
                     {errors.category ? (
                       <p className="text-label-small text-red-600" role="alert">
                         {errors.category}

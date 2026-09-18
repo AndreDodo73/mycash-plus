@@ -1,4 +1,4 @@
-import type { CreditCard } from "../../types/finance";
+import type { CardTheme, CreditCard } from "../../types/finance";
 import { MOTION, staggerStyle } from "../../constants/motion";
 import { formatCurrency } from "../../utils/formatCurrency";
 import { resolveBankLogo } from "../../utils/bankLogo";
@@ -20,6 +20,27 @@ export function resolveCardLogo(card: CreditCard): string | undefined {
   return resolveBankLogo(card.name, card.logoUrl);
 }
 
+/** Borda de destaque do tema visual do cartão. */
+export function getCardThemeBorderClass(theme: CardTheme): string {
+  if (theme === "lime") {
+    return "border-2 border-primary";
+  }
+  if (theme === "white") {
+    return "border-2 border-neutral-400";
+  }
+  return "border-2 border-secondary";
+}
+
+export function getCardThemeSwatchClass(theme: CardTheme): string {
+  if (theme === "lime") {
+    return "bg-primary";
+  }
+  if (theme === "white") {
+    return "border border-neutral-300 bg-surface";
+  }
+  return "bg-secondary";
+}
+
 export function CreditCardListItem({
   card,
   onOpen,
@@ -34,7 +55,10 @@ export function CreditCardListItem({
       type="button"
       onClick={() => onOpen(card.id)}
       aria-label={`${card.name}, fatura ${formatCurrency(card.currentInvoice)}, uso ${usage}%`}
-      className="motion-enter-up motion-hover-lift group flex w-full min-w-0 cursor-pointer items-start justify-between gap-space-16 rounded-shape-20 border border-neutral-300 bg-surface p-space-16 text-left shadow-sm hover:border-neutral-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-1100 md:p-space-20"
+      className={[
+        "motion-enter-up motion-hover-lift group flex w-full min-w-0 cursor-pointer items-start justify-between gap-space-16 rounded-shape-20 bg-surface p-space-16 text-left shadow-sm hover:brightness-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-1100 md:p-space-20",
+        getCardThemeBorderClass(card.theme),
+      ].join(" ")}
       style={staggerStyle(staggerIndex, MOTION.stagger.gridMs)}
     >
       <div className="flex min-w-0 flex-1 flex-col gap-space-8">
@@ -53,11 +77,7 @@ export function CreditCardListItem({
               <span
                 className={[
                   "size-full rounded-shape-2",
-                  card.theme === "black"
-                    ? "bg-secondary"
-                    : card.theme === "lime"
-                      ? "bg-primary"
-                      : "border border-neutral-300 bg-surface",
+                  getCardThemeSwatchClass(card.theme),
                 ].join(" ")}
                 aria-hidden="true"
               />

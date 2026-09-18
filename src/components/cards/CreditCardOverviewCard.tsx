@@ -2,9 +2,10 @@ import { useEffect, useId, useRef, useState } from "react";
 import iconCalendar from "../../assets/dashboard/icon-calendar.svg";
 import iconMore from "../../assets/cards/icon-more-vertical.svg";
 import { MOTION, staggerStyle } from "../../constants/motion";
+import { useFinance } from "../../hooks";
 import type { CreditCard, FamilyMember } from "../../types/finance";
 import { formatCurrency } from "../../utils/formatCurrency";
-import { getCardUsagePercent, resolveCardLogo } from "./CreditCardListItem";
+import { getCardUsagePercent, getCardThemeBorderClass, getCardThemeSwatchClass, resolveCardLogo } from "./CreditCardListItem";
 
 const NEAR_LIMIT_PERCENT = 80;
 
@@ -27,6 +28,7 @@ export function CreditCardOverviewCard({
   onAddExpense,
   staggerIndex = 0,
 }: CreditCardOverviewCardProps) {
+  const { deleteCreditCard } = useFinance();
   const logo = resolveCardLogo(card);
   const usage = getCardUsagePercent(card);
   const available = Math.max(0, card.limit - card.currentInvoice);
@@ -35,6 +37,7 @@ export function CreditCardOverviewCard({
   const menuId = useId();
   const menuRef = useRef<HTMLDivElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   useEffect(() => {
     if (!menuOpen) {
@@ -63,7 +66,10 @@ export function CreditCardOverviewCard({
 
   return (
     <article
-      className="motion-enter-up motion-hover-lift relative flex h-full w-full flex-col gap-space-16 rounded-shape-20 border border-neutral-300 bg-surface p-space-24 shadow-sm hover:border-neutral-400"
+      className={[
+        "motion-enter-up motion-hover-lift relative flex h-full w-full flex-col gap-space-16 overflow-visible rounded-shape-20 bg-surface p-space-24 shadow-sm hover:brightness-[0.98]",
+        getCardThemeBorderClass(card.theme),
+      ].join(" ")}
       style={staggerStyle(staggerIndex, MOTION.stagger.gridMs)}
     >
       <div className="flex w-full items-start justify-between gap-space-8">
@@ -86,11 +92,7 @@ export function CreditCardOverviewCard({
               <span
                 className={[
                   "size-full rounded-shape-2",
-                  card.theme === "black"
-                    ? "bg-secondary"
-                    : card.theme === "lime"
-                      ? "bg-primary"
-                      : "border border-neutral-300 bg-surface",
+                  getCardThemeSwatchClass(card.theme),
                 ].join(" ")}
                 aria-hidden="true"
               />
@@ -114,7 +116,10 @@ export function CreditCardOverviewCard({
             aria-haspopup="menu"
             aria-expanded={menuOpen}
             aria-controls={menuId}
-            onClick={() => setMenuOpen((open) => !open)}
+            onClick={() => {
+              setConfirmDelete(false);
+              setMenuOpen((open) => !open);
+            }}
           >
             <img
               src={iconMore}
@@ -129,30 +134,70 @@ export function CreditCardOverviewCard({
             <div
               id={menuId}
               role="menu"
-              className="motion-dropdown absolute top-12 right-0 z-20 min-w-44 rounded-shape-20 border border-neutral-300 bg-surface p-space-8 shadow-md"
+              className="motion-dropdown absolute top-12 right-0 z-30 w-48 rounded-shape-20 border border-neutral-300 bg-surface p-space-8 shadow-md"
             >
-              <button
-                type="button"
-                role="menuitem"
-                className="flex min-h-11 w-full items-center rounded-shape-20 px-space-12 text-left text-label-small font-semibold text-neutral-1100 hover:bg-neutral-100"
-                onClick={() => {
-                  setMenuOpen(false);
-                  onOpen(card.id);
-                }}
-              >
-                Ver Detalhes
-              </button>
-              <button
-                type="button"
-                role="menuitem"
-                className="flex min-h-11 w-full items-center rounded-shape-20 px-space-12 text-left text-label-small font-semibold text-neutral-1100 hover:bg-neutral-100"
-                onClick={() => {
-                  setMenuOpen(false);
-                  onAddExpense(card.id);
-                }}
-              >
-                Adicionar Despesa
-              </button>
+              {confirmDelete ? (
+                <div className="flex flex-col gap-space-4">
+                  <p className="px-space-12 py-space-4 text-label-x-small text-neutral-600">
+                    Excluir este cartão?
+                  </p>
+                  <div className="flex gap-space-4">
+                    <button
+                      type="button"
+                      role="menuitem"
+                      className="flex min-h-11 flex-1 items-center justify-center rounded-shape-100 border border-neutral-300 text-label-x-small font-semibold text-neutral-1100 hover:bg-neutral-100"
+                      onClick={() => setConfirmDelete(false)}
+                    >
+                      Não
+                    </button>
+                    <button
+                      type="button"
+                      role="menuitem"
+                      className="flex min-h-11 flex-1 items-center justify-center rounded-shape-100 bg-red-600 text-label-x-small font-semibold text-surface hover:bg-red-700"
+                      onClick={() => {
+                        deleteCreditCard(card.id);
+                        setConfirmDelete(false);
+                        setMenuOpen(false);
+                      }}
+                    >
+                      Sim
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="flex min-h-11 w-full items-center rounded-shape-20 px-space-12 text-left text-label-small font-semibold text-neutral-1100 hover:bg-neutral-100"
+                    onClick={() => {
+                      setMenuOpen(false);
+                      onOpen(card.id);
+                    }}
+                  >
+                    Ver Detalhes
+                  </button>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="flex min-h-11 w-full items-center rounded-shape-20 px-space-12 text-left text-label-small font-semibold text-neutral-1100 hover:bg-neutral-100"
+                    onClick={() => {
+                      setMenuOpen(false);
+                      onAddExpense(card.id);
+                    }}
+                  >
+                    Adicionar Despesa
+                  </button>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="flex min-h-11 w-full items-center rounded-shape-20 px-space-12 text-left text-label-small font-semibold text-red-600 hover:bg-red-600/10"
+                    onClick={() => setConfirmDelete(true)}
+                  >
+                    Excluir
+                  </button>
+                </>
+              )}
             </div>
           ) : null}
         </div>

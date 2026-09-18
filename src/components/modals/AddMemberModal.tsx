@@ -5,7 +5,7 @@ import iconCross from "../../assets/sidebar/icon-cross.svg";
 import avatarPlaceholder from "../../assets/sidebar/avatar-placeholder.png";
 import { useFinance } from "../../hooks";
 import { formatCurrency } from "../../utils/formatCurrency";
-import { ChevronIcon, ModalCloseButton } from "../ui";
+import { FieldSelect, ModalCloseButton } from "../ui";
 
 type AvatarMode = "url" | "upload";
 
@@ -75,7 +75,6 @@ export function AddMemberModal({
     editingMember && familyMembers[0]?.id === editingMember.id,
   );
   const titleId = useId();
-  const roleListId = useId();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [form, setForm] = useState(createInitialState);
@@ -383,45 +382,41 @@ export function AddMemberModal({
                 </label>
 
                 <div className="grid w-full grid-cols-1 gap-space-16 md:grid-cols-2">
-                  <label className="flex w-full flex-col gap-space-8">
+                  <div className="flex w-full flex-col gap-space-8">
                     <span className="text-label-large font-semibold tracking-[0.3px] text-neutral-1100">
                       Função / Parentesco
                     </span>
-                    <div className="relative w-full">
-                      <input
-                        type="text"
-                        list={roleListId}
-                        value={form.role}
-                        placeholder="Ex: Pai, Mãe, Filho..."
-                        onChange={(event) => {
-                          updateForm("role", event.target.value);
-                          setErrors((current) => ({
-                            ...current,
-                            role: undefined,
-                          }));
-                        }}
-                        className={[
-                          "min-h-14 w-full rounded-shape-20 border bg-surface px-space-16 pr-space-32 text-label-large tracking-[0.3px] text-neutral-1100 outline-none placeholder:text-neutral-500",
-                          errors.role ? "border-red-600" : "border-neutral-1100",
-                        ].join(" ")}
-                      />
-                      <datalist id={roleListId}>
-                        {ROLE_SUGGESTIONS.map((role) => (
-                          <option key={role} value={role} />
-                        ))}
-                      </datalist>
-                      <ChevronIcon
-                        direction="down"
-                        size={14}
-                        className="pointer-events-none absolute right-space-16 top-1/2 -translate-y-1/2 text-neutral-1100"
-                      />
-                    </div>
+                    <FieldSelect
+                      value={form.role}
+                      onChange={(value) => {
+                        updateForm("role", value);
+                        setErrors((current) => ({
+                          ...current,
+                          role: undefined,
+                        }));
+                      }}
+                      options={[
+                        ...ROLE_SUGGESTIONS.map((role) => ({
+                          value: role,
+                          label: role,
+                        })),
+                        ...(form.role &&
+                        !(ROLE_SUGGESTIONS as readonly string[]).includes(
+                          form.role,
+                        )
+                          ? [{ value: form.role, label: form.role }]
+                          : []),
+                      ]}
+                      placeholder="Selecione"
+                      error={Boolean(errors.role)}
+                      size="lg"
+                    />
                     {errors.role ? (
                       <span className="text-paragraph-x-small text-red-600">
                         {errors.role}
                       </span>
                     ) : null}
-                  </label>
+                  </div>
 
                   <label className="flex w-full flex-col gap-space-8">
                     <span className="text-label-large font-semibold tracking-[0.3px] text-neutral-1100">

@@ -8,7 +8,7 @@ import type {
   CardTheme,
 } from "../../types/finance";
 import { formatCurrency } from "../../utils/formatCurrency";
-import { ChevronIcon, ModalCloseButton } from "../ui";
+import { FieldSelect, ModalCloseButton } from "../ui";
 
 type EntityKind = "account" | "card";
 
@@ -42,21 +42,25 @@ const ACCOUNT_COLORS = [
   "var(--color-red-600)",
 ] as const;
 
-const CARD_THEMES: { value: CardTheme; label: string; className: string }[] = [
+const CARD_THEMES: {
+  value: CardTheme;
+  label: string;
+  swatchClassName: string;
+}[] = [
   {
     value: "black",
     label: "Black",
-    className: "bg-neutral-1100 text-surface border-neutral-1100",
+    swatchClassName: "bg-neutral-1100 text-surface",
   },
   {
     value: "lime",
     label: "Lime",
-    className: "bg-primary text-neutral-1100 border-primary",
+    swatchClassName: "bg-primary text-neutral-1100",
   },
   {
     value: "white",
     label: "White",
-    className: "bg-surface text-neutral-1100 border-neutral-1100",
+    swatchClassName: "bg-surface text-neutral-1100",
   },
 ];
 
@@ -430,34 +434,22 @@ export function AddAccountOrCardModal({
 
                 {isAccount ? (
                   <div className="grid w-full grid-cols-1 gap-space-16 md:grid-cols-2">
-                    <label className="flex w-full flex-col gap-space-8">
+                    <div className="flex w-full flex-col gap-space-8">
                       <span className="text-label-large font-semibold tracking-[0.3px] text-neutral-1100">
                         Tipo
                       </span>
-                      <div className="relative w-full">
-                        <select
-                          value={form.accountType}
-                          onChange={(event) =>
-                            updateForm(
-                              "accountType",
-                              event.target.value as BankAccountType,
-                            )
-                          }
-                          className="min-h-14 w-full appearance-none rounded-shape-20 border border-neutral-1100 bg-surface px-space-16 pr-space-32 text-label-large tracking-[0.3px] text-neutral-1100 outline-none"
-                        >
-                          {ACCOUNT_TYPE_OPTIONS.map((option) => (
-                            <option key={option.value} value={option.value}>
-                              {option.label}
-                            </option>
-                          ))}
-                        </select>
-                      <ChevronIcon
-                        direction="down"
-                        size={14}
-                        className="pointer-events-none absolute right-space-16 top-1/2 -translate-y-1/2 text-neutral-1100"
+                      <FieldSelect
+                        value={form.accountType}
+                        onChange={(value) =>
+                          updateForm("accountType", value as BankAccountType)
+                        }
+                        options={ACCOUNT_TYPE_OPTIONS.map((option) => ({
+                          value: option.value,
+                          label: option.label,
+                        }))}
+                        size="lg"
                       />
-                      </div>
-                    </label>
+                    </div>
 
                     <label className="flex w-full flex-col gap-space-8">
                       <span className="text-label-large font-semibold tracking-[0.3px] text-neutral-1100">
@@ -546,9 +538,9 @@ export function AddAccountOrCardModal({
                 )}
 
                 {!isAccount ? (
-                  <div className="grid w-full grid-cols-1 gap-space-16 md:grid-cols-2">
+                  <div className="grid w-full grid-cols-1 items-start gap-space-16 md:grid-cols-2">
                     <label className="flex w-full flex-col gap-space-8">
-                      <span className="text-label-large font-semibold tracking-[0.3px] text-neutral-1100">
+                      <span className="flex min-h-11 items-center text-label-large font-semibold tracking-[0.3px] text-neutral-1100">
                         Limite total
                       </span>
                       <input
@@ -581,48 +573,35 @@ export function AddAccountOrCardModal({
                     </label>
 
                     <div className="flex w-full flex-col gap-space-8">
-                      <div className="flex items-center justify-between gap-space-8">
+                      <div className="flex min-h-11 items-center justify-between gap-space-8">
                         <span className="text-label-large font-semibold tracking-[0.3px] text-neutral-1100">
                           Responsável
                         </span>
                         <button
                           type="button"
-                          className="min-h-11 px-space-4 text-label-small font-semibold tracking-[0.3px] text-neutral-1100"
+                          className="flex min-h-11 shrink-0 items-center px-space-4 text-label-small font-semibold tracking-[0.3px] text-neutral-1100"
                           onClick={() => onRequestAddMember?.()}
                         >
                           + Novo membro
                         </button>
                       </div>
-                      <div className="relative w-full">
-                        <select
-                          value={form.holderId}
-                          onChange={(event) => {
-                            updateForm("holderId", event.target.value);
-                            setErrors((current) => ({
-                              ...current,
-                              holderId: undefined,
-                            }));
-                          }}
-                          className={[
-                            "min-h-14 w-full appearance-none rounded-shape-20 border bg-surface px-space-16 pr-space-32 text-label-large tracking-[0.3px] text-neutral-1100 outline-none",
-                            errors.holderId
-                              ? "border-red-600"
-                              : "border-neutral-1100",
-                          ].join(" ")}
-                        >
-                          <option value="">Selecione</option>
-                          {familyMembers.map((member) => (
-                            <option key={member.id} value={member.id}>
-                              {member.name}
-                            </option>
-                          ))}
-                        </select>
-                      <ChevronIcon
-                        direction="down"
-                        size={14}
-                        className="pointer-events-none absolute right-space-16 top-1/2 -translate-y-1/2 text-neutral-1100"
+                      <FieldSelect
+                        value={form.holderId}
+                        onChange={(value) => {
+                          updateForm("holderId", value);
+                          setErrors((current) => ({
+                            ...current,
+                            holderId: undefined,
+                          }));
+                        }}
+                        options={familyMembers.map((member) => ({
+                          value: member.id,
+                          label: member.name,
+                        }))}
+                        placeholder="Selecione"
+                        error={Boolean(errors.holderId)}
+                        size="lg"
                       />
-                      </div>
                       {errors.holderId ? (
                         <span className="text-paragraph-x-small text-red-600">
                           {errors.holderId}
@@ -634,140 +613,95 @@ export function AddAccountOrCardModal({
 
                 {!isAccount ? (
                   <div className="grid w-full grid-cols-1 gap-space-16 md:grid-cols-2">
-                    <label className="flex w-full flex-col gap-space-8">
+                    <div className="flex w-full flex-col gap-space-8">
                       <span className="text-label-large font-semibold tracking-[0.3px] text-neutral-1100">
                         Fechamento
                       </span>
-                      <div className="relative w-full">
-                        <select
-                          value={form.closingDay}
-                          onChange={(event) => {
-                            updateForm("closingDay", event.target.value);
-                            setErrors((current) => ({
-                              ...current,
-                              closingDay: undefined,
-                            }));
-                          }}
-                          className={[
-                            "min-h-14 w-full appearance-none rounded-shape-20 border bg-surface px-space-16 pr-space-32 text-label-large tracking-[0.3px] outline-none",
-                            form.closingDay
-                              ? "text-neutral-1100"
-                              : "text-neutral-500",
-                            errors.closingDay
-                              ? "border-red-600"
-                              : "border-neutral-1100",
-                          ].join(" ")}
-                        >
-                          <option value="">Dia</option>
-                          {DAY_OPTIONS.map((day) => (
-                            <option key={day} value={day}>
-                              {day}
-                            </option>
-                          ))}
-                        </select>
-                      <ChevronIcon
-                        direction="down"
-                        size={14}
-                        className="pointer-events-none absolute right-space-16 top-1/2 -translate-y-1/2 text-neutral-1100"
+                      <FieldSelect
+                        value={form.closingDay}
+                        onChange={(value) => {
+                          updateForm("closingDay", value);
+                          setErrors((current) => ({
+                            ...current,
+                            closingDay: undefined,
+                          }));
+                        }}
+                        options={DAY_OPTIONS.map((day) => ({
+                          value: String(day),
+                          label: String(day),
+                        }))}
+                        placeholder="Dia"
+                        error={Boolean(errors.closingDay)}
+                        size="lg"
                       />
-                      </div>
                       {errors.closingDay ? (
                         <span className="text-paragraph-x-small text-red-600">
                           {errors.closingDay}
                         </span>
                       ) : null}
-                    </label>
+                    </div>
 
-                    <label className="flex w-full flex-col gap-space-8">
+                    <div className="flex w-full flex-col gap-space-8">
                       <span className="text-label-large font-semibold tracking-[0.3px] text-neutral-1100">
                         Vencimento
                       </span>
-                      <div className="relative w-full">
-                        <select
-                          value={form.dueDay}
-                          onChange={(event) => {
-                            updateForm("dueDay", event.target.value);
-                            setErrors((current) => ({
-                              ...current,
-                              dueDay: undefined,
-                            }));
-                          }}
-                          className={[
-                            "min-h-14 w-full appearance-none rounded-shape-20 border bg-surface px-space-16 pr-space-32 text-label-large tracking-[0.3px] outline-none",
-                            form.dueDay
-                              ? "text-neutral-1100"
-                              : "text-neutral-500",
-                            errors.dueDay
-                              ? "border-red-600"
-                              : "border-neutral-1100",
-                          ].join(" ")}
-                        >
-                          <option value="">Dia</option>
-                          {DAY_OPTIONS.map((day) => (
-                            <option key={day} value={day}>
-                              {day}
-                            </option>
-                          ))}
-                        </select>
-                      <ChevronIcon
-                        direction="down"
-                        size={14}
-                        className="pointer-events-none absolute right-space-16 top-1/2 -translate-y-1/2 text-neutral-1100"
+                      <FieldSelect
+                        value={form.dueDay}
+                        onChange={(value) => {
+                          updateForm("dueDay", value);
+                          setErrors((current) => ({
+                            ...current,
+                            dueDay: undefined,
+                          }));
+                        }}
+                        options={DAY_OPTIONS.map((day) => ({
+                          value: String(day),
+                          label: String(day),
+                        }))}
+                        placeholder="Dia"
+                        error={Boolean(errors.dueDay)}
+                        size="lg"
                       />
-                      </div>
                       {errors.dueDay ? (
                         <span className="text-paragraph-x-small text-red-600">
                           {errors.dueDay}
                         </span>
                       ) : null}
-                    </label>
+                    </div>
                   </div>
                 ) : null}
 
                 {isAccount ? (
                   <div className="flex w-full flex-col gap-space-8">
-                    <div className="flex items-center justify-between gap-space-8">
+                    <div className="flex min-h-11 items-center justify-between gap-space-8">
                       <span className="text-label-large font-semibold tracking-[0.3px] text-neutral-1100">
                         Responsável
                       </span>
                       <button
                         type="button"
-                        className="min-h-11 px-space-4 text-label-small font-semibold tracking-[0.3px] text-neutral-1100"
+                        className="flex min-h-11 shrink-0 items-center px-space-4 text-label-small font-semibold tracking-[0.3px] text-neutral-1100"
                         onClick={() => onRequestAddMember?.()}
                       >
                         + Novo membro
                       </button>
                     </div>
-                    <div className="relative w-full">
-                      <select
-                        value={form.holderId}
-                        onChange={(event) => {
-                          updateForm("holderId", event.target.value);
-                          setErrors((current) => ({
-                            ...current,
-                            holderId: undefined,
-                          }));
-                        }}
-                        className={[
-                          "min-h-14 w-full appearance-none rounded-shape-20 border bg-surface px-space-16 pr-space-32 text-label-large tracking-[0.3px] text-neutral-1100 outline-none",
-                          errors.holderId
-                            ? "border-red-600"
-                            : "border-neutral-1100",
-                        ].join(" ")}
-                      >
-                        <option value="">Selecione</option>
-                        {familyMembers.map((member) => (
-                          <option key={member.id} value={member.id}>
-                            {member.name}
-                          </option>
-                        ))}
-                      </select>
-                      <ChevronIcon
-                        direction="down"
-                        size={14}
-                        className="pointer-events-none absolute right-space-16 top-1/2 -translate-y-1/2 text-neutral-1100"
-                      />
-                    </div>
+                    <FieldSelect
+                      value={form.holderId}
+                      onChange={(value) => {
+                        updateForm("holderId", value);
+                        setErrors((current) => ({
+                          ...current,
+                          holderId: undefined,
+                        }));
+                      }}
+                      options={familyMembers.map((member) => ({
+                        value: member.id,
+                        label: member.name,
+                      }))}
+                      placeholder="Selecione"
+                      error={Boolean(errors.holderId)}
+                      size="lg"
+                    />
                     {errors.holderId ? (
                       <span className="text-paragraph-x-small text-red-600">
                         {errors.holderId}
@@ -818,14 +752,23 @@ export function AddAccountOrCardModal({
                     <legend className="text-label-large font-semibold tracking-[0.3px] text-neutral-1100">
                       Tema visual
                     </legend>
-                    <div className="grid w-full grid-cols-3 gap-space-8">
+                    <p className="text-paragraph-x-small text-neutral-600">
+                      Cor de destaque do cartão na lista e nos detalhes.
+                    </p>
+                    <div
+                      className="grid w-full grid-cols-3 gap-space-8"
+                      role="radiogroup"
+                      aria-label="Tema visual do cartão"
+                    >
                       {CARD_THEMES.map((theme) => {
                         const selected = form.theme === theme.value;
                         return (
                           <button
                             key={theme.value}
                             type="button"
-                            aria-pressed={selected}
+                            role="radio"
+                            aria-checked={selected}
+                            aria-label={`Tema ${theme.label}`}
                             onClick={() => {
                               updateForm("theme", theme.value);
                               setErrors((current) => ({
@@ -834,11 +777,11 @@ export function AddAccountOrCardModal({
                               }));
                             }}
                             className={[
-                              "flex min-h-14 flex-col items-center justify-center gap-space-4 rounded-shape-20 border-2 px-space-8",
-                              theme.className,
+                              "flex min-h-14 cursor-pointer flex-col items-center justify-center gap-space-4 rounded-shape-20 border-2 px-space-8 transition-shadow",
+                              theme.swatchClassName,
                               selected
                                 ? "border-blue-600 ring-2 ring-blue-100"
-                                : "border-neutral-300",
+                                : "border-neutral-300 hover:border-neutral-500",
                             ].join(" ")}
                           >
                             <span className="text-label-medium font-semibold">

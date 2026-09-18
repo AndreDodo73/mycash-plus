@@ -6,6 +6,7 @@ import {
   downloadFinanceCsv,
   downloadFinanceJson,
 } from "../../utils/exportFinanceData";
+import { FieldSelect } from "../ui";
 import { CategoryFormModal } from "./CategoryFormModal";
 import { SettingsToggle } from "./SettingsToggle";
 
@@ -235,37 +236,31 @@ export function ProfileSettingsTab() {
           />
 
           <div className="flex flex-col gap-space-8">
-            <label
-              htmlFor="settings-currency"
-              className="text-label-small font-semibold tracking-[0.3px] text-neutral-600"
-            >
+            <span className="text-label-small font-semibold tracking-[0.3px] text-neutral-600">
               Moeda padrão
-            </label>
-            <select
+            </span>
+            <FieldSelect
               id="settings-currency"
+              value="BRL"
+              onChange={() => undefined}
+              options={[{ value: "BRL", label: "Real Brasileiro (R$)" }]}
               disabled
-              defaultValue="BRL"
-              className="min-h-12 w-full appearance-none rounded-shape-20 border border-neutral-300 bg-neutral-100 px-space-16 text-base text-neutral-600"
-            >
-              <option value="BRL">Real Brasileiro (R$)</option>
-            </select>
+              size="md"
+            />
           </div>
 
           <div className="flex flex-col gap-space-8">
-            <label
-              htmlFor="settings-date-format"
-              className="text-label-small font-semibold tracking-[0.3px] text-neutral-600"
-            >
+            <span className="text-label-small font-semibold tracking-[0.3px] text-neutral-600">
               Formato de data
-            </label>
-            <select
+            </span>
+            <FieldSelect
               id="settings-date-format"
+              value="BR"
+              onChange={() => undefined}
+              options={[{ value: "BR", label: "DD/MM/AAAA" }]}
               disabled
-              defaultValue="BR"
-              className="min-h-12 w-full appearance-none rounded-shape-20 border border-neutral-300 bg-neutral-100 px-space-16 text-base text-neutral-600"
-            >
-              <option value="BR">DD/MM/AAAA</option>
-            </select>
+              size="md"
+            />
           </div>
         </section>
 
@@ -348,23 +343,19 @@ export function ProfileSettingsTab() {
           </h2>
 
           <div className="flex flex-col gap-space-8">
-            <label
-              htmlFor="export-format"
-              className="text-label-small font-semibold tracking-[0.3px] text-neutral-600"
-            >
+            <span className="text-label-small font-semibold tracking-[0.3px] text-neutral-600">
               Formato de exportação
-            </label>
-            <select
+            </span>
+            <FieldSelect
               id="export-format"
               value={exportFormat}
-              onChange={(event) =>
-                setExportFormat(event.target.value as ExportFormat)
-              }
-              className="min-h-12 w-full rounded-shape-20 border border-neutral-300 bg-surface px-space-16 text-base text-neutral-1100"
-            >
-              <option value="json">JSON (backup completo)</option>
-              <option value="csv">CSV (transações)</option>
-            </select>
+              onChange={(value) => setExportFormat(value as ExportFormat)}
+              options={[
+                { value: "json", label: "JSON (backup completo)" },
+                { value: "csv", label: "CSV (transações)" },
+              ]}
+              size="md"
+            />
           </div>
 
           <button

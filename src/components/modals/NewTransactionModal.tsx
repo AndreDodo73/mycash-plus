@@ -5,7 +5,7 @@ import iconArrowType from "../../assets/modals/icon-arrow-type.svg";
 import { useFinance } from "../../hooks";
 import type { TransactionType } from "../../types/finance";
 import { formatCurrency } from "../../utils/formatCurrency";
-import { ChevronIcon, DatePicker, ModalCloseButton } from "../ui";
+import { DatePicker, FieldSelect, ModalCloseButton } from "../ui";
 
 type FormErrors = {
   amount?: string;
@@ -481,39 +481,23 @@ export function NewTransactionModal({
                     </div>
                   </div>
                 ) : (
-                  <div className="relative w-full">
-                    <select
-                      value={form.category}
-                      onChange={(event) => {
-                        updateForm("category", event.target.value);
-                        setErrors((current) => ({
-                          ...current,
-                          category: undefined,
-                        }));
-                      }}
-                      className={[
-                        "min-h-14 w-full appearance-none rounded-shape-20 border bg-surface px-space-16 pr-space-32 text-label-large tracking-[0.3px] outline-none",
-                        form.category
-                          ? "text-neutral-1100"
-                          : "text-neutral-500",
-                        errors.category
-                          ? "border-red-600"
-                          : "border-neutral-1100",
-                      ].join(" ")}
-                    >
-                      <option value="">Selecione a categoria</option>
-                      {categories.map((name) => (
-                        <option key={name} value={name}>
-                          {name}
-                        </option>
-                      ))}
-                    </select>
-                      <ChevronIcon
-                        direction="down"
-                        size={14}
-                        className="pointer-events-none absolute right-space-16 top-1/2 -translate-y-1/2 text-neutral-1100"
-                      />
-                  </div>
+                  <FieldSelect
+                    value={form.category}
+                    onChange={(value) => {
+                      updateForm("category", value);
+                      setErrors((current) => ({
+                        ...current,
+                        category: undefined,
+                      }));
+                    }}
+                    options={categories.map((name) => ({
+                      value: name,
+                      label: name,
+                    }))}
+                    placeholder="Selecione a categoria"
+                    error={Boolean(errors.category)}
+                    size="lg"
+                  />
                 )}
                 {errors.category ? (
                   <span className="text-paragraph-x-small text-red-600">
@@ -523,116 +507,80 @@ export function NewTransactionModal({
               </div>
 
               <div className="grid w-full grid-cols-1 gap-space-16 md:grid-cols-2">
-                <label className="flex w-full flex-col gap-space-8">
+                <div className="flex w-full flex-col gap-space-8">
                   <span className="text-label-large font-semibold tracking-[0.3px] text-neutral-1100">
                     Responsável
                   </span>
-                  <div className="relative w-full">
-                    <select
-                      value={form.memberId}
-                      onChange={(event) =>
-                        updateForm("memberId", event.target.value)
-                      }
-                      className="min-h-14 w-full appearance-none rounded-shape-20 border border-neutral-1100 bg-surface px-space-16 pr-space-32 text-label-large tracking-[0.3px] text-neutral-1100 outline-none"
-                    >
-                      <option value="">Familiar</option>
-                      {familyMembers.map((member) => (
-                        <option key={member.id} value={member.id}>
-                          {member.name}
-                        </option>
-                      ))}
-                    </select>
-                      <ChevronIcon
-                        direction="down"
-                        size={14}
-                        className="pointer-events-none absolute right-space-16 top-1/2 -translate-y-1/2 text-neutral-1100"
-                      />
-                  </div>
-                </label>
+                  <FieldSelect
+                    value={form.memberId}
+                    onChange={(value) => updateForm("memberId", value)}
+                    options={familyMembers.map((member) => ({
+                      value: member.id,
+                      label: member.name,
+                    }))}
+                    placeholder="Familiar"
+                    size="lg"
+                  />
+                </div>
 
-                <label className="flex w-full flex-col gap-space-8">
+                <div className="flex w-full flex-col gap-space-8">
                   <span className="text-label-large font-semibold tracking-[0.3px] text-neutral-1100">
                     {form.type === "expense" ? "Conta / cartão" : "Conta"}
                   </span>
-                  <div className="relative w-full">
-                    <select
-                      value={form.accountId}
-                      onChange={(event) => {
-                        handleAccountChange(event.target.value);
-                        setErrors((current) => ({
-                          ...current,
-                          accountId: undefined,
-                        }));
-                      }}
-                      className={[
-                        "min-h-14 w-full appearance-none rounded-shape-20 border bg-surface px-space-16 pr-space-32 text-label-large tracking-[0.3px] text-neutral-1100 outline-none",
-                        errors.accountId
-                          ? "border-red-600"
-                          : "border-neutral-1100",
-                      ].join(" ")}
-                    >
-                      <option value="">Selecione</option>
-                      <optgroup label="Contas Bancárias">
-                        {bankAccounts.map((account) => (
-                          <option key={account.id} value={account.id}>
-                            {account.name}
-                          </option>
-                        ))}
-                      </optgroup>
-                      <optgroup label="Cartões de Crédito">
-                        {creditCards.map((card) => (
-                          <option key={card.id} value={card.id}>
-                            {card.name}
-                          </option>
-                        ))}
-                      </optgroup>
-                    </select>
-                      <ChevronIcon
-                        direction="down"
-                        size={14}
-                        className="pointer-events-none absolute right-space-16 top-1/2 -translate-y-1/2 text-neutral-1100"
-                      />
-                  </div>
+                  <FieldSelect
+                    value={form.accountId}
+                    onChange={(value) => {
+                      handleAccountChange(value);
+                      setErrors((current) => ({
+                        ...current,
+                        accountId: undefined,
+                      }));
+                    }}
+                    options={[
+                      ...bankAccounts.map((account) => ({
+                        value: account.id,
+                        label: account.name,
+                      })),
+                      ...creditCards.map((card) => ({
+                        value: card.id,
+                        label: `${card.name} (cartão)`,
+                      })),
+                    ]}
+                    placeholder="Selecione"
+                    error={Boolean(errors.accountId)}
+                    size="lg"
+                  />
                   {errors.accountId ? (
                     <span className="text-paragraph-x-small text-red-600">
                       {errors.accountId}
                     </span>
                   ) : null}
-                </label>
+                </div>
               </div>
 
               {showInstallments ? (
-                <label className="flex w-full flex-col gap-space-8 transition-opacity duration-200">
+                <div className="flex w-full flex-col gap-space-8 transition-opacity duration-200">
                   <span className="text-label-large font-semibold tracking-[0.3px] text-neutral-1100">
                     Parcelas
                   </span>
-                  <div className="relative w-full">
-                    <select
-                      value={form.installments}
-                      disabled={form.isRecurring}
-                      onChange={(event) =>
-                        handleInstallmentsChange(Number(event.target.value))
-                      }
-                      className="min-h-14 w-full appearance-none rounded-shape-20 border border-neutral-1100 bg-surface px-space-16 pr-space-32 text-label-large tracking-[0.3px] text-neutral-1100 outline-none disabled:cursor-not-allowed disabled:bg-neutral-100"
-                    >
-                      {INSTALLMENT_OPTIONS.map((count) => (
-                        <option key={count} value={count}>
-                          {count === 1 ? "À vista (1x)" : `${count}x`}
-                        </option>
-                      ))}
-                    </select>
-                      <ChevronIcon
-                        direction="down"
-                        size={14}
-                        className="pointer-events-none absolute right-space-16 top-1/2 -translate-y-1/2 text-neutral-1100"
-                      />
-                  </div>
+                  <FieldSelect
+                    value={String(form.installments)}
+                    onChange={(value) =>
+                      handleInstallmentsChange(Number(value))
+                    }
+                    options={INSTALLMENT_OPTIONS.map((count) => ({
+                      value: String(count),
+                      label: count === 1 ? "À vista (1x)" : `${count}x`,
+                    }))}
+                    disabled={form.isRecurring}
+                    size="lg"
+                  />
                   {form.isRecurring ? (
                     <span className="text-paragraph-x-small italic text-neutral-600">
                       Parcelamento desabilitado para despesas recorrentes
                     </span>
                   ) : null}
-                </label>
+                </div>
               ) : null}
 
               {showRecurring ? (
