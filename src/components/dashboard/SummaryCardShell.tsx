@@ -24,7 +24,7 @@ export function SummaryCardShell({
   return (
     <article
       className={[
-        "flex w-full min-w-0 flex-col items-start justify-center gap-space-32 rounded-shape-20 border border-neutral-300 bg-surface p-space-24",
+        "flex h-full min-h-[206px] w-full min-w-0 flex-col items-start justify-center gap-space-32 rounded-shape-20 border border-neutral-300 bg-surface p-space-24",
         className,
       ].join(" ")}
     >

@@ -71,7 +71,7 @@ export function FinancialFlowChart() {
 
   return (
     <section
-      className="flex w-full min-w-0 flex-col gap-space-24 rounded-shape-20 border border-neutral-300 bg-surface p-space-16 md:gap-space-32 md:p-space-24 lg:p-space-32"
+      className="flex h-full w-full min-w-0 flex-col gap-space-24 rounded-shape-20 border border-neutral-300 bg-surface p-space-16 md:gap-space-32 md:p-space-24 lg:p-space-32"
       aria-label="Fluxo financeiro"
     >
       <header className="flex w-full min-w-0 flex-col gap-space-12 sm:flex-row sm:items-center sm:justify-between">
@@ -112,8 +112,8 @@ export function FinancialFlowChart() {
       </header>
 
       <div
-        className="w-full min-w-0 overflow-hidden rounded-shape-20 bg-neutral-100"
-        style={{ height: chartHeight, maxHeight: chartHeight }}
+        className="min-h-0 w-full min-w-0 flex-1 overflow-hidden rounded-shape-20 bg-neutral-100"
+        style={{ minHeight: chartHeight }}
       >
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart

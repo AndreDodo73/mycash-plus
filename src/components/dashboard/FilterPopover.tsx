@@ -38,10 +38,10 @@ export function FilterPopover({
                 onClose();
               }}
               className={[
-                "flex min-h-12 w-full items-center justify-center rounded-shape-100 px-space-16 text-label-medium font-semibold",
+                "flex min-h-12 w-full items-center justify-center rounded-shape-100 px-space-16 text-label-medium font-semibold transition-colors",
                 active
-                  ? "bg-secondary text-surface"
-                  : "border border-neutral-300 bg-surface text-neutral-1100",
+                  ? "bg-secondary text-surface hover:bg-neutral-1100"
+                  : "border border-neutral-300 bg-surface text-neutral-1100 hover:bg-neutral-100",
               ].join(" ")}
             >
               {option.label}

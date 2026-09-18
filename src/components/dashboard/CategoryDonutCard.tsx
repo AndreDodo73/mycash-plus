@@ -23,7 +23,7 @@ export function CategoryDonutCard({
   const label = `${clamped.toFixed(1)}%`;
 
   return (
-    <article className="flex w-full max-w-[160px] min-w-[140px] shrink-0 flex-col items-center justify-center gap-space-12 rounded-shape-20 border border-neutral-300 bg-surface p-space-24 transition-colors hover:border-primary">
+    <article className="flex min-w-[140px] flex-[1_0_0] flex-col items-center justify-center gap-space-12 rounded-shape-20 border border-neutral-300 bg-surface p-space-24 transition-colors hover:border-primary sm:min-w-[160px]">
       <div
         className="relative flex h-[var(--size-72)] w-[var(--size-72)] items-center justify-center"
         aria-hidden="true"

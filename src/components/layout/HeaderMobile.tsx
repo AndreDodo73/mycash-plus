@@ -55,7 +55,7 @@ export function HeaderMobile() {
           />
           <button
             type="button"
-            className="flex size-space-56 shrink-0 items-center justify-center rounded-shape-100"
+            className="flex size-space-56 shrink-0 items-center justify-center rounded-shape-100 transition-colors hover:bg-neutral-100"
             aria-expanded={open}
             aria-controls={menuId}
             aria-label={`Menu de ${PLACEHOLDER_USER.name}`}

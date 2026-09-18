@@ -8,6 +8,7 @@ import {
 } from "react";
 import { BREAKPOINTS } from "../../constants/breakpoints";
 import { useFinance } from "../../hooks";
+import { ChevronIcon } from "../ui";
 import { CategoryDonutCard } from "./CategoryDonutCard";
 
 const RING_COLORS = [
@@ -22,6 +23,27 @@ const RING_COLORS = [
 ] as const;
 
 const SCROLL_STEP = 200;
+
+/**
+ * Máscara de overflow:
+ * - Direita: aparece quando há conteúdo oculto (hint visual).
+ * - Esquerda: só após o usuário rolar (não esmaece o 1º card no estado inicial).
+ */
+function resolveTrackMask(
+  canScrollLeft: boolean,
+  canScrollRight: boolean,
+): string | undefined {
+  if (!canScrollLeft && !canScrollRight) {
+    return undefined;
+  }
+  if (canScrollLeft && canScrollRight) {
+    return "linear-gradient(to right, transparent 0%, black 32px, black calc(100% - 32px), transparent 100%)";
+  }
+  if (canScrollLeft) {
+    return "linear-gradient(to right, transparent 0%, black 32px, black 100%)";
+  }
+  return "linear-gradient(to right, black 0%, black calc(100% - 32px), transparent 100%)";
+}
 
 export function ExpensesByCategoryCarousel() {
   const {
@@ -60,8 +82,11 @@ export function ExpensesByCategoryCarousel() {
   }, []);
 
   useEffect(() => {
-    updateScrollState();
     const el = trackRef.current;
+    if (el) {
+      el.scrollLeft = 0;
+    }
+    updateScrollState();
     if (!el) {
       return;
     }
@@ -124,6 +149,8 @@ export function ExpensesByCategoryCarousel() {
     );
   }
 
+  const maskImage = resolveTrackMask(canScrollLeft, canScrollRight);
+
   return (
     <section
       className="relative w-full"
@@ -134,12 +161,11 @@ export function ExpensesByCategoryCarousel() {
       <div
         ref={trackRef}
         className="flex w-full cursor-grab gap-space-16 overflow-x-auto pb-space-4 active:cursor-grabbing [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        style={{
-          maskImage:
-            "linear-gradient(to right, transparent, black 24px, black calc(100% - 24px), transparent)",
-          WebkitMaskImage:
-            "linear-gradient(to right, transparent, black 24px, black calc(100% - 24px), transparent)",
-        }}
+        style={
+          maskImage
+            ? { maskImage, WebkitMaskImage: maskImage }
+            : undefined
+        }
         onWheel={onWheel}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
@@ -163,20 +189,20 @@ export function ExpensesByCategoryCarousel() {
             <button
               type="button"
               aria-label="Anterior"
-              className="absolute top-1/2 left-0 z-10 flex size-11 -translate-y-1/2 items-center justify-center rounded-shape-100 border border-neutral-300 bg-surface text-label-large text-neutral-1100 shadow-sm"
+              className="absolute top-1/2 left-0 z-10 flex size-11 -translate-y-1/2 items-center justify-center rounded-full border border-neutral-300 bg-surface text-neutral-1100 shadow-sm transition-colors hover:bg-neutral-100"
               onClick={() => scrollBy(-SCROLL_STEP)}
             >
-              ‹
+              <ChevronIcon direction="left" size={14} />
             </button>
           ) : null}
           {canScrollRight ? (
             <button
               type="button"
               aria-label="Próximo"
-              className="absolute top-1/2 right-0 z-10 flex size-11 -translate-y-1/2 items-center justify-center rounded-shape-100 border border-neutral-300 bg-surface text-label-large text-neutral-1100 shadow-sm"
+              className="absolute top-1/2 right-0 z-10 flex size-11 -translate-y-1/2 items-center justify-center rounded-full border border-neutral-300 bg-surface text-neutral-1100 shadow-sm transition-colors hover:bg-neutral-100"
               onClick={() => scrollBy(SCROLL_STEP)}
             >
-              ›
+              <ChevronIcon direction="right" size={14} />
             </button>
           ) : null}
         </>

@@ -1,1 +1,1 @@
-export {};
+export { ChevronIcon } from "./ChevronIcon";

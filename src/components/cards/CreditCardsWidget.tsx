@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import iconAdd from "../../assets/cards/icon-add.svg";
-import iconArrow from "../../assets/cards/icon-arrow.svg";
 import iconCreditCard from "../../assets/cards/icon-credit-card.svg";
 import { useFinance } from "../../hooks";
+import { ChevronIcon } from "../ui";
 import { CreditCardListItem } from "./CreditCardListItem";
 
 const PAGE_SIZE = 3;
@@ -86,21 +86,14 @@ export function CreditCardsWidget({
           <Link
             to="/cartoes"
             aria-label="Ver todos os cartões"
-            className="flex size-11 items-center justify-center rounded-shape-100 border border-neutral-300 bg-surface transition-colors hover:bg-neutral-100 md:size-space-32"
+            className="flex size-11 items-center justify-center rounded-full border border-neutral-300 bg-surface text-neutral-1100 transition-colors hover:bg-neutral-100 md:size-8"
           >
-            <img
-              src={iconArrow}
-              alt=""
-              width={16}
-              height={16}
-              className="size-space-16"
-              aria-hidden="true"
-            />
+            <ChevronIcon direction="right" size={14} />
           </Link>
         </div>
       </header>
 
-      <ul className="flex w-full flex-col gap-space-24">
+      <ul className="flex w-full flex-1 flex-col gap-space-24">
         {visibleCards.map((card) => (
           <li key={card.id} className="w-full min-w-0">
             <CreditCardListItem card={card} onOpen={handleOpen} />
@@ -114,9 +107,10 @@ export function CreditCardsWidget({
             type="button"
             onClick={goPrev}
             disabled={safePage === 0}
-            className="min-h-11 rounded-shape-100 border border-neutral-300 px-space-12 text-label-small font-semibold text-neutral-1100 disabled:opacity-40"
+            aria-label="Página anterior"
+            className="flex min-h-11 min-w-11 items-center justify-center rounded-full border border-neutral-300 text-neutral-1100 transition-colors hover:bg-neutral-100 disabled:opacity-40 disabled:hover:bg-transparent"
           >
-            Anterior
+            <ChevronIcon direction="left" size={14} />
           </button>
           <p className="text-label-x-small text-neutral-600">
             {safePage + 1} / {totalPages}
@@ -125,9 +119,10 @@ export function CreditCardsWidget({
             type="button"
             onClick={goNext}
             disabled={safePage >= totalPages - 1}
-            className="min-h-11 rounded-shape-100 border border-neutral-300 px-space-12 text-label-small font-semibold text-neutral-1100 disabled:opacity-40"
+            aria-label="Próxima página"
+            className="flex min-h-11 min-w-11 items-center justify-center rounded-full border border-neutral-300 text-neutral-1100 transition-colors hover:bg-neutral-100 disabled:opacity-40 disabled:hover:bg-transparent"
           >
-            Próximo
+            <ChevronIcon direction="right" size={14} />
           </button>
         </div>
       ) : null}

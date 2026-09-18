@@ -11,6 +11,7 @@ import {
   startOfDay,
   startOfMonth,
 } from "../../utils/dateFormat";
+import { ChevronIcon } from "../ui";
 
 type DateRangePickerProps = {
   value: DateRange;
@@ -50,8 +51,8 @@ function formatHeadline(start: Date | null, end: Date | null): string {
 export function DateRangePicker({ value, onChange }: DateRangePickerProps) {
   const [open, setOpen] = useState(false);
   const [viewMonth, setViewMonth] = useState(() => startOfMonth(value.startDate));
-  const [draftStart, setDraftStart] = useState<Date | null>(value.startDate);
-  const [draftEnd, setDraftEnd] = useState<Date | null>(value.endDate);
+  const [draftStart, setDraftStart] = useState<Date | null>(null);
+  const [draftEnd, setDraftEnd] = useState<Date | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const today = useMemo(() => startOfDay(new Date()), []);
 
@@ -59,10 +60,11 @@ export function DateRangePicker({ value, onChange }: DateRangePickerProps) {
     if (!open) {
       return;
     }
-    setDraftStart(value.startDate);
-    setDraftEnd(value.endDate);
+    // Abre sem seleção marcada — usuário escolhe o período do zero
+    setDraftStart(null);
+    setDraftEnd(null);
     setViewMonth(startOfMonth(value.startDate));
-  }, [open, value.startDate, value.endDate]);
+  }, [open, value.startDate]);
 
   useEffect(() => {
     if (!open) {
@@ -138,7 +140,7 @@ export function DateRangePicker({ value, onChange }: DateRangePickerProps) {
         type="button"
         onClick={() => setOpen((current) => !current)}
         aria-expanded={open}
-        className="flex min-h-12 w-full shrink-0 items-center justify-center gap-space-8 rounded-shape-100 border border-neutral-1100 bg-surface px-space-24 py-space-12 whitespace-nowrap sm:w-auto"
+        className="flex min-h-12 w-full shrink-0 items-center justify-center gap-space-8 rounded-shape-100 border border-neutral-1100 bg-surface px-space-24 py-space-12 whitespace-nowrap transition-colors hover:bg-neutral-100 sm:w-auto"
       >
         <img
           src={iconCalendar}
@@ -177,19 +179,19 @@ export function DateRangePicker({ value, onChange }: DateRangePickerProps) {
             <div className="flex items-center">
               <button
                 type="button"
-                className="flex size-space-32 items-center justify-center rounded-shape-100 text-label-large text-neutral-1100"
+                className="flex size-space-32 items-center justify-center rounded-full text-neutral-1100 transition-colors hover:bg-neutral-100"
                 aria-label="Mês anterior"
                 onClick={() => setViewMonth((current) => addMonths(current, -1))}
               >
-                ‹
+                <ChevronIcon direction="left" size={14} />
               </button>
               <button
                 type="button"
-                className="flex size-space-32 items-center justify-center rounded-shape-100 text-label-large text-neutral-1100"
+                className="flex size-space-32 items-center justify-center rounded-full text-neutral-1100 transition-colors hover:bg-neutral-100"
                 aria-label="Próximo mês"
                 onClick={() => setViewMonth((current) => addMonths(current, 1))}
               >
-                ›
+                <ChevronIcon direction="right" size={14} />
               </button>
             </div>
           </div>
@@ -227,8 +229,8 @@ export function DateRangePicker({ value, onChange }: DateRangePickerProps) {
                     type="button"
                     onClick={() => onSelectDay(day)}
                     className={[
-                      "flex h-12 items-center justify-center text-paragraph-small text-neutral-1100",
-                      inRange ? "bg-secondary-50" : "",
+                      "flex h-12 items-center justify-center text-paragraph-small text-neutral-1100 transition-colors",
+                      inRange ? "bg-secondary-50" : "hover:bg-neutral-100",
                     ].join(" ")}
                   >
                     <span
@@ -252,7 +254,7 @@ export function DateRangePicker({ value, onChange }: DateRangePickerProps) {
           <div className="flex items-center justify-between px-space-12 pt-space-4 pb-space-8">
             <button
               type="button"
-              className="min-h-10 px-space-12 text-label-medium font-semibold text-neutral-1100"
+              className="min-h-10 rounded-shape-100 px-space-12 text-label-medium font-semibold text-neutral-1100 transition-colors hover:bg-neutral-100"
               onClick={clearDraft}
             >
               Limpar
@@ -260,14 +262,14 @@ export function DateRangePicker({ value, onChange }: DateRangePickerProps) {
             <div className="flex items-center gap-space-8">
               <button
                 type="button"
-                className="min-h-10 px-space-12 text-label-medium font-semibold text-neutral-1100"
+                className="min-h-10 rounded-shape-100 px-space-12 text-label-medium font-semibold text-neutral-1100 transition-colors hover:bg-neutral-100"
                 onClick={() => setOpen(false)}
               >
                 Cancelar
               </button>
               <button
                 type="button"
-                className="min-h-10 px-space-12 text-label-medium font-semibold text-neutral-1100 disabled:opacity-40"
+                className="min-h-10 rounded-shape-100 px-space-12 text-label-medium font-semibold text-neutral-1100 transition-colors hover:bg-neutral-100 disabled:opacity-40 disabled:hover:bg-transparent"
                 disabled={!draftStart}
                 onClick={confirmDraft}
               >

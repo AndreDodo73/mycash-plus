@@ -186,7 +186,7 @@ export function UpcomingExpensesWidget({
           </p>
         </div>
       ) : (
-        <ul className="flex w-full flex-col divide-y divide-neutral-300">
+        <ul className="flex w-full flex-1 flex-col divide-y divide-neutral-300">
           {visible.map((tx) => {
             const leaving = leavingIds.includes(tx.id);
             const confirming = confirmingIds.includes(tx.id);

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import avatarPlaceholder from "../../assets/sidebar/avatar-placeholder.png";
-import iconChevron from "../../assets/sidebar/icon-chevron.svg";
 import logoDefault from "../../assets/sidebar/logo-default.svg";
 import logoSmall from "../../assets/sidebar/logo-small.svg";
 import { APP_NAME, PLACEHOLDER_USER } from "../../constants";
@@ -10,6 +9,7 @@ import {
   SIDEBAR_WIDTH_EXPANDED_PX,
 } from "../../constants/breakpoints";
 import { APP_ROUTES } from "../../constants/routes";
+import { ChevronIcon } from "../ui";
 import { SidebarIcon } from "./SidebarIcon";
 
 export function Sidebar() {
@@ -65,9 +65,11 @@ export function Sidebar() {
               aria-label={collapsed ? route.label : undefined}
               className={({ isActive }) =>
                 [
-                  "group relative flex items-center gap-space-8 rounded-shape-100 px-space-16 py-space-12 font-semibold text-label-large text-neutral-1100",
+                  "group relative flex items-center gap-space-8 rounded-shape-100 px-space-16 py-space-12 font-semibold text-label-large text-neutral-1100 transition-colors",
                   collapsed ? "justify-center" : "w-full",
-                  isActive ? "bg-primary" : "bg-transparent",
+                  isActive
+                    ? "bg-primary"
+                    : "bg-transparent hover:bg-neutral-100",
                 ].join(" ")
               }
             >
@@ -112,21 +114,14 @@ export function Sidebar() {
       <button
         type="button"
         onClick={() => setCollapsed((open) => !open)}
-        className="absolute top-[34px] right-[-12px] flex size-space-24 items-center justify-center rounded-shape-100 bg-surface p-space-4 shadow-sm"
+        className="absolute top-[34px] right-[-14px] flex size-7 items-center justify-center rounded-full border border-neutral-300 bg-surface text-neutral-1100 shadow-sm transition-colors hover:bg-neutral-100"
         aria-expanded={!collapsed}
         aria-label={collapsed ? "Expandir menu" : "Recolher menu"}
       >
-        <img
-          src={iconChevron}
-          alt=""
-          width={16}
-          height={16}
-          className={
-            collapsed
-              ? "size-space-16"
-              : "size-space-16 rotate-180"
-          }
-          aria-hidden="true"
+        <ChevronIcon
+          direction={collapsed ? "right" : "left"}
+          size={12}
+          strokeWidth={1.75}
         />
       </button>
     </aside>

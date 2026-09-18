@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import iconChevronDown from "../../assets/dashboard/icon-chevron-down.svg";
 import iconExtrato from "../../assets/dashboard/icon-extrato.svg";
-import iconPageNext from "../../assets/dashboard/icon-page-next.svg";
-import iconPagePrev from "../../assets/dashboard/icon-page-prev.svg";
 import iconSearch from "../../assets/dashboard/icon-search.svg";
 import { useFinance } from "../../hooks";
 import type { TransactionTypeFilter } from "../../types/finance";
+import { ChevronIcon } from "../ui";
 import { TransactionCard } from "./TransactionCard";
 import {
   resolveAccountLabel,
@@ -19,6 +18,11 @@ const TYPE_OPTIONS: { value: TransactionTypeFilter; label: string }[] = [
   { value: "income", label: "Receitas" },
   { value: "expense", label: "Despesas" },
 ];
+
+type TransactionsTableProps = {
+  /** Filtra por conta/cartão (ex.: extrato a partir dos detalhes do cartão). */
+  accountIdFilter?: string | null;
+};
 
 function buildPageList(current: number, total: number): (number | "…")[] {
   if (total <= 7) {
@@ -49,7 +53,9 @@ function buildPageList(current: number, total: number): (number | "…")[] {
   return result;
 }
 
-export function TransactionsTable() {
+export function TransactionsTable({
+  accountIdFilter = null,
+}: TransactionsTableProps) {
   const {
     transactions,
     familyMembers,
@@ -60,7 +66,9 @@ export function TransactionsTable() {
   } = useFinance();
 
   const [localSearch, setLocalSearch] = useState("");
-  const [localType, setLocalType] = useState<TransactionTypeFilter>("all");
+  const [localType, setLocalType] = useState<TransactionTypeFilter>(
+    accountIdFilter ? "expense" : "all",
+  );
   const [page, setPage] = useState(1);
 
   const filtered = useMemo(() => {
@@ -93,6 +101,9 @@ export function TransactionsTable() {
         if (selectedMember && tx.memberId !== selectedMember) {
           return false;
         }
+        if (accountIdFilter && tx.accountId !== accountIdFilter) {
+          return false;
+        }
         if (localType !== "all" && tx.type !== localType) {
           return false;
         }
@@ -105,14 +116,34 @@ export function TransactionsTable() {
         return true;
       })
       .sort((a, b) => b.date.getTime() - a.date.getTime());
-  }, [transactions, dateRange, selectedMember, localSearch, localType]);
+  }, [
+    transactions,
+    dateRange,
+    selectedMember,
+    localSearch,
+    localType,
+    accountIdFilter,
+  ]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages);
 
   useEffect(() => {
     setPage(1);
-  }, [localSearch, localType, selectedMember, dateRange.startDate, dateRange.endDate]);
+  }, [
+    localSearch,
+    localType,
+    selectedMember,
+    dateRange.startDate,
+    dateRange.endDate,
+    accountIdFilter,
+  ]);
+
+  useEffect(() => {
+    if (accountIdFilter) {
+      setLocalType("expense");
+    }
+  }, [accountIdFilter]);
 
   const pageItems = useMemo(() => {
     const start = (safePage - 1) * PAGE_SIZE;
@@ -277,16 +308,9 @@ export function TransactionsTable() {
             aria-label="Página anterior"
             disabled={safePage <= 1}
             onClick={() => setPage((current) => Math.max(1, current - 1))}
-            className="flex size-11 items-center justify-center disabled:opacity-40 md:size-space-16"
+            className="flex size-11 items-center justify-center rounded-full text-neutral-1100 transition-colors hover:bg-neutral-100 disabled:opacity-40 disabled:hover:bg-transparent"
           >
-            <img
-              src={iconPagePrev}
-              alt=""
-              width={16}
-              height={16}
-              className="size-space-16"
-              aria-hidden="true"
-            />
+            <ChevronIcon direction="left" size={16} />
           </button>
 
           {pages.map((item, index) =>
@@ -304,9 +328,9 @@ export function TransactionsTable() {
                 onClick={() => setPage(item)}
                 aria-current={item === safePage ? "page" : undefined}
                 className={[
-                  "flex min-h-11 min-w-11 items-center justify-center rounded-shape-100 px-space-8 text-label-medium font-semibold tracking-[0.3px]",
+                  "flex min-h-11 min-w-11 items-center justify-center rounded-shape-100 px-space-8 text-label-medium font-semibold tracking-[0.3px] transition-colors",
                   item === safePage
-                    ? "bg-neutral-1100 text-surface"
+                    ? "bg-neutral-1100 text-surface hover:bg-secondary"
                     : "text-neutral-1100 hover:bg-neutral-100",
                 ].join(" ")}
               >
@@ -322,16 +346,9 @@ export function TransactionsTable() {
             onClick={() =>
               setPage((current) => Math.min(totalPages, current + 1))
             }
-            className="flex size-11 items-center justify-center disabled:opacity-40 md:size-space-16"
+            className="flex size-11 items-center justify-center rounded-full text-neutral-1100 transition-colors hover:bg-neutral-100 disabled:opacity-40 disabled:hover:bg-transparent"
           >
-            <img
-              src={iconPageNext}
-              alt=""
-              width={16}
-              height={16}
-              className="size-space-16"
-              aria-hidden="true"
-            />
+            <ChevronIcon direction="right" size={16} />
           </button>
         </div>
       </footer>

@@ -24,8 +24,8 @@ Playbook de execução (decisões, breakpoints, conflitos): `docs/playbook-promp
 - [x] PROMPT 11: Tabela de transações
 - [x] PROMPT 12: Modal de nova transação
 - [x] PROMPT 13: Modal de adicionar membro
-- [ ] PROMPT 14: Modal de adicionar cartão
-- [ ] PROMPT 15: Modal de detalhes do cartão
+- [x] PROMPT 14: Modal de adicionar cartão
+- [x] PROMPT 15: Modal de detalhes do cartão
 - [ ] PROMPT 16: Modal de filtros mobile
 - [ ] PROMPT 17: View completa de cartões
 - [ ] PROMPT 18: View completa de transações
@@ -702,3 +702,74 @@ Tentativas: 2 | Erros: 1 (asset `icon-users.svg` ausente) → corrigido na tenta
 
 feat: modais de nova transação e novo familiar  
 Hash: `fe64687`
+
+## PROMPT 14: Modal de adicionar conta/cartão
+
+Status: ✅ | Data: 17/09/2026 | Build: ✅ (2 tentativas)
+
+Playbook: ficha P14. Figma: `Dashboard-modal-novaconta` (`0:3377`) / `Dashboard-modal-novocartão` (`0:3444`).
+
+### Implementado
+
+- `AddAccountOrCardModal` com overlay e `max-w-[560px]`
+- Toggle Conta bancária / Cartão de crédito
+- Conta: nome, tipo, saldo inicial, titular (`holderId`), cor de identificação
+- Cartão: apelido, banco (UI), últimos 4 dígitos, limite, titular, fechamento/vencimento, tema black/lime/white
+- `currentInvoice: 0`; `addBankAccount` / `addCreditCard`; toasts de sucesso
+- Link “+ Novo membro” abre P13; wiring no “+” do widget Cards & contas
+
+### Tokens
+
+Semânticas: `--color-surface`, `--color-secondary`, `--color-primary` (tema Lime)
+
+Primitivas: `--color-neutral-*`, `--color-blue-600/100` (seleção tema), `--color-purple/orange/green/blue/pink/yellow/red-600` (cores conta), tipografia e spacing
+
+Conversões:
+
+- Modal 500–600px → `md:max-w-[560px] w-full`
+- Inputs 56px / ~18.6 → `min-h-14` + `rounded-[20px]`
+- `currentBill` (prompt) → `currentInvoice: 0`
+- Tema selecionado → borda `--color-blue-600`
+
+### Build
+
+Tentativas: 2 | Erros: 1 (tipo de cor literal) → corrigido
+
+### Commit
+
+Não realizado (aguardando “Fazer commit e documentar”)
+
+## PROMPT 15: Modal de detalhes do cartão
+
+Status: ✅ | Data: 17/09/2026 | Build: ✅ (2 tentativas)
+
+Playbook: ficha P15. Figma: sem frame dedicado de detalhes; referência visual `Cards & contas` (`42:3111`) + spec/sequência.
+
+### Implementado
+
+- `CardDetailsModal` médio-grande (`max-w-[820px]`) com overlay
+- Métricas em grid (limite, fatura, disponível, uso, fechamento, vencimento, final)
+- Donut + barra de progresso do uso do limite
+- Tabela de despesas do cartão (10/página) + empty state
+- Ações: Ver Extrato (`/transacoes` + filtro `accountId`), Adicionar Despesa (P12 pré-preenchido), Editar (P14 em modo edição), Fechar
+- `TransactionsPage` passa a renderizar `TransactionsTable` com `accountIdFilter`
+
+### Tokens
+
+Semânticas: `--color-surface`, `--color-secondary`, `--color-primary`, `--color-background`
+
+Primitivas: `--color-neutral-*`, `--color-red-600`, `--color-secondary-50`, `--spacing-space-*`, `--radius-shape-20/100`
+
+Conversões:
+
+- Modal médio-grande → `md:max-w-[820px] w-full`
+- Donut uso → 120px + stroke token `--color-primary`
+- Cards métrica → `rounded-shape-20` + `border-neutral-300`
+
+### Build
+
+Tentativas: 2 | Erros: 1 (nullability de `card` em handler) → corrigido
+
+### Commit
+
+Não realizado (aguardando “Fazer commit e documentar”)
