@@ -924,5 +924,6 @@ Tentativas: 2
 
 ### Commit
 
-Não realizado (aguardando pedido do usuário)
+feat: tela de perfil com aba Informações, edição de membros e Sair  
+Hash: `04af849`
 
