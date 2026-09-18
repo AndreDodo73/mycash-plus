@@ -887,5 +887,6 @@ Tentativas: 1
 
 ### Commit
 
-(aguardando hash do commit feat)
+feat: view completa de transações com filtros, resumo e CSV  
+Hash: `e963dee`
 
