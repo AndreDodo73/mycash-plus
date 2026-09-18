@@ -10,13 +10,14 @@ export function AddEntityTile({ label, onClick }: AddEntityTileProps) {
     <button
       type="button"
       onClick={onClick}
-      className="flex h-full min-h-40 w-full items-center justify-center gap-space-8 rounded-shape-20 border border-neutral-1100 bg-surface px-space-16 py-space-24 text-label-large font-semibold tracking-[0.3px] text-neutral-1100 transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-1 hover:shadow-md"
+      className="group motion-hover-lift motion-tap flex h-full min-h-40 w-full items-center justify-center gap-space-8 rounded-shape-20 border border-dashed border-neutral-400 bg-surface px-space-16 py-space-24 text-label-large font-semibold tracking-[0.3px] text-neutral-1100 hover:border-neutral-600 hover:bg-neutral-50"
     >
       <img
         src={iconPlus}
         alt=""
         width={24}
         height={24}
+        className="motion-plus-icon size-space-24"
         aria-hidden="true"
       />
       {label}

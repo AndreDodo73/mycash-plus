@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import iconCalendar from "../../assets/dashboard/icon-calendar.svg";
 import iconMore from "../../assets/cards/icon-more-vertical.svg";
+import { MOTION, staggerStyle } from "../../constants/motion";
 import type { CreditCard, FamilyMember } from "../../types/finance";
 import { formatCurrency } from "../../utils/formatCurrency";
 import { getCardUsagePercent, resolveCardLogo } from "./CreditCardListItem";
@@ -12,20 +13,11 @@ type CreditCardOverviewCardProps = {
   holder?: FamilyMember;
   onOpen: (cardId: string) => void;
   onAddExpense: (cardId: string) => void;
+  staggerIndex?: number;
 };
 
 function pad2(value: number): string {
   return String(value).padStart(2, "0");
-}
-
-function themeBorderClass(theme: CreditCard["theme"]): string {
-  if (theme === "lime") {
-    return "border-2 border-primary";
-  }
-  if (theme === "black") {
-    return "border-2 border-neutral-1100";
-  }
-  return "border border-neutral-300";
 }
 
 export function CreditCardOverviewCard({
@@ -33,6 +25,7 @@ export function CreditCardOverviewCard({
   holder,
   onOpen,
   onAddExpense,
+  staggerIndex = 0,
 }: CreditCardOverviewCardProps) {
   const logo = resolveCardLogo(card);
   const usage = getCardUsagePercent(card);
@@ -70,10 +63,8 @@ export function CreditCardOverviewCard({
 
   return (
     <article
-      className={[
-        "relative flex h-full w-full flex-col gap-space-16 rounded-shape-20 bg-surface p-space-24 shadow-sm transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-1 hover:shadow-md",
-        themeBorderClass(card.theme),
-      ].join(" ")}
+      className="motion-enter-up motion-hover-lift relative flex h-full w-full flex-col gap-space-16 rounded-shape-20 border border-neutral-300 bg-surface p-space-24 shadow-sm hover:border-neutral-400"
+      style={staggerStyle(staggerIndex, MOTION.stagger.gridMs)}
     >
       <div className="flex w-full items-start justify-between gap-space-8">
         <button
@@ -118,7 +109,7 @@ export function CreditCardOverviewCard({
         <div className="relative shrink-0" ref={menuRef}>
           <button
             type="button"
-            className="flex size-11 items-center justify-center rounded-full text-neutral-1100"
+            className="motion-icon-btn motion-tap flex size-11 items-center justify-center rounded-full text-neutral-1100"
             aria-label={`Ações de ${card.name}`}
             aria-haspopup="menu"
             aria-expanded={menuOpen}
@@ -130,6 +121,7 @@ export function CreditCardOverviewCard({
               alt=""
               width={24}
               height={24}
+              className="size-space-24"
               aria-hidden="true"
             />
           </button>
@@ -137,7 +129,7 @@ export function CreditCardOverviewCard({
             <div
               id={menuId}
               role="menu"
-              className="absolute top-12 right-0 z-20 min-w-44 rounded-shape-20 border border-neutral-300 bg-surface p-space-8 shadow-md"
+              className="motion-dropdown absolute top-12 right-0 z-20 min-w-44 rounded-shape-20 border border-neutral-300 bg-surface p-space-8 shadow-md"
             >
               <button
                 type="button"
@@ -211,7 +203,7 @@ export function CreditCardOverviewCard({
           <div className="h-2 w-full overflow-hidden rounded-shape-100 bg-neutral-200">
             <div
               className={[
-                "h-full rounded-shape-100 transition-[width] duration-300",
+                "motion-progress-bar h-full rounded-shape-100",
                 nearLimit ? "bg-red-600" : "bg-primary",
               ].join(" ")}
               style={{ width: `${Math.min(Math.max(usage, 0), 100)}%` }}
@@ -247,21 +239,21 @@ export function CreditCardOverviewCard({
         <div className="flex min-w-0 flex-wrap gap-space-8">
           <button
             type="button"
-            className="flex min-h-11 items-center justify-center rounded-shape-100 border border-neutral-1100 px-space-12 text-label-x-small font-semibold tracking-[0.3px] text-neutral-1100"
+            className="motion-tap flex min-h-11 items-center justify-center rounded-shape-100 border border-neutral-1100 px-space-12 text-label-x-small font-semibold tracking-[0.3px] text-neutral-1100 hover:bg-neutral-100"
             onClick={() => onOpen(card.id)}
           >
             Ver Detalhes
           </button>
           <button
             type="button"
-            className="flex min-h-11 items-center justify-center rounded-shape-100 bg-secondary px-space-12 text-label-x-small font-semibold tracking-[0.3px] text-surface"
+            className="motion-tap flex min-h-11 items-center justify-center rounded-shape-100 bg-secondary px-space-12 text-label-x-small font-semibold tracking-[0.3px] text-surface hover:bg-neutral-1100"
             onClick={() => onAddExpense(card.id)}
           >
             Adicionar Despesa
           </button>
         </div>
         {holder ? (
-          <span className="size-8 shrink-0 overflow-hidden rounded-full border border-neutral-300">
+          <span className="motion-avatar size-8 shrink-0 overflow-hidden rounded-full border border-neutral-300">
             <img
               src={holder.avatarUrl}
               alt=""

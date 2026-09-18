@@ -4,6 +4,7 @@ import iconCross from "../../assets/sidebar/icon-cross.svg";
 import { useFinance } from "../../hooks";
 import { formatCurrency } from "../../utils/formatCurrency";
 import { getCardUsagePercent } from "../cards/CreditCardListItem";
+import { ModalCloseButton } from "../ui";
 
 const PAGE_SIZE = 10;
 const DONUT_SIZE = 120;
@@ -175,21 +176,7 @@ export function CardDetailsModal({
               {digits ? ` · **** ${digits}` : ""}
             </p>
           </div>
-          <button
-            type="button"
-            className="flex size-12 shrink-0 items-center justify-center rounded-shape-100"
-            aria-label="Fechar"
-            onClick={requestClose}
-          >
-            <img
-              src={iconCross}
-              alt=""
-              width={24}
-              height={24}
-              className="size-space-24"
-              aria-hidden="true"
-            />
-          </button>
+          <ModalCloseButton iconSrc={iconCross} onClick={requestClose} />
         </header>
 
         <div className="min-h-0 flex-1 overflow-y-auto px-space-16 py-space-24 md:px-space-24">
@@ -255,7 +242,7 @@ export function CardDetailsModal({
 
             <div className="h-2 w-full overflow-hidden rounded-shape-100 bg-neutral-200">
               <div
-                className="h-full rounded-shape-100 bg-primary transition-[width] duration-300"
+                className="motion-progress-bar h-full rounded-shape-100 bg-primary"
                 style={{ width: `${clamped}%` }}
               />
             </div>
@@ -380,14 +367,14 @@ export function CardDetailsModal({
         <footer className="flex w-full shrink-0 flex-col gap-space-8 border-t border-neutral-300 px-space-16 py-space-16 md:flex-row md:flex-wrap md:justify-end md:gap-space-12 md:px-space-24">
           <button
             type="button"
-            className="flex min-h-12 items-center justify-center rounded-shape-100 border border-neutral-1100 bg-transparent px-space-16 text-label-medium font-bold tracking-[0.3px] text-neutral-1100"
+            className="motion-tap flex min-h-12 items-center justify-center rounded-shape-100 border border-neutral-1100 bg-transparent px-space-16 text-label-medium font-bold tracking-[0.3px] text-neutral-1100 hover:bg-neutral-100"
             onClick={handleViewStatement}
           >
             Ver Extrato Completo
           </button>
           <button
             type="button"
-            className="flex min-h-12 items-center justify-center gap-space-8 rounded-shape-100 border border-neutral-1100 bg-transparent px-space-16 text-label-medium font-bold tracking-[0.3px] text-neutral-1100"
+            className="motion-tap flex min-h-12 items-center justify-center gap-space-8 rounded-shape-100 border border-neutral-1100 bg-transparent px-space-16 text-label-medium font-bold tracking-[0.3px] text-neutral-1100 hover:bg-neutral-100"
             onClick={() => {
               onAddExpense(card.id);
               requestClose();
@@ -397,7 +384,7 @@ export function CardDetailsModal({
           </button>
           <button
             type="button"
-            className="flex min-h-12 items-center justify-center rounded-shape-100 border border-neutral-1100 bg-transparent px-space-16 text-label-medium font-bold tracking-[0.3px] text-neutral-1100"
+            className="motion-tap flex min-h-12 items-center justify-center rounded-shape-100 border border-neutral-1100 bg-transparent px-space-16 text-label-medium font-bold tracking-[0.3px] text-neutral-1100 hover:bg-neutral-100"
             onClick={() => {
               onEditCard(card.id);
               requestClose();
@@ -407,7 +394,7 @@ export function CardDetailsModal({
           </button>
           <button
             type="button"
-            className="flex min-h-12 items-center justify-center rounded-shape-100 bg-neutral-1100 px-space-24 text-label-medium font-bold tracking-[0.3px] text-surface"
+            className="motion-tap flex min-h-12 items-center justify-center rounded-shape-100 bg-neutral-1100 px-space-24 text-label-medium font-bold tracking-[0.3px] text-surface hover:bg-secondary"
             onClick={requestClose}
           >
             Fechar

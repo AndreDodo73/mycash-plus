@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import iconChevronDown from "../../assets/dashboard/icon-chevron-down.svg";
 import iconPlus from "../../assets/dashboard/icon-plus.svg";
 import iconSearch from "../../assets/dashboard/icon-search.svg";
 import { useFinance } from "../../hooks";
@@ -10,6 +9,7 @@ import type {
 } from "../../types/finance";
 import { formatCurrency } from "../../utils/formatCurrency";
 import { downloadTransactionsCsv } from "../../utils/exportTransactionsCsv";
+import { FilterSelect } from "../ui";
 import { resolveAccountLabel } from "./TransactionRow";
 import { DateRangePicker } from "./DateRangePicker";
 import {
@@ -35,52 +35,6 @@ const STATUS_OPTIONS: { value: StatusFilter; label: string }[] = [
   { value: "completed", label: "Concluído" },
   { value: "pending", label: "Pendente" },
 ];
-
-type FilterSelectProps = {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  options: { value: string; label: string }[];
-  className?: string;
-};
-
-function FilterSelect({
-  label,
-  value,
-  onChange,
-  options,
-  className = "",
-}: FilterSelectProps) {
-  return (
-    <label className={`relative flex min-h-12 w-full flex-col gap-space-8 ${className}`}>
-      <span className="text-label-x-small font-semibold tracking-[0.3px] text-neutral-600">
-        {label}
-      </span>
-      <span className="relative flex w-full items-center">
-        <select
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-          className="min-h-12 w-full appearance-none rounded-shape-100 border border-neutral-300 bg-surface px-space-16 pr-space-32 text-label-x-small font-semibold tracking-[0.3px] text-neutral-1100 outline-none"
-          aria-label={label}
-        >
-          {options.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-        <img
-          src={iconChevronDown}
-          alt=""
-          width={16}
-          height={16}
-          className="pointer-events-none absolute top-1/2 right-space-12 size-space-16 -translate-y-1/2"
-          aria-hidden="true"
-        />
-      </span>
-    </label>
-  );
-}
 
 export function TransactionsView({
   initialAccountId = null,

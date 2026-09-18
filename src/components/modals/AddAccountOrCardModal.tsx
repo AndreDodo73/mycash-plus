@@ -1,6 +1,5 @@
 import { useEffect, useId, useState } from "react";
 import iconCheck from "../../assets/dashboard/icon-check.svg";
-import iconChevron from "../../assets/dashboard/icon-chevron-down.svg";
 import iconCreditCard from "../../assets/modals/icon-credit-card.svg";
 import iconCross from "../../assets/sidebar/icon-cross.svg";
 import { useFinance } from "../../hooks";
@@ -9,6 +8,7 @@ import type {
   CardTheme,
 } from "../../types/finance";
 import { formatCurrency } from "../../utils/formatCurrency";
+import { ChevronIcon, ModalCloseButton } from "../ui";
 
 type EntityKind = "account" | "card";
 
@@ -334,7 +334,7 @@ export function AddAccountOrCardModal({
             <header className="flex w-full shrink-0 items-start justify-between gap-space-16 border-b border-neutral-300 px-space-16 py-space-16 md:px-space-24">
               <div className="flex min-w-0 items-center gap-space-16">
                 <div
-                  className="flex size-16 shrink-0 items-center justify-center rounded-[12px] border border-neutral-1100 bg-surface"
+                  className="flex size-16 shrink-0 items-center justify-center rounded-shape-20 border border-neutral-1100 bg-surface"
                   aria-hidden="true"
                 >
                   <img
@@ -358,21 +358,7 @@ export function AddAccountOrCardModal({
                 </div>
               </div>
 
-              <button
-                type="button"
-                className="flex size-12 shrink-0 items-center justify-center rounded-shape-100"
-                aria-label="Fechar"
-                onClick={requestClose}
-              >
-                <img
-                  src={iconCross}
-                  alt=""
-                  width={24}
-                  height={24}
-                  className="size-space-24"
-                  aria-hidden="true"
-                />
-              </button>
+              <ModalCloseButton iconSrc={iconCross} onClick={requestClose} />
             </header>
 
             <div className="min-h-0 flex-1 overflow-y-auto px-space-16 py-space-24 md:px-space-24">
@@ -431,7 +417,7 @@ export function AddAccountOrCardModal({
                       setErrors((current) => ({ ...current, name: undefined }));
                     }}
                     className={[
-                      "min-h-14 w-full rounded-[20px] border bg-surface px-space-16 text-label-large tracking-[0.3px] text-neutral-1100 outline-none placeholder:text-neutral-500",
+                      "min-h-14 w-full rounded-shape-20 border bg-surface px-space-16 text-label-large tracking-[0.3px] text-neutral-1100 outline-none placeholder:text-neutral-500",
                       errors.name ? "border-red-600" : "border-neutral-1100",
                     ].join(" ")}
                   />
@@ -457,7 +443,7 @@ export function AddAccountOrCardModal({
                               event.target.value as BankAccountType,
                             )
                           }
-                          className="min-h-14 w-full appearance-none rounded-[20px] border border-neutral-1100 bg-surface px-space-16 pr-space-32 text-label-large tracking-[0.3px] text-neutral-1100 outline-none"
+                          className="min-h-14 w-full appearance-none rounded-shape-20 border border-neutral-1100 bg-surface px-space-16 pr-space-32 text-label-large tracking-[0.3px] text-neutral-1100 outline-none"
                         >
                           {ACCOUNT_TYPE_OPTIONS.map((option) => (
                             <option key={option.value} value={option.value}>
@@ -465,14 +451,11 @@ export function AddAccountOrCardModal({
                             </option>
                           ))}
                         </select>
-                        <img
-                          src={iconChevron}
-                          alt=""
-                          width={13}
-                          height={7}
-                          className="pointer-events-none absolute right-space-16 top-1/2 h-[7px] w-[13px] -translate-y-1/2"
-                          aria-hidden="true"
-                        />
+                      <ChevronIcon
+                        direction="down"
+                        size={14}
+                        className="pointer-events-none absolute right-space-16 top-1/2 -translate-y-1/2 text-neutral-1100"
+                      />
                       </div>
                     </label>
 
@@ -496,7 +479,7 @@ export function AddAccountOrCardModal({
                           }));
                         }}
                         className={[
-                          "min-h-14 w-full rounded-[20px] border bg-surface px-space-16 text-label-large tracking-[0.3px] text-neutral-1100 outline-none placeholder:text-neutral-500",
+                          "min-h-14 w-full rounded-shape-20 border bg-surface px-space-16 text-label-large tracking-[0.3px] text-neutral-1100 outline-none placeholder:text-neutral-500",
                           errors.balance
                             ? "border-red-600"
                             : "border-neutral-1100",
@@ -522,7 +505,7 @@ export function AddAccountOrCardModal({
                         onChange={(event) =>
                           updateForm("bankLabel", event.target.value)
                         }
-                        className="min-h-14 w-full rounded-[20px] border border-neutral-1100 bg-surface px-space-16 text-label-large tracking-[0.3px] text-neutral-1100 outline-none placeholder:text-neutral-500"
+                        className="min-h-14 w-full rounded-shape-20 border border-neutral-1100 bg-surface px-space-16 text-label-large tracking-[0.3px] text-neutral-1100 outline-none placeholder:text-neutral-500"
                       />
                     </label>
 
@@ -547,7 +530,7 @@ export function AddAccountOrCardModal({
                           }));
                         }}
                         className={[
-                          "min-h-14 w-full rounded-[20px] border bg-surface px-space-16 text-label-large tracking-[0.3px] text-neutral-1100 outline-none placeholder:text-neutral-500",
+                          "min-h-14 w-full rounded-shape-20 border bg-surface px-space-16 text-label-large tracking-[0.3px] text-neutral-1100 outline-none placeholder:text-neutral-500",
                           errors.lastFourDigits
                             ? "border-red-600"
                             : "border-neutral-1100",
@@ -584,7 +567,7 @@ export function AddAccountOrCardModal({
                           }));
                         }}
                         className={[
-                          "min-h-14 w-full rounded-[20px] border bg-surface px-space-16 text-label-large tracking-[0.3px] text-neutral-1100 outline-none placeholder:text-neutral-500",
+                          "min-h-14 w-full rounded-shape-20 border bg-surface px-space-16 text-label-large tracking-[0.3px] text-neutral-1100 outline-none placeholder:text-neutral-500",
                           errors.limit
                             ? "border-red-600"
                             : "border-neutral-1100",
@@ -621,7 +604,7 @@ export function AddAccountOrCardModal({
                             }));
                           }}
                           className={[
-                            "min-h-14 w-full appearance-none rounded-[20px] border bg-surface px-space-16 pr-space-32 text-label-large tracking-[0.3px] text-neutral-1100 outline-none",
+                            "min-h-14 w-full appearance-none rounded-shape-20 border bg-surface px-space-16 pr-space-32 text-label-large tracking-[0.3px] text-neutral-1100 outline-none",
                             errors.holderId
                               ? "border-red-600"
                               : "border-neutral-1100",
@@ -634,14 +617,11 @@ export function AddAccountOrCardModal({
                             </option>
                           ))}
                         </select>
-                        <img
-                          src={iconChevron}
-                          alt=""
-                          width={13}
-                          height={7}
-                          className="pointer-events-none absolute right-space-16 top-1/2 h-[7px] w-[13px] -translate-y-1/2"
-                          aria-hidden="true"
-                        />
+                      <ChevronIcon
+                        direction="down"
+                        size={14}
+                        className="pointer-events-none absolute right-space-16 top-1/2 -translate-y-1/2 text-neutral-1100"
+                      />
                       </div>
                       {errors.holderId ? (
                         <span className="text-paragraph-x-small text-red-600">
@@ -669,7 +649,7 @@ export function AddAccountOrCardModal({
                             }));
                           }}
                           className={[
-                            "min-h-14 w-full appearance-none rounded-[20px] border bg-surface px-space-16 pr-space-32 text-label-large tracking-[0.3px] outline-none",
+                            "min-h-14 w-full appearance-none rounded-shape-20 border bg-surface px-space-16 pr-space-32 text-label-large tracking-[0.3px] outline-none",
                             form.closingDay
                               ? "text-neutral-1100"
                               : "text-neutral-500",
@@ -685,14 +665,11 @@ export function AddAccountOrCardModal({
                             </option>
                           ))}
                         </select>
-                        <img
-                          src={iconChevron}
-                          alt=""
-                          width={13}
-                          height={7}
-                          className="pointer-events-none absolute right-space-16 top-1/2 h-[7px] w-[13px] -translate-y-1/2"
-                          aria-hidden="true"
-                        />
+                      <ChevronIcon
+                        direction="down"
+                        size={14}
+                        className="pointer-events-none absolute right-space-16 top-1/2 -translate-y-1/2 text-neutral-1100"
+                      />
                       </div>
                       {errors.closingDay ? (
                         <span className="text-paragraph-x-small text-red-600">
@@ -716,7 +693,7 @@ export function AddAccountOrCardModal({
                             }));
                           }}
                           className={[
-                            "min-h-14 w-full appearance-none rounded-[20px] border bg-surface px-space-16 pr-space-32 text-label-large tracking-[0.3px] outline-none",
+                            "min-h-14 w-full appearance-none rounded-shape-20 border bg-surface px-space-16 pr-space-32 text-label-large tracking-[0.3px] outline-none",
                             form.dueDay
                               ? "text-neutral-1100"
                               : "text-neutral-500",
@@ -732,14 +709,11 @@ export function AddAccountOrCardModal({
                             </option>
                           ))}
                         </select>
-                        <img
-                          src={iconChevron}
-                          alt=""
-                          width={13}
-                          height={7}
-                          className="pointer-events-none absolute right-space-16 top-1/2 h-[7px] w-[13px] -translate-y-1/2"
-                          aria-hidden="true"
-                        />
+                      <ChevronIcon
+                        direction="down"
+                        size={14}
+                        className="pointer-events-none absolute right-space-16 top-1/2 -translate-y-1/2 text-neutral-1100"
+                      />
                       </div>
                       {errors.dueDay ? (
                         <span className="text-paragraph-x-small text-red-600">
@@ -775,7 +749,7 @@ export function AddAccountOrCardModal({
                           }));
                         }}
                         className={[
-                          "min-h-14 w-full appearance-none rounded-[20px] border bg-surface px-space-16 pr-space-32 text-label-large tracking-[0.3px] text-neutral-1100 outline-none",
+                          "min-h-14 w-full appearance-none rounded-shape-20 border bg-surface px-space-16 pr-space-32 text-label-large tracking-[0.3px] text-neutral-1100 outline-none",
                           errors.holderId
                             ? "border-red-600"
                             : "border-neutral-1100",
@@ -788,13 +762,10 @@ export function AddAccountOrCardModal({
                           </option>
                         ))}
                       </select>
-                      <img
-                        src={iconChevron}
-                        alt=""
-                        width={13}
-                        height={7}
-                        className="pointer-events-none absolute right-space-16 top-1/2 h-[7px] w-[13px] -translate-y-1/2"
-                        aria-hidden="true"
+                      <ChevronIcon
+                        direction="down"
+                        size={14}
+                        className="pointer-events-none absolute right-space-16 top-1/2 -translate-y-1/2 text-neutral-1100"
                       />
                     </div>
                     {errors.holderId ? (
@@ -828,7 +799,7 @@ export function AddAccountOrCardModal({
                             ].join(" ")}
                           >
                             <span
-                              className="flex size-10 items-center justify-center rounded-[20px] border border-neutral-1100"
+                              className="flex size-10 items-center justify-center rounded-shape-20 border border-neutral-1100"
                               style={{ backgroundColor: color }}
                             >
                               {selected ? (
@@ -863,7 +834,7 @@ export function AddAccountOrCardModal({
                               }));
                             }}
                             className={[
-                              "flex min-h-14 flex-col items-center justify-center gap-space-4 rounded-[20px] border-2 px-space-8",
+                              "flex min-h-14 flex-col items-center justify-center gap-space-4 rounded-shape-20 border-2 px-space-8",
                               theme.className,
                               selected
                                 ? "border-blue-600 ring-2 ring-blue-100"
@@ -909,7 +880,7 @@ export function AddAccountOrCardModal({
 
       {toast ? (
         <div
-          className="fixed right-space-16 top-space-16 z-[60] flex max-w-[min(100%-32px,360px)] items-center gap-space-8 rounded-shape-20 bg-green-100 px-space-16 py-space-12 text-label-medium font-semibold text-green-800 shadow-sm"
+          className="motion-toast fixed right-space-16 top-space-16 z-[60] flex max-w-[min(100%-32px,360px)] items-center gap-space-8 rounded-shape-20 bg-green-100 px-space-16 py-space-12 text-label-medium font-semibold text-green-800 shadow-sm"
           role="status"
         >
           <img

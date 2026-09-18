@@ -13,7 +13,7 @@ import {
   type MonthlyFlowPoint,
 } from "../../data/financialFlowMock";
 import { useChartHeight } from "../../hooks/useChartHeight";
-import { formatCurrency } from "../../utils/formatCurrency";
+import { formatCompactCurrency, formatCurrency } from "../../utils/currency";
 
 const INCOME_COLOR = "var(--color-primary)";
 const EXPENSE_COLOR = "var(--color-red-600)";
@@ -30,9 +30,9 @@ const Y_AXIS_TICKS = Array.from(
 
 function formatAxisCurrency(value: number): string {
   if (value === 0) {
-    return "R$ 0,00";
+    return "R$ 0";
   }
-  return `R$ ${value.toLocaleString("pt-BR")}`;
+  return formatCompactCurrency(value);
 }
 
 type FlowTooltipProps = {

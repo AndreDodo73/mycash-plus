@@ -17,13 +17,16 @@ import {
 } from "../data/mockFinance";
 import type {
   BankAccount,
+  CategoryDef,
   CreditCard,
   DateRange,
   FamilyMember,
   Goal,
   Transaction,
+  TransactionType,
   TransactionTypeFilter,
 } from "../types/finance";
+import { generateUniqueId } from "../utils/id";
 import {
   calculateCategoryPercentage,
   calculateExpensesByCategory,
@@ -36,12 +39,19 @@ import {
   type CategoryExpense,
 } from "./financeCalculations";
 
-function createEntityId(prefix: string): string {
-  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
-    return `${prefix}-${crypto.randomUUID()}`;
-  }
-  return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
-}
+const CATEGORY_COLOR_POOL = [
+  "var(--color-primary)",
+  "var(--color-secondary)",
+  "var(--color-neutral-600)",
+  "var(--color-neutral-500)",
+  "var(--color-red-600)",
+  "var(--color-blue-600)",
+  "var(--color-green-600)",
+  "var(--color-yellow-600)",
+  "var(--color-neutral-800)",
+  "var(--color-blue-500)",
+  "var(--color-neutral-700)",
+] as const;
 
 type FinanceContextValue = {
   transactions: Transaction[];
@@ -49,8 +59,8 @@ type FinanceContextValue = {
   creditCards: CreditCard[];
   bankAccounts: BankAccount[];
   familyMembers: FamilyMember[];
-  incomeCategories: typeof INCOME_CATEGORIES;
-  expenseCategories: typeof EXPENSE_CATEGORIES;
+  incomeCategories: CategoryDef[];
+  expenseCategories: CategoryDef[];
 
   selectedMember: string | null;
   dateRange: DateRange;
@@ -82,6 +92,15 @@ type FinanceContextValue = {
   updateFamilyMember: (id: string, patch: Partial<FamilyMember>) => void;
   deleteFamilyMember: (id: string) => void;
 
+  addCategory: (input: Omit<CategoryDef, "color"> & { color?: string }) => CategoryDef;
+  updateCategory: (
+    kind: TransactionType,
+    currentName: string,
+    patch: Partial<Pick<CategoryDef, "name" | "color">>,
+  ) => void;
+  deleteCategory: (kind: TransactionType, name: string) => void;
+  clearAllData: () => void;
+
   getFilteredTransactions: () => Transaction[];
   calculateTotalBalance: () => number;
   calculateIncomeForPeriod: () => number;
@@ -101,6 +120,10 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
   const [bankAccounts, setBankAccounts] = useState<BankAccount[]>(mockBankAccounts);
   const [familyMembers, setFamilyMembers] =
     useState<FamilyMember[]>(mockFamilyMembers);
+  const [incomeCategories, setIncomeCategories] =
+    useState<CategoryDef[]>(INCOME_CATEGORIES);
+  const [expenseCategories, setExpenseCategories] =
+    useState<CategoryDef[]>(EXPENSE_CATEGORIES);
 
   const [selectedMember, setSelectedMember] = useState<string | null>(null);
   const [dateRange, setDateRange] = useState<DateRange>(() => getCurrentMonthRange());
@@ -112,7 +135,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     (input: Omit<Transaction, "id"> & { id?: string }) => {
       const next: Transaction = {
         ...input,
-        id: input.id ?? createEntityId("tx"),
+        id: input.id ?? generateUniqueId("tx"),
       };
       setTransactions((current) => [next, ...current]);
       return next;
@@ -131,7 +154,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const addGoal = useCallback((input: Omit<Goal, "id"> & { id?: string }) => {
-    const next: Goal = { ...input, id: input.id ?? createEntityId("goal") };
+    const next: Goal = { ...input, id: input.id ?? generateUniqueId("goal") };
     setGoals((current) => [next, ...current]);
     return next;
   }, []);
@@ -150,7 +173,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     (input: Omit<CreditCard, "id"> & { id?: string }) => {
       const next: CreditCard = {
         ...input,
-        id: input.id ?? createEntityId("card"),
+        id: input.id ?? generateUniqueId("card"),
       };
       setCreditCards((current) => [next, ...current]);
       return next;
@@ -172,7 +195,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     (input: Omit<BankAccount, "id"> & { id?: string }) => {
       const next: BankAccount = {
         ...input,
-        id: input.id ?? createEntityId("acc"),
+        id: input.id ?? generateUniqueId("acc"),
       };
       setBankAccounts((current) => [next, ...current]);
       return next;
@@ -194,7 +217,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     (input: Omit<FamilyMember, "id"> & { id?: string }) => {
       const next: FamilyMember = {
         ...input,
-        id: input.id ?? createEntityId("member"),
+        id: input.id ?? generateUniqueId("member"),
       };
       setFamilyMembers((current) => [...current, next]);
       return next;
@@ -216,6 +239,93 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     setSelectedMember((current) => (current === id ? null : current));
   }, []);
 
+  const addCategory = useCallback(
+    (input: Omit<CategoryDef, "color"> & { color?: string }) => {
+      const list =
+        input.kind === "income" ? incomeCategories : expenseCategories;
+      const color =
+        input.color ??
+        CATEGORY_COLOR_POOL[list.length % CATEGORY_COLOR_POOL.length];
+      const next: CategoryDef = {
+        name: input.name.trim(),
+        color,
+        kind: input.kind,
+      };
+
+      if (input.kind === "income") {
+        setIncomeCategories((current) => [...current, next]);
+      } else {
+        setExpenseCategories((current) => [...current, next]);
+      }
+
+      return next;
+    },
+    [expenseCategories, incomeCategories],
+  );
+
+  const updateCategory = useCallback(
+    (
+      kind: TransactionType,
+      currentName: string,
+      patch: Partial<Pick<CategoryDef, "name" | "color">>,
+    ) => {
+      const nextName = patch.name?.trim();
+      const rename = Boolean(nextName && nextName !== currentName);
+
+      const updater = (current: CategoryDef[]) =>
+        current.map((item) =>
+          item.name === currentName
+            ? {
+                ...item,
+                ...(patch.color ? { color: patch.color } : {}),
+                ...(nextName ? { name: nextName } : {}),
+              }
+            : item,
+        );
+
+      if (kind === "income") {
+        setIncomeCategories(updater);
+      } else {
+        setExpenseCategories(updater);
+      }
+
+      if (rename && nextName) {
+        setTransactions((current) =>
+          current.map((tx) =>
+            tx.category === currentName ? { ...tx, category: nextName } : tx,
+          ),
+        );
+      }
+    },
+    [],
+  );
+
+  const deleteCategory = useCallback((kind: TransactionType, name: string) => {
+    if (kind === "income") {
+      setIncomeCategories((current) =>
+        current.filter((item) => item.name !== name),
+      );
+    } else {
+      setExpenseCategories((current) =>
+        current.filter((item) => item.name !== name),
+      );
+    }
+  }, []);
+
+  const clearAllData = useCallback(() => {
+    setTransactions([]);
+    setGoals([]);
+    setCreditCards([]);
+    setBankAccounts([]);
+    setFamilyMembers([]);
+    setIncomeCategories([]);
+    setExpenseCategories([]);
+    setSelectedMember(null);
+    setDateRange(getCurrentMonthRange());
+    setTransactionType("all");
+    setSearchText("");
+  }, []);
+
   const value = useMemo<FinanceContextValue>(() => {
     const filters = {
       selectedMember,
@@ -234,8 +344,8 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
       creditCards,
       bankAccounts,
       familyMembers,
-      incomeCategories: INCOME_CATEGORIES,
-      expenseCategories: EXPENSE_CATEGORIES,
+      incomeCategories,
+      expenseCategories,
 
       selectedMember,
       dateRange,
@@ -262,6 +372,10 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
       addFamilyMember,
       updateFamilyMember,
       deleteFamilyMember,
+      addCategory,
+      updateCategory,
+      deleteCategory,
+      clearAllData,
 
       getFilteredTransactions: filtered,
       calculateTotalBalance: () =>
@@ -279,6 +393,8 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     creditCards,
     bankAccounts,
     familyMembers,
+    incomeCategories,
+    expenseCategories,
     selectedMember,
     dateRange,
     transactionType,
@@ -298,6 +414,10 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     addFamilyMember,
     updateFamilyMember,
     deleteFamilyMember,
+    addCategory,
+    updateCategory,
+    deleteCategory,
+    clearAllData,
   ]);
 
   return (

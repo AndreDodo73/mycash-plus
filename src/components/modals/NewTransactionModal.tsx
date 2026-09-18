@@ -1,5 +1,4 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react";
-import iconChevron from "../../assets/dashboard/icon-chevron-down.svg";
 import iconCheck from "../../assets/dashboard/icon-check.svg";
 import iconCross from "../../assets/sidebar/icon-cross.svg";
 import iconArrowType from "../../assets/modals/icon-arrow-type.svg";
@@ -7,6 +6,7 @@ import iconCalendar from "../../assets/modals/icon-calendar.svg";
 import { useFinance } from "../../hooks";
 import type { TransactionType } from "../../types/finance";
 import { formatCurrency } from "../../utils/formatCurrency";
+import { ChevronIcon, ModalCloseButton } from "../ui";
 
 type FormErrors = {
   amount?: string;
@@ -301,7 +301,7 @@ export function NewTransactionModal({
             <div className="flex min-w-0 items-center gap-space-16 md:gap-space-24">
               <div
                 className={[
-                  "flex size-16 shrink-0 items-center justify-center rounded-[12px] border border-neutral-1100",
+                  "flex size-16 shrink-0 items-center justify-center rounded-shape-20 border border-neutral-1100",
                   form.type === "income" ? "bg-primary" : "bg-neutral-1100",
                 ].join(" ")}
                 aria-hidden="true"
@@ -330,21 +330,7 @@ export function NewTransactionModal({
               </div>
             </div>
 
-            <button
-              type="button"
-              className="flex size-12 shrink-0 items-center justify-center rounded-shape-100"
-              aria-label="Fechar"
-              onClick={requestClose}
-            >
-              <img
-                src={iconCross}
-                alt=""
-                width={24}
-                height={24}
-                className="size-space-24"
-                aria-hidden="true"
-              />
-            </button>
+            <ModalCloseButton iconSrc={iconCross} onClick={requestClose} />
           </header>
 
           <div className="min-h-0 flex-1 overflow-y-auto bg-background">
@@ -404,7 +390,7 @@ export function NewTransactionModal({
                       setErrors((current) => ({ ...current, amount: undefined }));
                     }}
                     className={[
-                      "min-h-14 w-full rounded-[20px] border bg-surface px-space-16 text-label-large tracking-[0.3px] text-neutral-1100 outline-none placeholder:text-neutral-500",
+                      "min-h-14 w-full rounded-shape-20 border bg-surface px-space-16 text-label-large tracking-[0.3px] text-neutral-1100 outline-none placeholder:text-neutral-500",
                       errors.amount ? "border-red-600" : "border-neutral-1100",
                     ].join(" ")}
                   />
@@ -428,7 +414,7 @@ export function NewTransactionModal({
                       className="absolute inset-0 z-10 cursor-pointer opacity-0"
                       aria-label="Data da transação"
                     />
-                    <div className="flex min-h-14 w-full items-center justify-between rounded-[20px] border border-neutral-1100 bg-surface px-space-16 text-label-large tracking-[0.3px] text-neutral-1100">
+                    <div className="flex min-h-14 w-full items-center justify-between rounded-shape-20 border border-neutral-1100 bg-surface px-space-16 text-label-large tracking-[0.3px] text-neutral-1100">
                       <span>
                         {formatDateDisplay(parseDateInputValue(form.date))}
                       </span>
@@ -461,7 +447,7 @@ export function NewTransactionModal({
                     }));
                   }}
                   className={[
-                    "min-h-14 w-full rounded-[20px] border bg-surface px-space-16 text-label-large tracking-[0.3px] text-neutral-1100 outline-none placeholder:text-neutral-500",
+                    "min-h-14 w-full rounded-shape-20 border bg-surface px-space-16 text-label-large tracking-[0.3px] text-neutral-1100 outline-none placeholder:text-neutral-500",
                     errors.description
                       ? "border-red-600"
                       : "border-neutral-1100",
@@ -499,7 +485,7 @@ export function NewTransactionModal({
                       onChange={(event) =>
                         updateForm("newCategoryName", event.target.value)
                       }
-                      className="min-h-14 w-full flex-1 rounded-[20px] border border-neutral-1100 bg-surface px-space-16 text-label-large tracking-[0.3px] text-neutral-1100 outline-none"
+                      className="min-h-14 w-full flex-1 rounded-shape-20 border border-neutral-1100 bg-surface px-space-16 text-label-large tracking-[0.3px] text-neutral-1100 outline-none"
                     />
                     <div className="flex gap-space-8">
                       <button
@@ -533,7 +519,7 @@ export function NewTransactionModal({
                         }));
                       }}
                       className={[
-                        "min-h-14 w-full appearance-none rounded-[20px] border bg-surface px-space-16 pr-space-32 text-label-large tracking-[0.3px] outline-none",
+                        "min-h-14 w-full appearance-none rounded-shape-20 border bg-surface px-space-16 pr-space-32 text-label-large tracking-[0.3px] outline-none",
                         form.category
                           ? "text-neutral-1100"
                           : "text-neutral-500",
@@ -549,14 +535,11 @@ export function NewTransactionModal({
                         </option>
                       ))}
                     </select>
-                    <img
-                      src={iconChevron}
-                      alt=""
-                      width={13}
-                      height={7}
-                      className="pointer-events-none absolute right-space-16 top-1/2 h-[7px] w-[13px] -translate-y-1/2"
-                      aria-hidden="true"
-                    />
+                      <ChevronIcon
+                        direction="down"
+                        size={14}
+                        className="pointer-events-none absolute right-space-16 top-1/2 -translate-y-1/2 text-neutral-1100"
+                      />
                   </div>
                 )}
                 {errors.category ? (
@@ -577,7 +560,7 @@ export function NewTransactionModal({
                       onChange={(event) =>
                         updateForm("memberId", event.target.value)
                       }
-                      className="min-h-14 w-full appearance-none rounded-[20px] border border-neutral-1100 bg-surface px-space-16 pr-space-32 text-label-large tracking-[0.3px] text-neutral-1100 outline-none"
+                      className="min-h-14 w-full appearance-none rounded-shape-20 border border-neutral-1100 bg-surface px-space-16 pr-space-32 text-label-large tracking-[0.3px] text-neutral-1100 outline-none"
                     >
                       <option value="">Familiar</option>
                       {familyMembers.map((member) => (
@@ -586,14 +569,11 @@ export function NewTransactionModal({
                         </option>
                       ))}
                     </select>
-                    <img
-                      src={iconChevron}
-                      alt=""
-                      width={13}
-                      height={7}
-                      className="pointer-events-none absolute right-space-16 top-1/2 h-[7px] w-[13px] -translate-y-1/2"
-                      aria-hidden="true"
-                    />
+                      <ChevronIcon
+                        direction="down"
+                        size={14}
+                        className="pointer-events-none absolute right-space-16 top-1/2 -translate-y-1/2 text-neutral-1100"
+                      />
                   </div>
                 </label>
 
@@ -612,7 +592,7 @@ export function NewTransactionModal({
                         }));
                       }}
                       className={[
-                        "min-h-14 w-full appearance-none rounded-[20px] border bg-surface px-space-16 pr-space-32 text-label-large tracking-[0.3px] text-neutral-1100 outline-none",
+                        "min-h-14 w-full appearance-none rounded-shape-20 border bg-surface px-space-16 pr-space-32 text-label-large tracking-[0.3px] text-neutral-1100 outline-none",
                         errors.accountId
                           ? "border-red-600"
                           : "border-neutral-1100",
@@ -634,14 +614,11 @@ export function NewTransactionModal({
                         ))}
                       </optgroup>
                     </select>
-                    <img
-                      src={iconChevron}
-                      alt=""
-                      width={13}
-                      height={7}
-                      className="pointer-events-none absolute right-space-16 top-1/2 h-[7px] w-[13px] -translate-y-1/2"
-                      aria-hidden="true"
-                    />
+                      <ChevronIcon
+                        direction="down"
+                        size={14}
+                        className="pointer-events-none absolute right-space-16 top-1/2 -translate-y-1/2 text-neutral-1100"
+                      />
                   </div>
                   {errors.accountId ? (
                     <span className="text-paragraph-x-small text-red-600">
@@ -663,7 +640,7 @@ export function NewTransactionModal({
                       onChange={(event) =>
                         handleInstallmentsChange(Number(event.target.value))
                       }
-                      className="min-h-14 w-full appearance-none rounded-[20px] border border-neutral-1100 bg-surface px-space-16 pr-space-32 text-label-large tracking-[0.3px] text-neutral-1100 outline-none disabled:cursor-not-allowed disabled:bg-neutral-100"
+                      className="min-h-14 w-full appearance-none rounded-shape-20 border border-neutral-1100 bg-surface px-space-16 pr-space-32 text-label-large tracking-[0.3px] text-neutral-1100 outline-none disabled:cursor-not-allowed disabled:bg-neutral-100"
                     >
                       {INSTALLMENT_OPTIONS.map((count) => (
                         <option key={count} value={count}>
@@ -671,14 +648,11 @@ export function NewTransactionModal({
                         </option>
                       ))}
                     </select>
-                    <img
-                      src={iconChevron}
-                      alt=""
-                      width={13}
-                      height={7}
-                      className="pointer-events-none absolute right-space-16 top-1/2 h-[7px] w-[13px] -translate-y-1/2"
-                      aria-hidden="true"
-                    />
+                      <ChevronIcon
+                        direction="down"
+                        size={14}
+                        className="pointer-events-none absolute right-space-16 top-1/2 -translate-y-1/2 text-neutral-1100"
+                      />
                   </div>
                   {form.isRecurring ? (
                     <span className="text-paragraph-x-small italic text-neutral-600">
@@ -689,7 +663,7 @@ export function NewTransactionModal({
               ) : null}
 
               {showRecurring ? (
-                <div className="flex w-full items-start gap-space-12 rounded-[20px] border border-blue-600 bg-blue-100 p-space-16">
+                <div className="flex w-full items-start gap-space-12 rounded-shape-20 border border-primary bg-primary/20 p-space-16">
                   <input
                     id="recurring-expense"
                     type="checkbox"
@@ -698,7 +672,7 @@ export function NewTransactionModal({
                     onChange={(event) =>
                       handleRecurringChange(event.target.checked)
                     }
-                    className="mt-space-2 size-[30px] shrink-0 rounded-[5px] border border-neutral-1100 accent-neutral-1100 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="mt-space-2 size-[30px] shrink-0 rounded-shape-2 border border-neutral-1100 accent-neutral-1100 disabled:cursor-not-allowed disabled:opacity-50"
                   />
                   <label
                     htmlFor="recurring-expense"
@@ -739,7 +713,7 @@ export function NewTransactionModal({
 
       {toast ? (
         <div
-          className="fixed right-space-16 top-space-16 z-[60] flex max-w-[min(100%-32px,360px)] items-center gap-space-8 rounded-shape-20 bg-green-100 px-space-16 py-space-12 text-label-medium font-semibold text-green-800 shadow-sm"
+          className="motion-toast fixed right-space-16 top-space-16 z-[60] flex max-w-[min(100%-32px,360px)] items-center gap-space-8 rounded-shape-20 bg-green-100 px-space-16 py-space-12 text-label-medium font-semibold text-green-800 shadow-sm"
           role="status"
         >
           <img

@@ -8,7 +8,7 @@ import {
 } from "react";
 import { BREAKPOINTS } from "../../constants/breakpoints";
 import { useFinance } from "../../hooks";
-import { ChevronIcon } from "../ui";
+import { ChevronButton } from "../ui";
 import { CategoryDonutCard } from "./CategoryDonutCard";
 
 const RING_COLORS = [
@@ -179,6 +179,7 @@ export function ExpensesByCategoryCarousel() {
             amount={item.amount}
             percentage={calculateCategoryPercentage(item.amount)}
             ringColor={RING_COLORS[index % RING_COLORS.length]}
+            staggerIndex={index}
           />
         ))}
       </div>
@@ -186,24 +187,22 @@ export function ExpensesByCategoryCarousel() {
       {showArrows && hovered ? (
         <>
           {canScrollLeft ? (
-            <button
-              type="button"
-              aria-label="Anterior"
-              className="absolute top-1/2 left-0 z-10 flex size-11 -translate-y-1/2 items-center justify-center rounded-full border border-neutral-300 bg-surface text-neutral-1100 shadow-sm transition-colors hover:bg-neutral-100"
+            <ChevronButton
+              direction="left"
+              label="Anterior"
+              className="absolute top-1/2 left-0 z-10 -translate-y-1/2 border border-neutral-300 bg-surface shadow-sm"
               onClick={() => scrollBy(-SCROLL_STEP)}
-            >
-              <ChevronIcon direction="left" size={14} />
-            </button>
+              size={14}
+            />
           ) : null}
           {canScrollRight ? (
-            <button
-              type="button"
-              aria-label="Próximo"
-              className="absolute top-1/2 right-0 z-10 flex size-11 -translate-y-1/2 items-center justify-center rounded-full border border-neutral-300 bg-surface text-neutral-1100 shadow-sm transition-colors hover:bg-neutral-100"
+            <ChevronButton
+              direction="right"
+              label="Próximo"
+              className="absolute top-1/2 right-0 z-10 -translate-y-1/2 border border-neutral-300 bg-surface shadow-sm"
               onClick={() => scrollBy(SCROLL_STEP)}
-            >
-              <ChevronIcon direction="right" size={14} />
-            </button>
+              size={14}
+            />
           ) : null}
         </>
       ) : null}

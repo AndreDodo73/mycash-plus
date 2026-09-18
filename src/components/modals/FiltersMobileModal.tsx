@@ -11,7 +11,7 @@ import {
   startOfDay,
   startOfMonth,
 } from "../../utils/dateFormat";
-import { ChevronIcon } from "../ui";
+import { ChevronIcon, ModalCloseButton } from "../ui";
 
 const TYPE_OPTIONS: { value: TransactionTypeFilter; label: string }[] = [
   { value: "all", label: "Todos" },
@@ -190,21 +190,11 @@ export function FiltersMobileModal({ open, onClose }: FiltersMobileModalProps) {
           >
             Filtros
           </h2>
-          <button
-            type="button"
-            className="flex size-11 items-center justify-center rounded-full"
-            aria-label="Fechar"
+          <ModalCloseButton
+            iconSrc={iconCross}
             onClick={requestClose}
-          >
-            <img
-              src={iconCross}
-              alt=""
-              width={20}
-              height={20}
-              className="size-5"
-              aria-hidden="true"
-            />
-          </button>
+            className="size-11"
+          />
         </header>
 
         <div className="min-h-0 flex-1 overflow-y-auto px-space-16 py-space-24">
@@ -299,7 +289,7 @@ export function FiltersMobileModal({ open, onClose }: FiltersMobileModalProps) {
                 <div className="flex items-center">
                   <button
                     type="button"
-                    className="flex size-11 items-center justify-center rounded-full text-neutral-1100"
+                    className="flex size-11 items-center justify-center rounded-full text-neutral-1100 hover:bg-neutral-100"
                     aria-label="Mês anterior"
                     onClick={() =>
                       setViewMonth((current) => addMonths(current, -1))
@@ -309,7 +299,7 @@ export function FiltersMobileModal({ open, onClose }: FiltersMobileModalProps) {
                   </button>
                   <button
                     type="button"
-                    className="flex size-11 items-center justify-center rounded-full text-neutral-1100"
+                    className="flex size-11 items-center justify-center rounded-full text-neutral-1100 hover:bg-neutral-100"
                     aria-label="Próximo mês"
                     onClick={() =>
                       setViewMonth((current) => addMonths(current, 1))

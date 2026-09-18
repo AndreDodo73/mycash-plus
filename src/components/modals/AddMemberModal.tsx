@@ -1,11 +1,11 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import iconCheck from "../../assets/dashboard/icon-check.svg";
-import iconChevron from "../../assets/dashboard/icon-chevron-down.svg";
 import iconUsers from "../../assets/modals/icon-users.svg";
 import iconCross from "../../assets/sidebar/icon-cross.svg";
 import avatarPlaceholder from "../../assets/sidebar/avatar-placeholder.png";
 import { useFinance } from "../../hooks";
 import { formatCurrency } from "../../utils/formatCurrency";
+import { ChevronIcon, ModalCloseButton } from "../ui";
 
 type AvatarMode = "url" | "upload";
 
@@ -287,7 +287,7 @@ export function AddMemberModal({
             <header className="flex w-full shrink-0 items-start justify-between gap-space-16 border-b border-neutral-300 px-space-16 py-space-16 md:px-space-24">
               <div className="flex min-w-0 items-center gap-space-16">
                 <div
-                  className="flex size-16 shrink-0 items-center justify-center rounded-[12px] border border-neutral-1100 bg-surface"
+                  className="flex size-16 shrink-0 items-center justify-center rounded-shape-20 border border-neutral-1100 bg-surface"
                   aria-hidden="true"
                 >
                   <img
@@ -319,21 +319,7 @@ export function AddMemberModal({
                 </div>
               </div>
 
-              <button
-                type="button"
-                className="flex size-12 shrink-0 items-center justify-center rounded-shape-100"
-                aria-label="Fechar"
-                onClick={requestClose}
-              >
-                <img
-                  src={iconCross}
-                  alt=""
-                  width={24}
-                  height={24}
-                  className="size-space-24"
-                  aria-hidden="true"
-                />
-              </button>
+              <ModalCloseButton iconSrc={iconCross} onClick={requestClose} />
             </header>
 
             <div className="min-h-0 flex-1 overflow-y-auto px-space-16 py-space-24 md:px-space-24">
@@ -357,7 +343,7 @@ export function AddMemberModal({
                       setErrors((current) => ({ ...current, name: undefined }));
                     }}
                     className={[
-                      "min-h-14 w-full rounded-[20px] border bg-surface px-space-16 text-label-large tracking-[0.3px] text-neutral-1100 outline-none placeholder:text-neutral-500",
+                      "min-h-14 w-full rounded-shape-20 border bg-surface px-space-16 text-label-large tracking-[0.3px] text-neutral-1100 outline-none placeholder:text-neutral-500",
                       errors.name ? "border-red-600" : "border-neutral-1100",
                     ].join(" ")}
                   />
@@ -381,7 +367,7 @@ export function AddMemberModal({
                       setErrors((current) => ({ ...current, email: undefined }));
                     }}
                     className={[
-                      "min-h-14 w-full rounded-[20px] border bg-surface px-space-16 text-label-large tracking-[0.3px] text-neutral-1100 outline-none placeholder:text-neutral-500",
+                      "min-h-14 w-full rounded-shape-20 border bg-surface px-space-16 text-label-large tracking-[0.3px] text-neutral-1100 outline-none placeholder:text-neutral-500",
                       errors.email ? "border-red-600" : "border-neutral-1100",
                     ].join(" ")}
                   />
@@ -415,7 +401,7 @@ export function AddMemberModal({
                           }));
                         }}
                         className={[
-                          "min-h-14 w-full rounded-[20px] border bg-surface px-space-16 pr-space-32 text-label-large tracking-[0.3px] text-neutral-1100 outline-none placeholder:text-neutral-500",
+                          "min-h-14 w-full rounded-shape-20 border bg-surface px-space-16 pr-space-32 text-label-large tracking-[0.3px] text-neutral-1100 outline-none placeholder:text-neutral-500",
                           errors.role ? "border-red-600" : "border-neutral-1100",
                         ].join(" ")}
                       />
@@ -424,13 +410,10 @@ export function AddMemberModal({
                           <option key={role} value={role} />
                         ))}
                       </datalist>
-                      <img
-                        src={iconChevron}
-                        alt=""
-                        width={13}
-                        height={7}
-                        className="pointer-events-none absolute right-space-16 top-1/2 h-[7px] w-[13px] -translate-y-1/2"
-                        aria-hidden="true"
+                      <ChevronIcon
+                        direction="down"
+                        size={14}
+                        className="pointer-events-none absolute right-space-16 top-1/2 -translate-y-1/2 text-neutral-1100"
                       />
                     </div>
                     {errors.role ? (
@@ -453,7 +436,7 @@ export function AddMemberModal({
                         const digits = event.target.value.replace(/\D/g, "");
                         updateForm("incomeDigits", digits);
                       }}
-                      className="min-h-14 w-full rounded-[20px] border border-neutral-1100 bg-surface px-space-16 text-label-large tracking-[0.3px] text-neutral-1100 outline-none placeholder:text-neutral-500"
+                      className="min-h-14 w-full rounded-shape-20 border border-neutral-1100 bg-surface px-space-16 text-label-large tracking-[0.3px] text-neutral-1100 outline-none placeholder:text-neutral-500"
                     />
                     <span className="text-paragraph-x-small text-neutral-600">
                       Opcional — renda mensal estimada
@@ -522,7 +505,7 @@ export function AddMemberModal({
                             avatar: undefined,
                           }));
                         }}
-                        className="min-h-14 w-full rounded-[20px] border border-neutral-1100 bg-surface px-space-16 text-label-large tracking-[0.3px] text-neutral-1100 outline-none placeholder:text-neutral-500"
+                        className="min-h-14 w-full rounded-shape-20 border border-neutral-1100 bg-surface px-space-16 text-label-large tracking-[0.3px] text-neutral-1100 outline-none placeholder:text-neutral-500"
                       />
                     ) : (
                       <div className="flex w-full flex-col gap-space-8">
@@ -537,7 +520,7 @@ export function AddMemberModal({
                         />
                         <button
                           type="button"
-                          className="flex min-h-14 w-full items-center justify-center rounded-[20px] border border-neutral-1100 bg-surface px-space-16 text-label-large font-semibold tracking-[0.3px] text-neutral-1100"
+                          className="flex min-h-14 w-full items-center justify-center rounded-shape-20 border border-neutral-1100 bg-surface px-space-16 text-label-large font-semibold tracking-[0.3px] text-neutral-1100"
                           onClick={() => fileInputRef.current?.click()}
                         >
                           Escolher JPG ou PNG (máx. 5MB)
@@ -581,7 +564,7 @@ export function AddMemberModal({
 
       {toast ? (
         <div
-          className="fixed right-space-16 top-space-16 z-[60] flex max-w-[min(100%-32px,360px)] items-center gap-space-8 rounded-shape-20 bg-green-100 px-space-16 py-space-12 text-label-medium font-semibold text-green-800 shadow-sm"
+          className="motion-toast fixed right-space-16 top-space-16 z-[60] flex max-w-[min(100%-32px,360px)] items-center gap-space-8 rounded-shape-20 bg-green-100 px-space-16 py-space-12 text-label-medium font-semibold text-green-800 shadow-sm"
           role="status"
         >
           <img

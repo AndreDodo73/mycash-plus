@@ -1,14 +1,12 @@
 import type { BankAccount, CreditCard, FamilyMember, Transaction } from "../../types/finance";
+import { MOTION, staggerStyle } from "../../constants/motion";
 import { formatCurrency } from "../../utils/formatCurrency";
+import { formatDate } from "../../utils/date";
 import iconExpense from "../../assets/dashboard/icon-expense.svg";
 import iconIncome from "../../assets/dashboard/icon-income.svg";
 
-function pad2(value: number): string {
-  return String(value).padStart(2, "0");
-}
-
 export function formatTransactionDate(date: Date): string {
-  return `${pad2(date.getDate())}/${pad2(date.getMonth() + 1)}/${date.getFullYear()}`;
+  return formatDate(date);
 }
 
 export function resolveAccountLabel(
@@ -53,6 +51,7 @@ type TransactionRowProps = {
   member: FamilyMember | undefined;
   accountLabel: string;
   zebra: boolean;
+  staggerIndex?: number;
 };
 
 export function TransactionRow({
@@ -60,6 +59,7 @@ export function TransactionRow({
   member,
   accountLabel,
   zebra,
+  staggerIndex = 0,
 }: TransactionRowProps) {
   const amount = formatSignedAmount(tx);
   const typeIcon = tx.type === "income" ? iconIncome : iconExpense;
@@ -67,9 +67,11 @@ export function TransactionRow({
   return (
     <tr
       className={[
-        "border-b border-neutral-300 transition-colors last:border-b-0 hover:bg-neutral-200",
+        "motion-enter-up border-b border-neutral-300 transition-colors last:border-b-0",
         zebra ? "bg-neutral-100" : "bg-surface",
+        "hover:bg-neutral-200",
       ].join(" ")}
+      style={staggerStyle(staggerIndex, MOTION.stagger.transactionMs)}
     >
       <td className="w-12 px-space-8 py-space-12 lg:w-[50px] lg:px-space-12">
         {member ? (

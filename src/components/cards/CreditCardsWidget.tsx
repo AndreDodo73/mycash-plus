@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import iconAdd from "../../assets/cards/icon-add.svg";
 import iconCreditCard from "../../assets/cards/icon-credit-card.svg";
 import { useFinance } from "../../hooks";
-import { ChevronIcon } from "../ui";
+import { ChevronIcon, ChevronButton } from "../ui";
 import { CreditCardListItem } from "./CreditCardListItem";
 
 const PAGE_SIZE = 3;
@@ -49,7 +49,7 @@ export function CreditCardsWidget({
   return (
     <section
       className="flex h-full w-full min-w-0 flex-col gap-space-24 rounded-shape-20 border border-neutral-300 bg-surface p-space-16 md:gap-space-32 md:p-space-24 lg:p-space-32"
-      aria-label="Cards e contas"
+      aria-label="Contas e Cartões"
     >
       <header className="flex w-full items-center justify-between gap-space-12">
         <div className="flex min-w-0 items-center gap-space-8">
@@ -62,7 +62,7 @@ export function CreditCardsWidget({
             aria-hidden="true"
           />
           <h2 className="truncate text-heading-x-small font-bold text-neutral-1100">
-            Cards & contas
+            Contas e Cartões
           </h2>
         </div>
 
@@ -103,27 +103,25 @@ export function CreditCardsWidget({
 
       {showPagination ? (
         <div className="mt-auto flex items-center justify-between gap-space-8">
-          <button
-            type="button"
+          <ChevronButton
+            direction="left"
+            label="Página anterior"
             onClick={goPrev}
             disabled={safePage === 0}
-            aria-label="Página anterior"
-            className="flex min-h-11 min-w-11 items-center justify-center rounded-full border border-neutral-300 text-neutral-1100 transition-colors hover:bg-neutral-100 disabled:opacity-40 disabled:hover:bg-transparent"
-          >
-            <ChevronIcon direction="left" size={14} />
-          </button>
+            size={14}
+            className="border border-neutral-300"
+          />
           <p className="text-label-x-small text-neutral-600">
             {safePage + 1} / {totalPages}
           </p>
-          <button
-            type="button"
+          <ChevronButton
+            direction="right"
+            label="Próxima página"
             onClick={goNext}
             disabled={safePage >= totalPages - 1}
-            aria-label="Próxima página"
-            className="flex min-h-11 min-w-11 items-center justify-center rounded-full border border-neutral-300 text-neutral-1100 transition-colors hover:bg-neutral-100 disabled:opacity-40 disabled:hover:bg-transparent"
-          >
-            <ChevronIcon direction="right" size={14} />
-          </button>
+            size={14}
+            className="border border-neutral-300"
+          />
         </div>
       ) : null}
     </section>

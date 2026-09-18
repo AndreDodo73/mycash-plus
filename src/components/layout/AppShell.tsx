@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
-import { Outlet } from "react-router-dom";
 import { useIsDesktop } from "../../hooks";
 import { HeaderMobile } from "./HeaderMobile";
+import { PageTransition } from "./PageTransition";
 import { Sidebar } from "./Sidebar";
 
 export function AppShell({ children }: { children?: ReactNode }) {
@@ -16,9 +16,9 @@ export function AppShell({ children }: { children?: ReactNode }) {
       }
     >
       {isDesktop ? <Sidebar /> : <HeaderMobile />}
-      <main className="min-w-0 w-full flex-1 px-space-16 py-space-24 transition-[margin] duration-300 ease-in-out md:px-space-24 xl:px-space-32">
-        <div className="mx-auto w-full max-w-[1400px] 2xl:max-w-[1600px]">
-          {children ?? <Outlet />}
+      <main className="min-w-0 w-full flex-1 overflow-x-hidden px-space-16 py-space-24 transition-[margin] duration-300 ease-in-out md:px-space-24 lg:px-space-32">
+        <div className="mx-auto w-full max-w-[1400px] xl:max-w-[1600px]">
+          {children ?? <PageTransition />}
         </div>
       </main>
     </div>

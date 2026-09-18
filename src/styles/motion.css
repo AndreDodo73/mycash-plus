@@ -1,0 +1,310 @@
+/* Motion system — Prompt 21. Prefer CSS; respeita prefers-reduced-motion. */
+
+:root {
+  --motion-page: 200ms;
+  --motion-enter: 300ms;
+  --motion-enter-slow: 400ms;
+  --motion-hover: 200ms;
+  --motion-card-hover: 250ms;
+  --motion-avatar: 200ms;
+  --motion-modal-overlay: 200ms;
+  --motion-modal-panel: 250ms;
+  --motion-modal-close: 200ms;
+  --motion-filters: 300ms;
+  --motion-toast-in: 300ms;
+  --motion-toast-out: 250ms;
+  --motion-progress: 1000ms;
+  --motion-skeleton-pulse: 1500ms;
+  --motion-micro: 200ms;
+  --motion-ease-in-out: ease-in-out;
+  --motion-ease-out: ease-out;
+  --stagger-index: 0;
+  --stagger-step: 50ms;
+}
+
+@keyframes motion-page-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes motion-enter-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes motion-enter-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes motion-toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes motion-toast-out {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+@keyframes motion-dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes motion-pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes motion-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes motion-tap-scale {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.motion-page-enter {
+  animation: motion-page-in var(--motion-page) var(--motion-ease-in-out) both;
+}
+
+.motion-enter-up {
+  animation: motion-enter-up var(--motion-enter) var(--motion-ease-out) both;
+  animation-delay: calc(var(--stagger-index) * var(--stagger-step));
+}
+
+.motion-enter-scale {
+  animation: motion-enter-scale var(--motion-enter-slow) var(--motion-ease-out)
+    both;
+  animation-delay: calc(var(--stagger-index) * var(--stagger-step));
+}
+
+.motion-toast {
+  animation: motion-toast-in var(--motion-toast-in) var(--motion-ease-out) both;
+}
+
+.motion-toast-exit {
+  animation: motion-toast-out var(--motion-toast-out) var(--motion-ease-out)
+    both;
+}
+
+.motion-dropdown {
+  animation: motion-dropdown-in var(--motion-micro) var(--motion-ease-out) both;
+}
+
+.motion-hover-lift {
+  transition:
+    transform var(--motion-card-hover) var(--motion-ease-out),
+    box-shadow var(--motion-card-hover) var(--motion-ease-out),
+    border-color var(--motion-card-hover) var(--motion-ease-out),
+    background-color var(--motion-card-hover) var(--motion-ease-out);
+}
+
+.motion-hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 8px 24px color-mix(in srgb, var(--color-neutral-1100) 12%, transparent),
+    0 2px 6px color-mix(in srgb, var(--color-neutral-1100) 6%, transparent);
+}
+
+.motion-icon-btn {
+  color: var(--color-neutral-1100);
+  background-color: transparent;
+}
+
+.motion-icon-btn:hover {
+  background-color: var(--color-neutral-100);
+}
+
+.motion-icon-btn:active {
+  background-color: var(--color-neutral-200);
+}
+
+.motion-icon-btn__glyph {
+  transition: transform var(--motion-micro) var(--motion-ease-in-out);
+  transform-origin: center;
+}
+
+.motion-icon-btn--close:hover .motion-icon-btn__glyph {
+  transform: rotate(90deg);
+}
+
+.motion-icon-btn--close:active .motion-icon-btn__glyph {
+  transform: rotate(90deg) scale(0.92);
+}
+
+.motion-avatar {
+  transition: transform var(--motion-avatar) var(--motion-ease-in-out);
+}
+
+.motion-avatar:hover {
+  transform: scale(1.08);
+}
+
+.motion-progress-bar {
+  transition: width var(--motion-progress) var(--motion-ease-out);
+}
+
+.motion-tap {
+  transition: transform var(--motion-micro) var(--motion-ease-in-out);
+}
+
+.motion-tap:active {
+  animation: motion-tap-scale var(--motion-micro) var(--motion-ease-in-out);
+}
+
+.motion-plus-icon {
+  transition: transform var(--motion-micro) var(--motion-ease-out);
+}
+
+.group:hover .motion-plus-icon,
+.group\/tile:hover .motion-plus-icon {
+  transform: rotate(90deg) scale(1.08);
+}
+
+.motion-skeleton-pulse {
+  background-color: var(--color-neutral-200);
+  animation: motion-pulse var(--motion-skeleton-pulse) var(--motion-ease-in-out)
+    infinite;
+}
+
+.motion-skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-neutral-200) 0%,
+    var(--color-neutral-100) 40%,
+    var(--color-neutral-200) 80%
+  );
+  background-size: 200% 100%;
+  animation: motion-shimmer 1.5s var(--motion-ease-in-out) infinite;
+}
+
+/* Botões e inputs — micro-interações globais */
+button:not(:disabled) {
+  transition-property: background-color, color, border-color, opacity,
+    box-shadow, transform;
+  transition-duration: var(--motion-hover);
+  transition-timing-function: var(--motion-ease-in-out);
+}
+
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+  transition: border-color var(--motion-micro) var(--motion-ease-in-out);
+  font-size: 16px; /* evita zoom iOS; altura fica no container (min-h-12) */
+}
+
+a:focus-visible,
+button:focus-visible,
+[role="tab"]:focus-visible,
+[role="switch"]:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-neutral-1100);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-page: 0ms;
+    --motion-enter: 0ms;
+    --motion-enter-slow: 0ms;
+    --motion-hover: 0ms;
+    --motion-card-hover: 0ms;
+    --motion-avatar: 0ms;
+    --motion-modal-overlay: 0ms;
+    --motion-modal-panel: 0ms;
+    --motion-modal-close: 0ms;
+    --motion-filters: 0ms;
+    --motion-toast-in: 0ms;
+    --motion-toast-out: 0ms;
+    --motion-progress: 0ms;
+    --motion-skeleton-pulse: 0ms;
+    --motion-micro: 0ms;
+  }
+
+  .motion-page-enter,
+  .motion-enter-up,
+  .motion-enter-scale,
+  .motion-toast,
+  .motion-toast-exit,
+  .motion-dropdown,
+  .motion-skeleton-pulse,
+  .motion-skeleton-shimmer,
+  .motion-tap:active {
+    animation: none !important;
+  }
+
+  .motion-hover-lift:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .motion-icon-btn--close:hover .motion-icon-btn__glyph,
+  .motion-icon-btn--close:active .motion-icon-btn__glyph,
+  .group:hover .motion-plus-icon {
+    transform: none;
+  }
+
+  .motion-avatar:hover {
+    transform: none;
+  }
+
+  .motion-progress-bar {
+    transition: none !important;
+  }
+}

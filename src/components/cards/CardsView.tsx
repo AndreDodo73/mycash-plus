@@ -46,10 +46,10 @@ export function CardsView({
         </div>
         <div className="min-w-0">
           <h1 className="text-heading-small font-bold text-neutral-1100 md:text-heading-medium">
-            Cartões
+            Contas e Cartões
           </h1>
           <p className="text-label-medium font-normal tracking-[0.3px] text-neutral-1100">
-            Gerencia seus cartões e contas bancárias
+            Gerencie seus cartões e contas bancárias
           </p>
         </div>
       </header>
@@ -78,20 +78,21 @@ export function CardsView({
             <button
               type="button"
               onClick={onAddCard}
-              className="flex min-h-12 items-center justify-center rounded-shape-100 bg-secondary px-space-24 text-label-medium font-semibold text-surface"
+              className="motion-tap flex min-h-12 items-center justify-center rounded-shape-100 bg-secondary px-space-24 text-label-medium font-semibold text-surface hover:bg-neutral-1100"
             >
               Cadastrar Primeiro Cartão
             </button>
           </div>
         ) : (
-          <div className="grid w-full grid-cols-1 gap-space-16 md:grid-cols-2 xl:grid-cols-3">
-            {sortedCards.map((card) => (
+          <div className="grid w-full grid-cols-1 gap-space-16 md:grid-cols-2 lg:grid-cols-3">
+            {sortedCards.map((card, index) => (
               <CreditCardOverviewCard
                 key={card.id}
                 card={card}
                 holder={membersById.get(card.holderId)}
                 onOpen={onOpenCard}
                 onAddExpense={onAddExpense}
+                staggerIndex={index}
               />
             ))}
             <AddEntityTile label="Novo cartão" onClick={onAddCard} />
@@ -109,12 +110,13 @@ export function CardsView({
         >
           Contas bancárias
         </h2>
-        <div className="grid w-full grid-cols-1 gap-space-16 md:grid-cols-2 xl:grid-cols-3">
-          {bankAccounts.map((account) => (
+        <div className="grid w-full grid-cols-1 gap-space-16 md:grid-cols-2 lg:grid-cols-3">
+          {bankAccounts.map((account, index) => (
             <BankAccountOverviewCard
               key={account.id}
               account={account}
               holder={membersById.get(account.holderId)}
+              staggerIndex={index}
             />
           ))}
           <AddEntityTile label="Nova conta" onClick={onAddAccount} />

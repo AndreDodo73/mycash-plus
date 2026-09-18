@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import iconLogout from "../../assets/profile/icon-logout.svg";
 import { useFinance } from "../../hooks";
 import { ProfileInfoTab } from "./ProfileInfoTab";
+import { ProfileSettingsTab } from "./ProfileSettingsTab";
 
 type ProfileTab = "info" | "settings";
 
@@ -115,11 +116,8 @@ export function ProfileView({ onEditMember, onAddMember }: ProfileViewProps) {
           id="profile-panel-settings"
           role="tabpanel"
           aria-labelledby="profile-tab-settings"
-          className="rounded-shape-20 border border-neutral-300 bg-surface p-space-24"
         >
-          <p className="text-paragraph-small text-neutral-600">
-            O conteúdo desta aba entra no Prompt 20.
-          </p>
+          <ProfileSettingsTab />
         </div>
       )}
 

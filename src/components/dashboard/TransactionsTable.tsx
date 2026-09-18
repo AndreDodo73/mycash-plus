@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import iconChevronDown from "../../assets/dashboard/icon-chevron-down.svg";
 import iconExtrato from "../../assets/dashboard/icon-extrato.svg";
 import iconSearch from "../../assets/dashboard/icon-search.svg";
 import { useFinance } from "../../hooks";
 import type { Transaction, TransactionTypeFilter } from "../../types/finance";
-import { ChevronIcon } from "../ui";
+import { ChevronIcon, ChevronButton, FilterSelect } from "../ui";
 import { TransactionCard } from "./TransactionCard";
 import {
   resolveAccountLabel,
@@ -161,7 +160,7 @@ function SortableHeader({
               isActive && sort.direction === "desc" ? "asc" : "desc",
           })
         }
-        className={`inline-flex min-h-11 items-center gap-space-8 ${
+        className={`inline-flex min-h-11 items-center gap-space-8 rounded-shape-100 px-space-8 transition-colors hover:bg-neutral-200 ${
           align === "right" ? "justify-end" : ""
         } text-label-large font-semibold tracking-[0.3px] text-neutral-1100`}
       >
@@ -347,7 +346,7 @@ export function TransactionsTable({
 
         {showToolbar ? (
           <div className="flex w-full flex-col gap-space-8 sm:flex-row sm:items-center lg:w-auto">
-            <label className="flex min-h-12 w-full items-center gap-space-8 rounded-shape-100 border border-neutral-1100 bg-surface px-space-24 py-space-12 sm:max-w-[256px]">
+            <label className="flex min-h-12 w-full items-center gap-space-8 rounded-shape-100 border border-neutral-1100 bg-surface px-space-24 py-space-12 transition-colors hover:bg-neutral-50 focus-within:bg-neutral-50 sm:max-w-[256px]">
               <img
                 src={iconSearch}
                 alt=""
@@ -365,30 +364,14 @@ export function TransactionsTable({
               />
             </label>
 
-            <label className="relative flex min-h-12 w-full items-center sm:w-[140px]">
-              <select
-                value={localType}
-                onChange={(event) =>
-                  setLocalType(event.target.value as TransactionTypeFilter)
-                }
-                className="min-h-12 w-full appearance-none rounded-shape-100 border border-neutral-300 bg-surface px-space-16 pr-space-32 text-label-x-small font-semibold tracking-[0.3px] text-neutral-1100 outline-none"
-                aria-label="Filtrar por tipo"
-              >
-                {TYPE_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-              <img
-                src={iconChevronDown}
-                alt=""
-                width={16}
-                height={16}
-                className="pointer-events-none absolute top-1/2 right-space-12 size-space-16 -translate-y-1/2"
-                aria-hidden="true"
-              />
-            </label>
+            <FilterSelect
+              label="Filtrar por tipo"
+              hideLabel
+              value={localType}
+              onChange={(value) => setLocalType(value as TransactionTypeFilter)}
+              options={TYPE_OPTIONS}
+              className="sm:w-[160px] sm:shrink-0"
+            />
           </div>
         ) : null}
       </header>
@@ -409,7 +392,7 @@ export function TransactionsTable({
       ) : (
         <>
           <div className="flex flex-col gap-space-12 md:hidden">
-            {pageItems.map((tx) => (
+            {pageItems.map((tx, index) => (
               <TransactionCard
                 key={tx.id}
                 tx={tx}
@@ -419,6 +402,7 @@ export function TransactionsTable({
                   bankAccounts,
                   creditCards,
                 )}
+                staggerIndex={index}
               />
             ))}
           </div>
@@ -483,6 +467,7 @@ export function TransactionsTable({
                       creditCards,
                     )}
                     zebra={index % 2 === 1}
+                    staggerIndex={index}
                   />
                 ))}
               </tbody>
@@ -496,16 +481,13 @@ export function TransactionsTable({
           Mostrando {from} a {to} de {filtered.length}
         </p>
 
-        <div className="flex items-center justify-center gap-space-16">
-          <button
-            type="button"
-            aria-label="Página anterior"
+        <div className="flex items-center justify-center gap-space-8">
+          <ChevronButton
+            direction="left"
+            label="Página anterior"
             disabled={safePage <= 1}
             onClick={() => setPage((current) => Math.max(1, current - 1))}
-            className="flex size-11 items-center justify-center rounded-full text-neutral-1100 transition-colors hover:bg-neutral-100 disabled:opacity-40 disabled:hover:bg-transparent"
-          >
-            <ChevronIcon direction="left" size={16} />
-          </button>
+          />
 
           {pages.map((item, index) =>
             item === "…" ? (
@@ -522,7 +504,7 @@ export function TransactionsTable({
                 onClick={() => setPage(item)}
                 aria-current={item === safePage ? "page" : undefined}
                 className={[
-                  "flex min-h-11 min-w-11 items-center justify-center rounded-shape-100 px-space-8 text-label-medium font-semibold tracking-[0.3px] transition-colors",
+                  "motion-tap flex min-h-11 min-w-11 items-center justify-center rounded-shape-100 px-space-8 text-label-medium font-semibold tracking-[0.3px] transition-colors",
                   item === safePage
                     ? "bg-neutral-1100 text-surface hover:bg-secondary"
                     : "text-neutral-1100 hover:bg-neutral-100",
@@ -533,17 +515,14 @@ export function TransactionsTable({
             ),
           )}
 
-          <button
-            type="button"
-            aria-label="Próxima página"
+          <ChevronButton
+            direction="right"
+            label="Próxima página"
             disabled={safePage >= totalPages}
             onClick={() =>
               setPage((current) => Math.min(totalPages, current + 1))
             }
-            className="flex size-11 items-center justify-center rounded-full text-neutral-1100 transition-colors hover:bg-neutral-100 disabled:opacity-40 disabled:hover:bg-transparent"
-          >
-            <ChevronIcon direction="right" size={16} />
-          </button>
+          />
         </div>
       </footer>
     </section>

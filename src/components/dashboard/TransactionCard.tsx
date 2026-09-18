@@ -1,6 +1,7 @@
 import type { FamilyMember, Transaction } from "../../types/finance";
 import iconExpense from "../../assets/dashboard/icon-expense.svg";
 import iconIncome from "../../assets/dashboard/icon-income.svg";
+import { MOTION, staggerStyle } from "../../constants/motion";
 import {
   formatInstallments,
   formatSignedAmount,
@@ -11,19 +12,23 @@ type TransactionCardProps = {
   tx: Transaction;
   member: FamilyMember | undefined;
   accountLabel: string;
+  staggerIndex?: number;
 };
 
 export function TransactionCard({
   tx,
   member,
   accountLabel,
+  staggerIndex = 0,
 }: TransactionCardProps) {
   const amount = formatSignedAmount(tx);
   const typeIcon = tx.type === "income" ? iconIncome : iconExpense;
 
   return (
-    <article className="flex w-full flex-col gap-space-12 rounded-shape-20 border border-neutral-300 bg-surface p-space-16">
-      <div className="flex items-center justify-between gap-space-12">
+    <article
+      className="motion-enter-up motion-hover-lift flex w-full flex-col gap-space-12 rounded-shape-20 border border-neutral-300 bg-surface p-space-16 hover:border-neutral-400"
+      style={staggerStyle(staggerIndex, MOTION.stagger.transactionMs)}
+    >      <div className="flex items-center justify-between gap-space-12">
         <div className="flex min-w-0 items-center gap-space-8">
           {member ? (
             <img

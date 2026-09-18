@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { GoalsSection } from "../components/goals";
 import { CreditCardsWidget } from "../components/cards";
 import { DashboardHeader } from "../components/dashboard/DashboardHeader";
 import {
@@ -52,9 +53,9 @@ export function DashboardPage() {
         onAddMember={() => setAddMemberOpen(true)}
       />
 
-      {/* Figma 42:3100 — coluna esq. (categorias + resumo) | Cards & contas — mesma altura */}
+      {/* Figma 42:3100 — coluna esq. (categorias + resumo) | Contas e Cartões — mesma altura */}
       <div className="grid w-full grid-cols-1 gap-space-24 lg:grid-cols-[minmax(0,1fr)_minmax(280px,420px)] lg:items-stretch xl:grid-cols-[minmax(0,1fr)_minmax(320px,538px)]">
-        <div className="flex h-full min-w-0 w-full flex-col gap-space-24 md:gap-[30px]">
+        <div className="flex h-full min-w-0 w-full flex-col gap-space-24 md:gap-space-32">
           <div className="w-full shrink-0">
             <ExpensesByCategoryCarousel />
           </div>
@@ -75,6 +76,8 @@ export function DashboardPage() {
           onAddExpense={() => openNewTransaction({ type: "expense" })}
         />
       </div>
+
+      <GoalsSection />
 
       <TransactionsTable />
 

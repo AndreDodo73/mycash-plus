@@ -254,7 +254,7 @@ export function DateRangePicker({ value, onChange }: DateRangePickerProps) {
           <div className="flex items-center justify-between px-space-12 pt-space-4 pb-space-8">
             <button
               type="button"
-              className="min-h-10 rounded-shape-100 px-space-12 text-label-medium font-semibold text-neutral-1100 transition-colors hover:bg-neutral-100"
+              className="min-h-11 rounded-shape-100 px-space-12 text-label-medium font-semibold text-neutral-1100 transition-colors hover:bg-neutral-100"
               onClick={clearDraft}
             >
               Limpar
@@ -262,14 +262,14 @@ export function DateRangePicker({ value, onChange }: DateRangePickerProps) {
             <div className="flex items-center gap-space-8">
               <button
                 type="button"
-                className="min-h-10 rounded-shape-100 px-space-12 text-label-medium font-semibold text-neutral-1100 transition-colors hover:bg-neutral-100"
+                className="min-h-11 rounded-shape-100 px-space-12 text-label-medium font-semibold text-neutral-1100 transition-colors hover:bg-neutral-100"
                 onClick={() => setOpen(false)}
               >
                 Cancelar
               </button>
               <button
                 type="button"
-                className="min-h-10 rounded-shape-100 px-space-12 text-label-medium font-semibold text-neutral-1100 transition-colors hover:bg-neutral-100 disabled:opacity-40 disabled:hover:bg-transparent"
+                className="min-h-11 rounded-shape-100 px-space-12 text-label-medium font-semibold text-neutral-1100 transition-colors hover:bg-neutral-100 disabled:opacity-40 disabled:hover:bg-transparent"
                 disabled={!draftStart}
                 onClick={confirmDraft}
               >

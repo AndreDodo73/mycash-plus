@@ -1,9 +1,12 @@
+import { MOTION, staggerStyle } from "../../constants/motion";
 import type { BankAccount, FamilyMember } from "../../types/finance";
+import { resolveBankLogo } from "../../utils/bankLogo";
 import { formatCurrency } from "../../utils/formatCurrency";
 
 type BankAccountOverviewCardProps = {
   account: BankAccount;
   holder?: FamilyMember;
+  staggerIndex?: number;
 };
 
 function formatUpdatedLabel(date: Date): string {
@@ -16,15 +19,34 @@ function formatUpdatedLabel(date: Date): string {
 export function BankAccountOverviewCard({
   account,
   holder,
+  staggerIndex = 0,
 }: BankAccountOverviewCardProps) {
+  const logo = resolveBankLogo(account.name);
+
   return (
-    <article className="relative flex h-full min-h-40 w-full flex-col justify-between gap-space-16 rounded-shape-20 border border-neutral-1100 bg-surface p-space-24">
+    <article
+      className="motion-enter-up motion-hover-lift relative flex h-full min-h-40 w-full flex-col justify-between gap-space-16 rounded-shape-20 border border-neutral-300 bg-surface p-space-24 hover:border-neutral-400"
+      style={staggerStyle(staggerIndex, MOTION.stagger.gridMs)}
+    >
       <div className="flex min-w-0 items-center gap-space-8">
-        <span
-          className="size-space-24 shrink-0 rounded-shape-2"
-          style={{ backgroundColor: account.color }}
-          aria-hidden="true"
-        />
+        <span className="flex size-space-24 shrink-0 overflow-hidden rounded-shape-2">
+          {logo ? (
+            <img
+              src={logo}
+              alt=""
+              width={24}
+              height={24}
+              className="size-full object-contain"
+              aria-hidden="true"
+            />
+          ) : (
+            <span
+              className="size-full rounded-shape-2"
+              style={{ backgroundColor: account.color }}
+              aria-hidden="true"
+            />
+          )}
+        </span>
         <h3 className="truncate text-label-medium font-normal tracking-[0.3px] text-neutral-1100">
           {account.name}
         </h3>
@@ -40,7 +62,7 @@ export function BankAccountOverviewCard({
           </p>
         </div>
         {holder ? (
-          <span className="size-8 shrink-0 overflow-hidden rounded-full border border-neutral-300">
+          <span className="motion-avatar size-8 shrink-0 overflow-hidden rounded-full border border-neutral-300">
             <img
               src={holder.avatarUrl}
               alt=""

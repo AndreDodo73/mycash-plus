@@ -20,7 +20,7 @@ export function FamilyAvatars({ onAddMember }: FamilyAvatarsProps) {
             aria-label={`Filtrar por ${member.name}`}
             onClick={() => setSelectedMember(selected ? null : member.id)}
             className={[
-              "relative size-11 shrink-0 overflow-visible rounded-shape-100 transition-transform duration-200",
+              "motion-avatar relative size-11 shrink-0 overflow-visible rounded-shape-100",
               index > 0 ? "-ml-space-8" : "",
               selected ? "z-20 scale-110" : "hover:z-30 hover:scale-110",
             ].join(" ")}

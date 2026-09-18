@@ -19,7 +19,7 @@ export function FilterPopover({
 }: FilterPopoverProps) {
   return (
     <div
-      className="absolute top-full left-0 z-30 mt-space-8 w-[min(100vw-2rem,280px)] rounded-shape-20 border border-neutral-300 bg-surface/80 p-space-16 shadow-sm backdrop-blur-md"
+      className="motion-dropdown absolute top-full left-0 z-30 mt-space-8 w-[min(100vw-2rem,280px)] rounded-shape-20 border border-neutral-300 bg-surface/80 p-space-16 shadow-sm backdrop-blur-md"
       role="dialog"
       aria-label="Filtros"
     >
@@ -40,7 +40,7 @@ export function FilterPopover({
               className={[
                 "flex min-h-12 w-full items-center justify-center rounded-shape-100 px-space-16 text-label-medium font-semibold transition-colors",
                 active
-                  ? "bg-secondary text-surface hover:bg-neutral-1100"
+                  ? "bg-primary text-neutral-1100 hover:bg-primary/90"
                   : "border border-neutral-300 bg-surface text-neutral-1100 hover:bg-neutral-100",
               ].join(" ")}
             >

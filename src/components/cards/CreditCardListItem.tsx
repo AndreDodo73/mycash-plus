@@ -1,19 +1,12 @@
 import type { CreditCard } from "../../types/finance";
+import { MOTION, staggerStyle } from "../../constants/motion";
 import { formatCurrency } from "../../utils/formatCurrency";
-import logoInter from "../../assets/cards/logo-inter.png";
-import logoNubank from "../../assets/cards/logo-nubank.png";
-import logoPicpay from "../../assets/cards/logo-picpay.png";
-
-const BANK_LOGOS: Record<string, string> = {
-  nubank: logoNubank,
-  inter: logoInter,
-  picpay: logoPicpay,
-  picPay: logoPicpay,
-};
+import { resolveBankLogo } from "../../utils/bankLogo";
 
 type CreditCardListItemProps = {
   card: CreditCard;
   onOpen: (cardId: string) => void;
+  staggerIndex?: number;
 };
 
 export function getCardUsagePercent(card: CreditCard): number {
@@ -24,14 +17,14 @@ export function getCardUsagePercent(card: CreditCard): number {
 }
 
 export function resolveCardLogo(card: CreditCard): string | undefined {
-  if (card.logoUrl) {
-    return card.logoUrl;
-  }
-  const key = card.name.replace(/\s/g, "").toLowerCase();
-  return BANK_LOGOS[key] ?? BANK_LOGOS[card.name.toLowerCase()];
+  return resolveBankLogo(card.name, card.logoUrl);
 }
 
-export function CreditCardListItem({ card, onOpen }: CreditCardListItemProps) {
+export function CreditCardListItem({
+  card,
+  onOpen,
+  staggerIndex = 0,
+}: CreditCardListItemProps) {
   const logo = resolveCardLogo(card);
   const digits = card.lastFourDigits ?? "0000";
   const usage = getCardUsagePercent(card);
@@ -41,7 +34,8 @@ export function CreditCardListItem({ card, onOpen }: CreditCardListItemProps) {
       type="button"
       onClick={() => onOpen(card.id)}
       aria-label={`${card.name}, fatura ${formatCurrency(card.currentInvoice)}, uso ${usage}%`}
-      className="group flex w-full min-w-0 cursor-pointer items-start justify-between gap-space-16 rounded-shape-20 border border-neutral-300 bg-surface p-space-16 text-left shadow-sm transition-[transform,box-shadow,border-color] duration-200 ease-out hover:-translate-y-1 hover:border-primary hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary md:p-space-20"
+      className="motion-enter-up motion-hover-lift group flex w-full min-w-0 cursor-pointer items-start justify-between gap-space-16 rounded-shape-20 border border-neutral-300 bg-surface p-space-16 text-left shadow-sm hover:border-neutral-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-1100 md:p-space-20"
+      style={staggerStyle(staggerIndex, MOTION.stagger.gridMs)}
     >
       <div className="flex min-w-0 flex-1 flex-col gap-space-8">
         <div className="flex min-w-0 items-center gap-space-8">

@@ -1,4 +1,5 @@
 import { formatCurrency } from "../../utils/formatCurrency";
+import { MOTION, staggerStyle } from "../../constants/motion";
 
 const DONUT_SIZE = 72;
 const DONUT_STROKE = 8;
@@ -8,6 +9,7 @@ type CategoryDonutCardProps = {
   amount: number;
   percentage: number;
   ringColor: string;
+  staggerIndex?: number;
 };
 
 export function CategoryDonutCard({
@@ -15,6 +17,7 @@ export function CategoryDonutCard({
   amount,
   percentage,
   ringColor,
+  staggerIndex = 0,
 }: CategoryDonutCardProps) {
   const radius = (DONUT_SIZE - DONUT_STROKE) / 2;
   const circumference = 2 * Math.PI * radius;
@@ -23,8 +26,10 @@ export function CategoryDonutCard({
   const label = `${clamped.toFixed(1)}%`;
 
   return (
-    <article className="flex min-w-[140px] flex-[1_0_0] flex-col items-center justify-center gap-space-12 rounded-shape-20 border border-neutral-300 bg-surface p-space-24 transition-colors hover:border-primary sm:min-w-[160px]">
-      <div
+    <article
+      className="motion-enter-scale motion-hover-lift flex min-w-[140px] flex-[1_0_0] flex-col items-center justify-center gap-space-12 rounded-shape-20 border border-neutral-300 bg-surface p-space-24 hover:border-neutral-400 sm:min-w-[160px]"
+      style={staggerStyle(staggerIndex, MOTION.stagger.donutMs)}
+    >      <div
         className="relative flex h-[var(--size-72)] w-[var(--size-72)] items-center justify-center"
         aria-hidden="true"
       >

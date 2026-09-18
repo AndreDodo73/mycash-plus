@@ -1,8 +1,6 @@
-const currencyFormatter = new Intl.NumberFormat("pt-BR", {
-  style: "currency",
-  currency: "BRL",
-});
-
-export function formatCurrency(value: number): string {
-  return currencyFormatter.format(value);
-}
+/** @deprecated Use `./currency` — mantido para imports existentes. */
+export {
+  formatCompactCurrency,
+  formatCurrency,
+  parseCurrencyInput,
+} from "./currency";
