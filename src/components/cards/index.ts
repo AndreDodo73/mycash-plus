@@ -1,2 +1,7 @@
-export { CreditCardListItem, getCardUsagePercent } from "./CreditCardListItem";
+export { CardsView } from "./CardsView";
+export {
+  CreditCardListItem,
+  getCardUsagePercent,
+  resolveCardLogo,
+} from "./CreditCardListItem";
 export { CreditCardsWidget } from "./CreditCardsWidget";

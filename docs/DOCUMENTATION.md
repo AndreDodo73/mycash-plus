@@ -26,8 +26,8 @@ Playbook de execução (decisões, breakpoints, conflitos): `docs/playbook-promp
 - [x] PROMPT 13: Modal de adicionar membro
 - [x] PROMPT 14: Modal de adicionar cartão
 - [x] PROMPT 15: Modal de detalhes do cartão
-- [ ] PROMPT 16: Modal de filtros mobile
-- [ ] PROMPT 17: View completa de cartões
+- [x] PROMPT 16: Modal de filtros mobile
+- [x] PROMPT 17: View completa de cartões
 - [ ] PROMPT 18: View completa de transações
 - [ ] PROMPT 19: Perfil — informações
 - [ ] PROMPT 20: Perfil — configurações
@@ -737,7 +737,8 @@ Tentativas: 2 | Erros: 1 (tipo de cor literal) → corrigido
 
 ### Commit
 
-Não realizado (aguardando “Fazer commit e documentar”)
+feat: modais de conta/cartão, detalhes do cartão e filtros mobile  
+Hash: `a0378a9`
 
 ## PROMPT 15: Modal de detalhes do cartão
 
@@ -772,4 +773,82 @@ Tentativas: 2 | Erros: 1 (nullability de `card` em handler) → corrigido
 
 ### Commit
 
+feat: modais de conta/cartão, detalhes do cartão e filtros mobile  
+Hash: `a0378a9`
+
+## PROMPT 16: Modal de filtros mobile
+
+Status: ✅ | Data: 17/09/2026 | Build: ✅ (incluído no commit `a0378a9`)
+
+Playbook: ficha P16. Spec: sheet fullscreen mobile, estado local até Aplicar.
+
+### Implementado
+
+- `FiltersMobileModal` em `<1280px` (`lg:hidden`), slide 300ms de baixo para cima
+- Header fixo “Filtros” + X 44px; body scroll; footer “Aplicar Filtros” 56px
+- Tipo 3 colunas; membros wrap com avatar 32px; calendário 1 mês com intervalo
+- Draft local; Aplicar copia para `transactionType`, `selectedMember`, `dateRange`
+- X / overlay / Escape descarta sem aplicar
+- Ligado ao botão de filtros do `DashboardHeader`
+
+### Tokens
+
+Semânticas: `--color-surface`, `--color-secondary`, `--color-primary`, `--color-secondary-50`
+
+Primitivas: `--color-neutral-*`, `--spacing-space-*`, `--radius-shape-20/100`
+
+Conversões:
+
+- Slide 300ms → `duration-300`
+- Botão aplicar 56px → `h-14`
+- Tipo 48px → `min-h-12`
+- Calendário célula → `h-12` / `size-10`
+
+### Build
+
+Incluído no mesmo ciclo dos Prompts 14–15.
+
+### Commit
+
+feat: modais de conta/cartão, detalhes do cartão e filtros mobile  
+Hash: `a0378a9`
+
+## PROMPT 17: View completa de cartões
+
+Status: ✅ | Data: 18/09/2026 | Build: ✅ (1 tentativa)
+
+Playbook: ficha P17. Figma: `Dashboard-cartões` (`0:3179`). Ordenação: **fatura desc**.
+
+### Implementado
+
+- `CardsView` em `/cartoes` via `CardsPage` (substitui placeholder)
+- Header Figma: ícone + “Cartões” + subtítulo “Gerencia seus cartões e contas bancárias”
+- Seção Cartões em grid 1 / 2 / 3 (`md` tablet, `xl` desktop 1280)
+- Card detalhado: limite, fatura (vermelho ≥80% de uso), disponível, barra de uso, fechamento/vencimento, `•••• 1234`, tema na borda
+- Ações: clique / Ver Detalhes → P15; Adicionar Despesa → P12; Novo cartão / empty state → P14
+- Seção Contas bancárias (layout Figma) + tile “Nova conta”
+- Empty state de cartões: ícone, “Nenhum cartão cadastrado”, “Cadastrar Primeiro Cartão”
+
+### Tokens
+
+Semânticas: `--color-surface`, `--color-secondary`, `--color-primary`, `--color-background`
+
+Primitivas: `--color-neutral-*`, `--color-red-600`, `--spacing-space-*`, `--radius-shape-20/100`, `--text-heading-medium/small`
+
+Conversões:
+
+- Frame `0:3179` (sidebar no frame) → só o conteúdo; sidebar continua no `AppShell`
+- Ícone header ~60px → `size-space-56` + `rounded-shape-20`
+- Card Figma 152px / gap 16px → `min-h-40` no tile + `gap-space-16`
+- Paragraph/Medium 16 → `text-label-medium font-normal`
+- “Próximo do limite” → uso ≥ 80% (`text-red-600`)
+- Saldo atualizado sem campo no tipo → data de hoje `dd/mm/aaaa`
+
+### Build
+
+Tentativas: 1
+
+### Commit
+
 Não realizado (aguardando “Fazer commit e documentar”)
+

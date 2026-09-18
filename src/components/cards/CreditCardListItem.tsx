@@ -23,7 +23,7 @@ export function getCardUsagePercent(card: CreditCard): number {
   return Math.round((card.currentInvoice / card.limit) * 100);
 }
 
-function resolveLogo(card: CreditCard): string | undefined {
+export function resolveCardLogo(card: CreditCard): string | undefined {
   if (card.logoUrl) {
     return card.logoUrl;
   }
@@ -32,7 +32,7 @@ function resolveLogo(card: CreditCard): string | undefined {
 }
 
 export function CreditCardListItem({ card, onOpen }: CreditCardListItemProps) {
-  const logo = resolveLogo(card);
+  const logo = resolveCardLogo(card);
   const digits = card.lastFourDigits ?? "0000";
   const usage = getCardUsagePercent(card);
 
