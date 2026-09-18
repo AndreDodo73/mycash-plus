@@ -29,7 +29,7 @@ Playbook de execução (decisões, breakpoints, conflitos): `docs/playbook-promp
 - [x] PROMPT 16: Modal de filtros mobile
 - [x] PROMPT 17: View completa de cartões
 - [x] PROMPT 18: View completa de transações
-- [ ] PROMPT 19: Perfil — informações
+- [x] PROMPT 19: Perfil — informações
 - [ ] PROMPT 20: Perfil — configurações
 - [ ] PROMPT 21: Animações e transições
 - [ ] PROMPT 22: Formatação e utilitários
@@ -889,4 +889,40 @@ Tentativas: 1
 
 feat: view completa de transações com filtros, resumo e CSV  
 Hash: `e963dee`
+
+## PROMPT 19: Perfil — aba Informações
+
+Status: ✅ | Data: 18/09/2026 | Build: ✅ (2 tentativas)
+
+Playbook: ficha P19. Sem frame de Perfil no Figma — spec + tokens. Aba Configurações fica para o P20.
+
+### Implementado
+
+- `ProfileView` em `/perfil` via `ProfilePage`, abas Informações | Configurações (default Informações)
+- Card do usuário = primeiro `familyMembers`: avatar, nome, função, e-mail, renda, “Editar Perfil”
+- Lista “Membros da Família” (avatar 48px, nome/função, renda); empty state com CTA se só houver o usuário
+- Clique no membro ou em Editar Perfil abre `AddMemberModal` em modo edição (`editMemberId`)
+- Campo e-mail no modal (já existia em `FamilyMember.email?`)
+- “Sair” (protótipo): limpa membro selecionado, busca e tipo de transação e volta ao dashboard
+- Placeholder da aba Configurações (P20)
+
+### Tokens
+
+Semânticas: `--color-surface`, `--color-secondary`, `--color-background`
+
+Primitivas: `--color-neutral-*`, `--color-red-600`, `--spacing-space-*`, `--radius-shape-20/100`, `--size-72`
+
+Conversões:
+
+- Avatar 120px (spec) → `--size-72` no mobile; `md:h-32`/`md:w-32` (128px) no desktop
+- Avatar da lista 48px → `size-12`
+- Botão Sair vermelho → `--color-red-600`
+
+### Build
+
+Tentativas: 2
+
+### Commit
+
+Não realizado (aguardando pedido do usuário)
 

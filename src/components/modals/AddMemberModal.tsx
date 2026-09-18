@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import iconCheck from "../../assets/dashboard/icon-check.svg";
 import iconChevron from "../../assets/dashboard/icon-chevron-down.svg";
 import iconUsers from "../../assets/modals/icon-users.svg";
@@ -12,12 +12,14 @@ type AvatarMode = "url" | "upload";
 type FormErrors = {
   name?: string;
   role?: string;
+  email?: string;
   avatar?: string;
 };
 
 type AddMemberModalProps = {
   open: boolean;
   onClose: () => void;
+  editMemberId?: string | null;
 };
 
 const ROLE_SUGGESTIONS = [
@@ -44,6 +46,7 @@ function createInitialState() {
   return {
     name: "",
     role: "",
+    email: "",
     incomeDigits: "",
     avatarMode: "url" as AvatarMode,
     avatarUrl: "",
@@ -51,8 +54,26 @@ function createInitialState() {
   };
 }
 
-export function AddMemberModal({ open, onClose }: AddMemberModalProps) {
-  const { addFamilyMember } = useFinance();
+function incomeToDigits(amount: number | undefined): string {
+  if (!amount || amount <= 0) {
+    return "";
+  }
+  return String(Math.round(amount * 100));
+}
+
+export function AddMemberModal({
+  open,
+  onClose,
+  editMemberId = null,
+}: AddMemberModalProps) {
+  const { familyMembers, addFamilyMember, updateFamilyMember } = useFinance();
+  const isEditing = Boolean(editMemberId);
+  const editingMember = editMemberId
+    ? familyMembers.find((member) => member.id === editMemberId)
+    : undefined;
+  const isEditingUser = Boolean(
+    editingMember && familyMembers[0]?.id === editingMember.id,
+  );
   const titleId = useId();
   const roleListId = useId();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -62,14 +83,39 @@ export function AddMemberModal({ open, onClose }: AddMemberModalProps) {
   const [toast, setToast] = useState<string | null>(null);
   const [closing, setClosing] = useState(false);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!open) {
       return;
     }
-    setForm(createInitialState());
+
+    if (editMemberId) {
+      const member = familyMembers.find((item) => item.id === editMemberId);
+      if (member) {
+        const isDataUrl = member.avatarUrl.startsWith("data:");
+        setForm({
+          name: member.name,
+          role: member.role,
+          email: member.email ?? "",
+          incomeDigits: incomeToDigits(member.monthlyIncome),
+          avatarMode: isDataUrl ? "upload" : "url",
+          avatarUrl:
+            isDataUrl || member.avatarUrl === avatarPlaceholder
+              ? ""
+              : member.avatarUrl,
+          avatarDataUrl: isDataUrl ? member.avatarUrl : "",
+        });
+      } else {
+        setForm(createInitialState());
+      }
+    } else {
+      setForm(createInitialState());
+    }
+
     setErrors({});
     setClosing(false);
-  }, [open]);
+    // familyMembers é lido no open; não entra nas deps para não resetar o form no save.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, editMemberId]);
 
   useEffect(() => {
     if (!open) {
@@ -157,6 +203,10 @@ export function AddMemberModal({ open, onClose }: AddMemberModalProps) {
     if (!form.role.trim()) {
       next.role = "Por favor, informe a função na família";
     }
+    const email = form.email.trim();
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      next.email = "Por favor, insira um e-mail válido";
+    }
     return next;
   }
 
@@ -171,16 +221,28 @@ export function AddMemberModal({ open, onClose }: AddMemberModalProps) {
     const avatarUrl =
       form.avatarMode === "upload" && form.avatarDataUrl
         ? form.avatarDataUrl
-        : avatarFromUrl || avatarPlaceholder;
+        : avatarFromUrl ||
+          (isEditing ? editingMember?.avatarUrl : undefined) ||
+          avatarPlaceholder;
 
-    addFamilyMember({
+    const payload = {
       name: form.name.trim(),
       role: form.role.trim(),
+      email: form.email.trim() || undefined,
       avatarUrl,
       monthlyIncome: digitsToAmount(form.incomeDigits),
-    });
+    };
 
-    showToast("Membro adicionado com sucesso!");
+    if (editMemberId) {
+      updateFamilyMember(editMemberId, payload);
+      showToast(
+        isEditingUser ? "Perfil atualizado!" : "Membro atualizado com sucesso!",
+      );
+    } else {
+      addFamilyMember(payload);
+      showToast("Membro adicionado com sucesso!");
+    }
+
     requestClose();
   }
 
@@ -241,10 +303,18 @@ export function AddMemberModal({ open, onClose }: AddMemberModalProps) {
                     id={titleId}
                     className="text-heading-small font-bold text-neutral-1100 md:text-heading-medium"
                   >
-                    Novo familiar
+                    {isEditingUser
+                      ? "Editar perfil"
+                      : isEditing
+                        ? "Editar familiar"
+                        : "Novo familiar"}
                   </h2>
                   <p className="text-label-medium tracking-[0.3px] text-neutral-600">
-                    Adicione alguém para participar do controle financeiro.
+                    {isEditingUser
+                      ? "Atualize seus dados de perfil."
+                      : isEditing
+                        ? "Atualize os dados deste familiar."
+                        : "Adicione alguém para participar do controle financeiro."}
                   </p>
                 </div>
               </div>
@@ -296,6 +366,34 @@ export function AddMemberModal({ open, onClose }: AddMemberModalProps) {
                       {errors.name}
                     </span>
                   ) : null}
+                </label>
+
+                <label className="flex w-full flex-col gap-space-8">
+                  <span className="text-label-large font-semibold tracking-[0.3px] text-neutral-1100">
+                    E-mail
+                  </span>
+                  <input
+                    type="email"
+                    value={form.email}
+                    placeholder="email@exemplo.com"
+                    onChange={(event) => {
+                      updateForm("email", event.target.value);
+                      setErrors((current) => ({ ...current, email: undefined }));
+                    }}
+                    className={[
+                      "min-h-14 w-full rounded-[20px] border bg-surface px-space-16 text-label-large tracking-[0.3px] text-neutral-1100 outline-none placeholder:text-neutral-500",
+                      errors.email ? "border-red-600" : "border-neutral-1100",
+                    ].join(" ")}
+                  />
+                  {errors.email ? (
+                    <span className="text-paragraph-x-small text-red-600">
+                      {errors.email}
+                    </span>
+                  ) : (
+                    <span className="text-paragraph-x-small text-neutral-600">
+                      Opcional
+                    </span>
+                  )}
                 </label>
 
                 <div className="grid w-full grid-cols-1 gap-space-16 md:grid-cols-2">
