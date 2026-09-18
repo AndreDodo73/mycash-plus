@@ -1,12 +1,11 @@
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import iconCheck from "../../assets/dashboard/icon-check.svg";
 import iconCross from "../../assets/sidebar/icon-cross.svg";
 import iconArrowType from "../../assets/modals/icon-arrow-type.svg";
-import iconCalendar from "../../assets/modals/icon-calendar.svg";
 import { useFinance } from "../../hooks";
 import type { TransactionType } from "../../types/finance";
 import { formatCurrency } from "../../utils/formatCurrency";
-import { ChevronIcon, ModalCloseButton } from "../ui";
+import { ChevronIcon, DatePicker, ModalCloseButton } from "../ui";
 
 type FormErrors = {
   amount?: string;
@@ -37,10 +36,6 @@ function toDateInputValue(date: Date): string {
 function parseDateInputValue(value: string): Date {
   const [year, month, day] = value.split("-").map(Number);
   return new Date(year, month - 1, day, 12, 0, 0, 0);
-}
-
-function formatDateDisplay(date: Date): string {
-  return `${pad2(date.getDate())}/${pad2(date.getMonth() + 1)}/${date.getFullYear()}`;
 }
 
 function digitsToAmount(digits: string): number {
@@ -86,7 +81,7 @@ export function NewTransactionModal({
   } = useFinance();
 
   const titleId = useId();
-  const dateInputRef = useRef<HTMLInputElement>(null);
+  const dateFieldId = useId();
   const [form, setForm] = useState(() =>
     createInitialState(defaultType, defaultAccountId),
   );
@@ -401,34 +396,12 @@ export function NewTransactionModal({
                   ) : null}
                 </label>
 
-                <label className="flex w-full flex-col gap-space-8">
-                  <span className="text-label-large font-semibold tracking-[0.3px] text-neutral-1100">
-                    Data
-                  </span>
-                  <div className="relative w-full">
-                    <input
-                      ref={dateInputRef}
-                      type="date"
-                      value={form.date}
-                      onChange={(event) => updateForm("date", event.target.value)}
-                      className="absolute inset-0 z-10 cursor-pointer opacity-0"
-                      aria-label="Data da transação"
-                    />
-                    <div className="flex min-h-14 w-full items-center justify-between rounded-shape-20 border border-neutral-1100 bg-surface px-space-16 text-label-large tracking-[0.3px] text-neutral-1100">
-                      <span>
-                        {formatDateDisplay(parseDateInputValue(form.date))}
-                      </span>
-                      <img
-                        src={iconCalendar}
-                        alt=""
-                        width={24}
-                        height={24}
-                        className="size-space-24"
-                        aria-hidden="true"
-                      />
-                    </div>
-                  </div>
-                </label>
+                <DatePicker
+                  id={dateFieldId}
+                  label="Data"
+                  value={parseDateInputValue(form.date)}
+                  onChange={(date) => updateForm("date", toDateInputValue(date))}
+                />
               </div>
 
               <label className="flex w-full flex-col gap-space-8">

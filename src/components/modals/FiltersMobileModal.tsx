@@ -6,6 +6,7 @@ import {
   addMonths,
   endOfDay,
   endOfMonth,
+  formatMonthYear,
   isDateInRange,
   isSameDay,
   startOfDay,
@@ -77,10 +78,7 @@ export function FiltersMobileModal({ open, onClose }: FiltersMobileModalProps) {
   );
 
   const days = useMemo(() => buildMonthDays(viewMonth), [viewMonth]);
-  const monthLabel = viewMonth.toLocaleDateString("pt-BR", {
-    month: "long",
-    year: "numeric",
-  });
+  const monthLabel = formatMonthYear(viewMonth);
   const today = useMemo(() => startOfDay(new Date()), []);
 
   useEffect(() => {
@@ -283,7 +281,7 @@ export function FiltersMobileModal({ open, onClose }: FiltersMobileModalProps) {
 
             <div className="flex w-full flex-col rounded-shape-20 border border-neutral-300 bg-surface">
               <div className="flex items-center justify-between py-space-4 pr-space-12 pl-space-16">
-                <p className="text-label-medium font-medium capitalize text-neutral-1100">
+                <p className="text-label-medium font-medium text-neutral-1100">
                   {monthLabel}
                 </p>
                 <div className="flex items-center">

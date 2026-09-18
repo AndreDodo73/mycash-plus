@@ -28,8 +28,25 @@ const MONTH_LONG = [
   "dezembro",
 ] as const;
 
+const WEEKDAY_SHORT = [
+  "dom.",
+  "seg.",
+  "ter.",
+  "qua.",
+  "qui.",
+  "sex.",
+  "sáb.",
+] as const;
+
 function pad2(value: number): string {
   return String(value).padStart(2, "0");
+}
+
+function capitalizeFirst(value: string): string {
+  if (!value) {
+    return value;
+  }
+  return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
 /**
@@ -59,6 +76,29 @@ export function formatDateLong(date: Date): string {
   const month = MONTH_LONG[date.getMonth()];
   const year = date.getFullYear();
   return `${day} de ${month} de ${year}`;
+}
+
+/**
+ * Headline de calendário: `Sex., 15 de set. de 2026`
+ * (preposição "de" sempre minúscula — não usar CSS `capitalize`).
+ */
+export function formatDateHeadline(date: Date, options?: { withYear?: boolean }): string {
+  const withYear = options?.withYear ?? true;
+  const weekday = capitalizeFirst(WEEKDAY_SHORT[date.getDay()]);
+  const day = date.getDate();
+  const month = MONTH_SHORT[date.getMonth()];
+  if (!withYear) {
+    return `${weekday} ${day} de ${month}.`;
+  }
+  return `${weekday} ${day} de ${month}. de ${date.getFullYear()}`;
+}
+
+/**
+ * Rótulo do mês no calendário: `Setembro de 2026`
+ */
+export function formatMonthYear(date: Date): string {
+  const month = capitalizeFirst(MONTH_LONG[date.getMonth()]);
+  return `${month} de ${date.getFullYear()}`;
 }
 
 /**

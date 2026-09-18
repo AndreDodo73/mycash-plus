@@ -5,7 +5,9 @@ import {
   addMonths,
   endOfDay,
   endOfMonth,
+  formatDateHeadline,
   formatDateRangeLabel,
+  formatMonthYear,
   isDateInRange,
   isSameDay,
   startOfDay,
@@ -39,11 +41,7 @@ function formatHeadline(start: Date | null, end: Date | null): string {
     return formatDateRangeLabel(start, end);
   }
   if (start) {
-    return start.toLocaleDateString("pt-BR", {
-      weekday: "short",
-      day: "numeric",
-      month: "short",
-    });
+    return formatDateHeadline(start, { withYear: false });
   }
   return "Selecionar período";
 }
@@ -92,10 +90,7 @@ export function DateRangePicker({ value, onChange }: DateRangePickerProps) {
   }, [open]);
 
   const days = useMemo(() => buildMonthDays(viewMonth), [viewMonth]);
-  const monthLabel = viewMonth.toLocaleDateString("pt-BR", {
-    month: "long",
-    year: "numeric",
-  });
+  const monthLabel = formatMonthYear(viewMonth);
 
   function orderedDraft(): DateRange | null {
     if (!draftStart) {
@@ -173,7 +168,7 @@ export function DateRangePicker({ value, onChange }: DateRangePickerProps) {
           </div>
 
           <div className="flex items-center justify-between py-space-4 pr-space-12 pl-space-16">
-            <p className="text-label-medium font-medium capitalize text-neutral-1100">
+            <p className="text-label-medium font-medium text-neutral-1100">
               {monthLabel}
             </p>
             <div className="flex items-center">
