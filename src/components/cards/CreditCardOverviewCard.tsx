@@ -5,6 +5,7 @@ import { MOTION, staggerStyle } from "../../constants/motion";
 import { useFinance } from "../../hooks";
 import type { CreditCard, FamilyMember } from "../../types/finance";
 import { formatCurrency } from "../../utils/formatCurrency";
+import { Avatar } from "../ui";
 import { getCardUsagePercent, getCardThemeBorderClass, getCardThemeSwatchClass, resolveCardLogo } from "./CreditCardListItem";
 
 const NEAR_LIMIT_PERCENT = 80;
@@ -299,9 +300,8 @@ export function CreditCardOverviewCard({
         </div>
         {holder ? (
           <span className="motion-avatar size-8 shrink-0 overflow-hidden rounded-full border border-neutral-300">
-            <img
+            <Avatar
               src={holder.avatarUrl}
-              alt=""
               width={32}
               height={32}
               className="size-full object-cover"

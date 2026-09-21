@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import logoDefault from "../assets/sidebar/logo-default.svg";
+import { PasswordField } from "../components/auth/PasswordField";
 import { useAuth } from "../contexts/AuthContext";
 
 export function RegisterPage() {
@@ -90,21 +91,15 @@ export function RegisterPage() {
             />
           </label>
 
-          <label className="flex w-full flex-col gap-space-8">
-            <span className="text-label-medium font-semibold text-neutral-1100">
-              Senha
-            </span>
-            <input
-              type="password"
-              autoComplete="new-password"
-              required
-              minLength={6}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="min-h-12 w-full rounded-shape-100 border border-neutral-1100 bg-surface px-space-16 text-base text-neutral-1100 outline-none focus:border-primary"
-              placeholder="Mínimo 6 caracteres"
-            />
-          </label>
+          <PasswordField
+            label="Senha"
+            autoComplete="new-password"
+            required
+            minLength={6}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Mínimo 6 caracteres"
+          />
 
           {error ? (
             <p

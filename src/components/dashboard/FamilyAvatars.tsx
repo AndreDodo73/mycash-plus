@@ -1,4 +1,5 @@
 import { useFinance } from "../../hooks";
+import { Avatar } from "../ui";
 
 type FamilyAvatarsProps = {
   onAddMember: () => void;
@@ -32,9 +33,8 @@ export function FamilyAvatars({ onAddMember }: FamilyAvatarsProps) {
                 selected ? "border-4 border-secondary" : "border-2 border-surface",
               ].join(" ")}
             >
-              <img
+              <Avatar
                 src={member.avatarUrl}
-                alt=""
                 width={44}
                 height={44}
                 className="size-full object-cover"

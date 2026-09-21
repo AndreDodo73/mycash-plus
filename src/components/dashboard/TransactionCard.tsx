@@ -2,6 +2,7 @@ import type { FamilyMember, Transaction } from "../../types/finance";
 import iconExpense from "../../assets/dashboard/icon-expense.svg";
 import iconIncome from "../../assets/dashboard/icon-income.svg";
 import { MOTION, staggerStyle } from "../../constants/motion";
+import { Avatar } from "../ui";
 import {
   formatInstallments,
   formatSignedAmount,
@@ -31,17 +32,19 @@ export function TransactionCard({
     >      <div className="flex items-center justify-between gap-space-12">
         <div className="flex min-w-0 items-center gap-space-8">
           {member ? (
-            <img
+            <Avatar
               src={member.avatarUrl}
-              alt=""
               width={24}
               height={24}
               className="size-space-24 shrink-0 rounded-shape-100 object-cover"
             />
           ) : (
-            <span className="flex size-space-24 shrink-0 items-center justify-center rounded-shape-100 bg-neutral-300 text-[10px] font-bold text-neutral-1100">
-              ?
-            </span>
+            <Avatar
+              src={null}
+              width={24}
+              height={24}
+              className="size-space-24 shrink-0 rounded-shape-100 object-cover"
+            />
           )}
           <p className="truncate text-label-x-small text-neutral-600">
             {member?.name ?? "Familiar"}

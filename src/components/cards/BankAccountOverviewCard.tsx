@@ -5,6 +5,7 @@ import { useFinance } from "../../hooks";
 import type { BankAccount, FamilyMember } from "../../types/finance";
 import { resolveBankLogo } from "../../utils/bankLogo";
 import { formatCurrency } from "../../utils/formatCurrency";
+import { Avatar } from "../ui";
 
 type BankAccountOverviewCardProps = {
   account: BankAccount;
@@ -170,9 +171,8 @@ export function BankAccountOverviewCard({
         </div>
         {holder ? (
           <span className="motion-avatar size-8 shrink-0 overflow-hidden rounded-full border border-neutral-300">
-            <img
+            <Avatar
               src={holder.avatarUrl}
-              alt=""
               width={32}
               height={32}
               className="size-full object-cover"

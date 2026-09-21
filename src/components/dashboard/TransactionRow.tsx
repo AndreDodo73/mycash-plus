@@ -4,6 +4,7 @@ import { formatCurrency } from "../../utils/formatCurrency";
 import { formatDate } from "../../utils/date";
 import iconExpense from "../../assets/dashboard/icon-expense.svg";
 import iconIncome from "../../assets/dashboard/icon-income.svg";
+import { Avatar } from "../ui";
 
 export function formatTransactionDate(date: Date): string {
   return formatDate(date);
@@ -74,22 +75,12 @@ export function TransactionRow({
       style={staggerStyle(staggerIndex, MOTION.stagger.transactionMs)}
     >
       <td className="w-12 px-space-8 py-space-12 lg:w-[50px] lg:px-space-12">
-        {member ? (
-          <img
-            src={member.avatarUrl}
-            alt=""
-            width={24}
-            height={24}
-            className="size-space-24 rounded-shape-100 object-cover"
-          />
-        ) : (
-          <span
-            className="flex size-space-24 items-center justify-center rounded-shape-100 bg-neutral-300 text-[10px] font-bold text-neutral-1100"
-            aria-hidden="true"
-          >
-            ?
-          </span>
-        )}
+        <Avatar
+          src={member?.avatarUrl}
+          width={24}
+          height={24}
+          className="size-space-24 rounded-shape-100 object-cover"
+        />
       </td>
       <td className="px-space-8 py-space-12 text-label-x-small tracking-[0.3px] text-neutral-600 whitespace-nowrap lg:px-space-12">
         {formatTransactionDate(tx.date)}

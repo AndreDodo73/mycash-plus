@@ -1,19 +1,28 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import avatarPlaceholder from "../../assets/sidebar/avatar-placeholder.png";
 import logoDefault from "../../assets/sidebar/logo-default.svg";
 import logoSmall from "../../assets/sidebar/logo-small.svg";
-import { APP_NAME, PLACEHOLDER_USER } from "../../constants";
+import { APP_NAME } from "../../constants";
 import {
   SIDEBAR_WIDTH_COLLAPSED_PX,
   SIDEBAR_WIDTH_EXPANDED_PX,
 } from "../../constants/breakpoints";
 import { APP_ROUTES } from "../../constants/routes";
-import { ChevronIcon } from "../ui";
+import { useAuth } from "../../hooks";
+import { Avatar, ChevronIcon } from "../ui";
 import { SidebarIcon } from "./SidebarIcon";
 
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
+  const { profile, user } = useAuth();
+
+  const displayName =
+    profile?.name?.trim() ||
+    user?.user_metadata?.name ||
+    user?.email?.split("@")[0] ||
+    "Usuário";
+  const displayEmail = profile?.email || user?.email || "";
+  const displayAvatar = profile?.avatarUrl;
 
   return (
     <aside
@@ -85,31 +94,35 @@ export function Sidebar() {
         </nav>
       </div>
 
-      <div
+      <NavLink
+        to="/perfil"
+        title={collapsed ? displayName : undefined}
+        aria-label={collapsed ? `Perfil de ${displayName}` : undefined}
         className={
           collapsed
-            ? "flex flex-col items-center gap-space-12"
-            : "flex w-full flex-col items-start gap-space-12"
+            ? "flex flex-col items-center gap-space-12 rounded-shape-100 p-space-8 transition-colors hover:bg-neutral-100"
+            : "flex w-full flex-col items-start gap-space-12 rounded-shape-100 p-space-8 transition-colors hover:bg-neutral-100"
         }
       >
-        <img
-          src={avatarPlaceholder}
-          alt=""
+        <Avatar
+          src={displayAvatar}
           width={24}
           height={24}
           className="size-space-24 shrink-0 rounded-shape-100 object-cover"
         />
         {!collapsed ? (
           <div className="flex min-w-0 flex-col gap-space-8">
-            <p className="text-label-medium font-semibold text-neutral-1100">
-              {PLACEHOLDER_USER.name}
+            <p className="truncate text-label-medium font-semibold text-neutral-1100">
+              {displayName}
             </p>
-            <p className="text-paragraph-small text-neutral-1100">
-              {PLACEHOLDER_USER.email}
-            </p>
+            {displayEmail ? (
+              <p className="truncate text-paragraph-small text-neutral-1100">
+                {displayEmail}
+              </p>
+            ) : null}
           </div>
         ) : null}
-      </div>
+      </NavLink>
 
       <button
         type="button"

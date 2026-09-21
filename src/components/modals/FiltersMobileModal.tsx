@@ -12,7 +12,7 @@ import {
   startOfDay,
   startOfMonth,
 } from "../../utils/dateFormat";
-import { ChevronIcon, ModalCloseButton } from "../ui";
+import { ChevronIcon, ModalCloseButton, Avatar } from "../ui";
 
 const TYPE_OPTIONS: { value: TransactionTypeFilter; label: string }[] = [
   { value: "all", label: "Todos" },
@@ -259,9 +259,8 @@ export function FiltersMobileModal({ open, onClose }: FiltersMobileModalProps) {
                         active ? "border-2 border-surface" : "",
                       ].join(" ")}
                     >
-                      <img
+                      <Avatar
                         src={member.avatarUrl}
-                        alt=""
                         width={32}
                         height={32}
                         className="size-full object-cover"

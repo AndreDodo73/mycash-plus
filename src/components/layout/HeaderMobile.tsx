@@ -1,12 +1,21 @@
 import { useEffect, useId, useState } from "react";
-import avatarPlaceholder from "../../assets/sidebar/avatar-placeholder.png";
 import logoDefault from "../../assets/sidebar/logo-default.svg";
-import { APP_NAME, PLACEHOLDER_USER } from "../../constants";
+import { APP_NAME } from "../../constants";
+import { useAuth } from "../../hooks";
+import { Avatar } from "../ui";
 import { MenuDropdown } from "./MenuDropdown";
 
 export function HeaderMobile() {
   const [open, setOpen] = useState(false);
   const menuId = useId();
+  const { profile, user } = useAuth();
+
+  const displayName =
+    profile?.name?.trim() ||
+    user?.user_metadata?.name ||
+    user?.email?.split("@")[0] ||
+    "Usuário";
+  const displayAvatar = profile?.avatarUrl;
 
   function closeMenu() {
     setOpen(false);
@@ -58,12 +67,11 @@ export function HeaderMobile() {
             className="flex size-space-56 shrink-0 items-center justify-center rounded-shape-100 transition-colors hover:bg-neutral-100"
             aria-expanded={open}
             aria-controls={menuId}
-            aria-label={`Menu de ${PLACEHOLDER_USER.name}`}
+            aria-label={`Menu de ${displayName}`}
             onClick={() => setOpen((current) => !current)}
           >
-            <img
-              src={avatarPlaceholder}
-              alt=""
+            <Avatar
+              src={displayAvatar}
               width={32}
               height={32}
               className="size-space-32 rounded-shape-100 object-cover"

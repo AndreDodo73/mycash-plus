@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import iconLogout from "../../assets/profile/icon-logout.svg";
 import { useAuth, useFinance } from "../../hooks";
+import type { FamilyMember } from "../../types/finance";
 import { ProfileInfoTab } from "./ProfileInfoTab";
 import { ProfileSettingsTab } from "./ProfileSettingsTab";
 
@@ -14,17 +15,27 @@ type ProfileViewProps = {
 
 export function ProfileView({ onEditMember, onAddMember }: ProfileViewProps) {
   const navigate = useNavigate();
-  const { signOut } = useAuth();
-  const {
-    familyMembers,
-    setSelectedMember,
-    setSearchText,
-    setTransactionType,
-  } = useFinance();
+  const { signOut, profile, user: authUser } = useAuth();
+  const { setSelectedMember, setSearchText, setTransactionType } = useFinance();
   const [tab, setTab] = useState<ProfileTab>("info");
   const [loggingOut, setLoggingOut] = useState(false);
 
-  const user = familyMembers[0];
+  const accountUser = useMemo<FamilyMember>(() => {
+    const name =
+      profile?.name?.trim() ||
+      (authUser?.user_metadata?.name as string | undefined)?.trim() ||
+      authUser?.email?.split("@")[0] ||
+      "Usuário";
+
+    return {
+      id: authUser?.id ?? "account",
+      name,
+      role: "Titular da conta",
+      avatarUrl: profile?.avatarUrl ?? "",
+      email: profile?.email || authUser?.email || undefined,
+      monthlyIncome: 0,
+    };
+  }, [authUser, profile]);
 
   async function handleLogout() {
     if (loggingOut) return;
@@ -39,26 +50,6 @@ export function ProfileView({ onEditMember, onAddMember }: ProfileViewProps) {
       console.error("[auth] logout", error);
       setLoggingOut(false);
     }
-  }
-
-  if (!user) {
-    return (
-      <section className="flex w-full flex-col gap-space-16 rounded-shape-20 border border-neutral-300 bg-surface p-space-24">
-        <h1 className="text-heading-small font-bold text-neutral-1100">
-          Perfil
-        </h1>
-        <p className="text-paragraph-small text-neutral-600">
-          Nenhum membro cadastrado.
-        </p>
-        <button
-          type="button"
-          onClick={onAddMember}
-          className="flex min-h-12 w-fit items-center justify-center rounded-shape-100 bg-secondary px-space-24 text-label-medium font-semibold text-surface"
-        >
-          Adicionar Membro da Família
-        </button>
-      </section>
-    );
   }
 
   return (
@@ -115,8 +106,8 @@ export function ProfileView({ onEditMember, onAddMember }: ProfileViewProps) {
           aria-labelledby="profile-tab-info"
         >
           <ProfileInfoTab
-            user={user}
-            onEditUser={() => onEditMember(user.id)}
+            user={accountUser}
+            onEditUser={undefined}
             onEditMember={onEditMember}
             onAddMember={onAddMember}
           />

@@ -3,10 +3,11 @@ import iconEnvelope from "../../assets/profile/icon-envelope.svg";
 import { useFinance } from "../../hooks";
 import { formatCurrency } from "../../utils/formatCurrency";
 import type { FamilyMember } from "../../types/finance";
+import { Avatar } from "../ui";
 
 type ProfileInfoTabProps = {
   user: FamilyMember;
-  onEditUser: () => void;
+  onEditUser?: () => void;
   onEditMember: (memberId: string) => void;
   onAddMember: () => void;
 };
@@ -18,14 +19,13 @@ export function ProfileInfoTab({
   onAddMember,
 }: ProfileInfoTabProps) {
   const { familyMembers } = useFinance();
-  const onlySelf = familyMembers.length <= 1;
+  const hasFamilyMembers = familyMembers.length > 0;
 
   return (
     <div className="flex w-full flex-col gap-space-24">
       <article className="flex w-full flex-col items-center gap-space-24 rounded-shape-20 border border-neutral-300 bg-surface p-space-24 md:flex-row md:items-start md:p-space-32">
-        <img
+        <Avatar
           src={user.avatarUrl}
-          alt=""
           width={120}
           height={120}
           className="h-[var(--size-72)] w-[var(--size-72)] shrink-0 rounded-shape-100 object-cover md:h-32 md:w-32"
@@ -67,13 +67,15 @@ export function ProfileInfoTab({
             </span>
           </p>
 
-          <button
-            type="button"
-            onClick={onEditUser}
-            className="mt-space-8 flex min-h-12 items-center justify-center rounded-shape-100 border border-neutral-1100 px-space-24 text-label-medium font-semibold tracking-[0.3px] text-neutral-1100"
-          >
-            Editar Perfil
-          </button>
+          {onEditUser ? (
+            <button
+              type="button"
+              onClick={onEditUser}
+              className="mt-space-8 flex min-h-12 items-center justify-center rounded-shape-100 border border-neutral-1100 px-space-24 text-label-medium font-semibold tracking-[0.3px] text-neutral-1100"
+            >
+              Editar Perfil
+            </button>
+          ) : null}
         </div>
       </article>
 
@@ -82,20 +84,7 @@ export function ProfileInfoTab({
           Membros da Família
         </h3>
 
-        {onlySelf ? (
-          <div className="flex flex-col items-center gap-space-16 rounded-shape-20 bg-neutral-100 px-space-16 py-space-32 text-center">
-            <p className="text-paragraph-small text-neutral-600">
-              Adicione outros membros para acompanhar as finanças em família.
-            </p>
-            <button
-              type="button"
-              onClick={onAddMember}
-              className="flex min-h-12 items-center justify-center rounded-shape-100 bg-secondary px-space-24 text-label-medium font-semibold text-surface"
-            >
-              Adicionar Membro da Família
-            </button>
-          </div>
-        ) : (
+        {hasFamilyMembers ? (
           <ul className="flex w-full flex-col gap-space-8">
             {familyMembers.map((member) => (
               <li key={member.id}>
@@ -105,9 +94,8 @@ export function ProfileInfoTab({
                   onClick={() => onEditMember(member.id)}
                   className="flex min-h-14 w-full min-w-0 items-center gap-space-12 rounded-shape-20 bg-neutral-100 px-space-16 py-space-12 text-left transition-colors hover:bg-neutral-200"
                 >
-                  <img
+                  <Avatar
                     src={member.avatarUrl}
-                    alt=""
                     width={48}
                     height={48}
                     className="size-12 shrink-0 rounded-shape-100 object-cover"
@@ -127,6 +115,19 @@ export function ProfileInfoTab({
               </li>
             ))}
           </ul>
+        ) : (
+          <div className="flex flex-col items-center gap-space-16 rounded-shape-20 bg-neutral-100 px-space-16 py-space-32 text-center">
+            <p className="text-paragraph-small text-neutral-600">
+              Adicione outros membros para acompanhar as finanças em família.
+            </p>
+            <button
+              type="button"
+              onClick={onAddMember}
+              className="flex min-h-12 items-center justify-center rounded-shape-100 bg-secondary px-space-24 text-label-medium font-semibold text-surface"
+            >
+              Adicionar Membro da Família
+            </button>
+          </div>
         )}
       </section>
     </div>

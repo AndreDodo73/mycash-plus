@@ -2,7 +2,7 @@ import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import iconCheck from "../../assets/dashboard/icon-check.svg";
 import iconUsers from "../../assets/modals/icon-users.svg";
 import iconCross from "../../assets/sidebar/icon-cross.svg";
-import avatarPlaceholder from "../../assets/sidebar/avatar-placeholder.png";
+import avatarPlaceholder from "../../assets/sidebar/avatar-placeholder.svg";
 import { useFinance, useAuth } from "../../hooks";
 import { uploadDataUrl } from "../../services/storage";
 import { formatCurrency } from "../../utils/formatCurrency";

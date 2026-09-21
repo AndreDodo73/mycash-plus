@@ -6,9 +6,7 @@ import type {
   Goal,
   Transaction,
 } from "../types/finance";
-import avatarLucas from "../assets/profile/avatar-lucas.jpg";
-import avatarMaria from "../assets/profile/avatar-maria.jpg";
-import avatarPedro from "../assets/profile/avatar-pedro.jpg";
+import avatarPlaceholder from "../assets/sidebar/avatar-placeholder.svg";
 import {
   DEFAULT_GOAL_IMAGE,
   GOAL_ILLUSTRATIONS,
@@ -64,7 +62,7 @@ export const mockFamilyMembers: FamilyMember[] = [
     id: MEMBER_IDS.lucas,
     name: "Lucas Marte",
     role: "Pai",
-    avatarUrl: avatarLucas,
+    avatarUrl: avatarPlaceholder,
     monthlyIncome: 8500,
     email: "lucasmarte@gmail.com",
   },
@@ -72,7 +70,7 @@ export const mockFamilyMembers: FamilyMember[] = [
     id: MEMBER_IDS.maria,
     name: "Maria Marte",
     role: "Mãe",
-    avatarUrl: avatarMaria,
+    avatarUrl: avatarPlaceholder,
     monthlyIncome: 6200,
     email: "mariamarte@gmail.com",
   },
@@ -80,7 +78,7 @@ export const mockFamilyMembers: FamilyMember[] = [
     id: MEMBER_IDS.pedro,
     name: "Pedro Marte",
     role: "Filho",
-    avatarUrl: avatarPedro,
+    avatarUrl: avatarPlaceholder,
     monthlyIncome: 0,
   },
 ];
