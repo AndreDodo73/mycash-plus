@@ -1,7 +1,9 @@
 export { CardsPage } from "./CardsPage";
 export { DashboardPage } from "./DashboardPage";
 export { GoalsPage } from "./GoalsPage";
+export { LoginPage } from "./LoginPage";
 export { MotionLabPage } from "./MotionLabPage";
 export { PlaceholderPage } from "./PlaceholderPage";
 export { ProfilePage } from "./ProfilePage";
+export { RegisterPage } from "./RegisterPage";
 export { TransactionsPage } from "./TransactionsPage";

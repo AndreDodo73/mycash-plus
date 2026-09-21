@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import iconLogout from "../../assets/profile/icon-logout.svg";
-import { useFinance } from "../../hooks";
+import { useAuth, useFinance } from "../../hooks";
 import { ProfileInfoTab } from "./ProfileInfoTab";
 import { ProfileSettingsTab } from "./ProfileSettingsTab";
 
@@ -14,6 +14,7 @@ type ProfileViewProps = {
 
 export function ProfileView({ onEditMember, onAddMember }: ProfileViewProps) {
   const navigate = useNavigate();
+  const { signOut } = useAuth();
   const {
     familyMembers,
     setSelectedMember,
@@ -21,14 +22,23 @@ export function ProfileView({ onEditMember, onAddMember }: ProfileViewProps) {
     setTransactionType,
   } = useFinance();
   const [tab, setTab] = useState<ProfileTab>("info");
+  const [loggingOut, setLoggingOut] = useState(false);
 
   const user = familyMembers[0];
 
-  function handleLogout() {
+  async function handleLogout() {
+    if (loggingOut) return;
+    setLoggingOut(true);
     setSelectedMember(null);
     setSearchText("");
     setTransactionType("all");
-    navigate("/");
+    try {
+      await signOut();
+      navigate("/login", { replace: true });
+    } catch (error) {
+      console.error("[auth] logout", error);
+      setLoggingOut(false);
+    }
   }
 
   if (!user) {
@@ -123,8 +133,9 @@ export function ProfileView({ onEditMember, onAddMember }: ProfileViewProps) {
 
       <button
         type="button"
-        onClick={handleLogout}
-        className="flex min-h-12 w-full items-center justify-center gap-space-8 rounded-shape-100 bg-red-600 px-space-24 text-label-medium font-semibold text-surface transition-colors hover:bg-red-700 md:w-auto"
+        onClick={() => void handleLogout()}
+        disabled={loggingOut}
+        className="flex min-h-12 w-full items-center justify-center gap-space-8 rounded-shape-100 bg-red-600 px-space-24 text-label-medium font-semibold text-surface transition-colors hover:bg-red-700 disabled:opacity-60 md:w-auto"
       >
         <img
           src={iconLogout}

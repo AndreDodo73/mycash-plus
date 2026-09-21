@@ -1,6 +1,7 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import iconCross from "../../assets/sidebar/icon-cross.svg";
 import { APP_ROUTES } from "../../constants/routes";
+import { useAuth } from "../../hooks";
 import { SidebarIcon } from "./SidebarIcon";
 
 type MenuDropdownProps = {
@@ -8,6 +9,19 @@ type MenuDropdownProps = {
 };
 
 export function MenuDropdown({ onClose }: MenuDropdownProps) {
+  const navigate = useNavigate();
+  const { signOut } = useAuth();
+
+  async function handleLogout() {
+    onClose();
+    try {
+      await signOut();
+      navigate("/login", { replace: true });
+    } catch (error) {
+      console.error("[auth] logout", error);
+    }
+  }
+
   return (
     <div
       className="w-full border-b border-neutral-300 bg-surface px-space-16 pt-space-8 pb-space-24 shadow-sm"
@@ -62,7 +76,7 @@ export function MenuDropdown({ onClose }: MenuDropdownProps) {
 
       <button
         type="button"
-        onClick={onClose}
+        onClick={() => void handleLogout()}
         className="mt-space-24 flex min-h-space-56 w-full items-center justify-center rounded-shape-100 bg-red-600 px-space-16 text-label-large font-semibold text-surface transition-colors hover:bg-red-700"
       >
         Sair

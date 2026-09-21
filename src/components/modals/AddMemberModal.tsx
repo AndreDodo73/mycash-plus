@@ -3,7 +3,8 @@ import iconCheck from "../../assets/dashboard/icon-check.svg";
 import iconUsers from "../../assets/modals/icon-users.svg";
 import iconCross from "../../assets/sidebar/icon-cross.svg";
 import avatarPlaceholder from "../../assets/sidebar/avatar-placeholder.png";
-import { useFinance } from "../../hooks";
+import { useFinance, useAuth } from "../../hooks";
+import { uploadDataUrl } from "../../services/storage";
 import { formatCurrency } from "../../utils/formatCurrency";
 import { FieldSelect, ModalCloseButton } from "../ui";
 
@@ -66,7 +67,9 @@ export function AddMemberModal({
   onClose,
   editMemberId = null,
 }: AddMemberModalProps) {
+  const { user } = useAuth();
   const { familyMembers, addFamilyMember, updateFamilyMember } = useFinance();
+  const [submitting, setSubmitting] = useState(false);
   const isEditing = Boolean(editMemberId);
   const editingMember = editMemberId
     ? familyMembers.find((member) => member.id === editMemberId)
@@ -209,40 +212,62 @@ export function AddMemberModal({
     return next;
   }
 
-  function handleSubmit() {
+  async function handleSubmit() {
     const nextErrors = validate();
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) {
       return;
     }
 
-    const avatarFromUrl = form.avatarUrl.trim();
-    const avatarUrl =
-      form.avatarMode === "upload" && form.avatarDataUrl
-        ? form.avatarDataUrl
-        : avatarFromUrl ||
-          (isEditing ? editingMember?.avatarUrl : undefined) ||
-          avatarPlaceholder;
+    setSubmitting(true);
+    try {
+      const avatarFromUrl = form.avatarUrl.trim();
+      let avatarUrl =
+        avatarFromUrl ||
+        (isEditing ? editingMember?.avatarUrl : undefined) ||
+        avatarPlaceholder;
 
-    const payload = {
-      name: form.name.trim(),
-      role: form.role.trim(),
-      email: form.email.trim() || undefined,
-      avatarUrl,
-      monthlyIncome: digitsToAmount(form.incomeDigits),
-    };
+      if (form.avatarMode === "upload" && form.avatarDataUrl && user?.id) {
+        avatarUrl = await uploadDataUrl(
+          "avatars",
+          user.id,
+          form.avatarDataUrl,
+          "avatar.png",
+        );
+      } else if (form.avatarMode === "upload" && form.avatarDataUrl) {
+        avatarUrl = form.avatarDataUrl;
+      }
 
-    if (editMemberId) {
-      updateFamilyMember(editMemberId, payload);
-      showToast(
-        isEditingUser ? "Perfil atualizado!" : "Membro atualizado com sucesso!",
-      );
-    } else {
-      addFamilyMember(payload);
-      showToast("Membro adicionado com sucesso!");
+      const payload = {
+        name: form.name.trim(),
+        role: form.role.trim(),
+        email: form.email.trim() || undefined,
+        avatarUrl,
+        monthlyIncome: digitsToAmount(form.incomeDigits),
+      };
+
+      if (editMemberId) {
+        updateFamilyMember(editMemberId, payload);
+        showToast(
+          isEditingUser ? "Perfil atualizado!" : "Membro atualizado com sucesso!",
+        );
+      } else {
+        addFamilyMember(payload);
+        showToast("Membro adicionado com sucesso!");
+      }
+
+      requestClose();
+    } catch (err) {
+      console.error(err);
+      setErrors({
+        avatar:
+          err instanceof Error
+            ? err.message
+            : "Não foi possível enviar a foto.",
+      });
+    } finally {
+      setSubmitting(false);
     }
-
-    requestClose();
   }
 
   if (!open && !toast) {
@@ -326,7 +351,7 @@ export function AddMemberModal({
                 className="flex w-full flex-col gap-space-24"
                 onSubmit={(event) => {
                   event.preventDefault();
-                  handleSubmit();
+                  void handleSubmit();
                 }}
               >
                 <label className="flex w-full flex-col gap-space-8">
@@ -547,10 +572,11 @@ export function AddMemberModal({
               </button>
               <button
                 type="button"
-                className="flex min-h-12 items-center justify-center rounded-shape-100 bg-neutral-1100 px-space-24 text-label-large font-bold tracking-[0.3px] text-surface"
-                onClick={handleSubmit}
+                disabled={submitting}
+                className="flex min-h-12 items-center justify-center rounded-shape-100 bg-neutral-1100 px-space-24 text-label-large font-bold tracking-[0.3px] text-surface disabled:opacity-60"
+                onClick={() => void handleSubmit()}
               >
-                Salvar
+                {submitting ? "Salvando…" : "Salvar"}
               </button>
             </footer>
           </div>

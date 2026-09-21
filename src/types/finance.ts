@@ -69,6 +69,8 @@ export interface FamilyMember {
 }
 
 export interface CategoryDef {
+  /** ID no Supabase (categorias novas sempre têm). */
+  id?: string;
   name: string;
   color: string;
   kind: TransactionType;

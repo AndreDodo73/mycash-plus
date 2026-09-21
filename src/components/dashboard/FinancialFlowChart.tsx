@@ -9,10 +9,11 @@ import {
 } from "recharts";
 import iconChartFlow from "../../assets/dashboard/icon-chart-flow.svg";
 import {
-  FINANCIAL_FLOW_MOCK,
+  buildFinancialFlowFromTransactions,
   type MonthlyFlowPoint,
 } from "../../data/financialFlowMock";
 import { useChartHeight } from "../../hooks/useChartHeight";
+import { useFinance } from "../../hooks";
 import { formatCompactCurrency, formatCurrency } from "../../utils/currency";
 
 const INCOME_COLOR = "var(--color-primary)";
@@ -67,7 +68,8 @@ function FlowTooltip({ active, payload }: FlowTooltipProps) {
 
 export function FinancialFlowChart() {
   const chartHeight = useChartHeight();
-  const data = FINANCIAL_FLOW_MOCK;
+  const { transactions } = useFinance();
+  const data = buildFinancialFlowFromTransactions(transactions);
 
   return (
     <section

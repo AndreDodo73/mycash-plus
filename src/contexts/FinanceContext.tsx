@@ -2,19 +2,11 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
 } from "react";
-import {
-  EXPENSE_CATEGORIES,
-  INCOME_CATEGORIES,
-  initialCreditCards,
-  mockBankAccounts,
-  mockFamilyMembers,
-  mockGoals,
-  mockTransactions,
-} from "../data/mockFinance";
 import type {
   BankAccount,
   CategoryDef,
@@ -26,7 +18,31 @@ import type {
   TransactionType,
   TransactionTypeFilter,
 } from "../types/finance";
-import { generateUniqueId } from "../utils/id";
+import {
+  clearUserFinanceData,
+  generateRecurringForMonth,
+  insertBankAccount,
+  insertCategory,
+  insertCreditCard,
+  insertFamilyMember,
+  insertGoal,
+  insertTransaction,
+  loadFinanceSnapshot,
+  patchBankAccount,
+  patchCategory,
+  patchCreditCard,
+  patchFamilyMember,
+  patchGoal,
+  patchTransaction,
+  removeBankAccount,
+  removeCategory,
+  removeCreditCard,
+  removeFamilyMember,
+  removeGoal,
+  removeTransaction,
+  seedDefaultCategories,
+} from "../services/financeDb";
+import { useAuth } from "./AuthContext";
 import {
   calculateCategoryPercentage,
   calculateExpensesByCategory,
@@ -54,6 +70,10 @@ const CATEGORY_COLOR_POOL = [
 ] as const;
 
 type FinanceContextValue = {
+  isLoading: boolean;
+  error: string | null;
+  refresh: () => Promise<void>;
+
   transactions: Transaction[];
   goals: Goal[];
   creditCards: CreditCard[];
@@ -112,18 +132,32 @@ type FinanceContextValue = {
 
 const FinanceContext = createContext<FinanceContextValue | null>(null);
 
+function emptySnapshot() {
+  return {
+    transactions: [] as Transaction[],
+    goals: [] as Goal[],
+    creditCards: [] as CreditCard[],
+    bankAccounts: [] as BankAccount[],
+    familyMembers: [] as FamilyMember[],
+    incomeCategories: [] as CategoryDef[],
+    expenseCategories: [] as CategoryDef[],
+  };
+}
+
 export function FinanceProvider({ children }: { children: ReactNode }) {
-  // TODO(Supabase): trocar estado em memória por sync remoto; sem storage local.
-  const [transactions, setTransactions] = useState<Transaction[]>(mockTransactions);
-  const [goals, setGoals] = useState<Goal[]>(mockGoals);
-  const [creditCards, setCreditCards] = useState<CreditCard[]>(initialCreditCards);
-  const [bankAccounts, setBankAccounts] = useState<BankAccount[]>(mockBankAccounts);
-  const [familyMembers, setFamilyMembers] =
-    useState<FamilyMember[]>(mockFamilyMembers);
-  const [incomeCategories, setIncomeCategories] =
-    useState<CategoryDef[]>(INCOME_CATEGORIES);
-  const [expenseCategories, setExpenseCategories] =
-    useState<CategoryDef[]>(EXPENSE_CATEGORIES);
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
+  const userId = user?.id ?? null;
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [goals, setGoals] = useState<Goal[]>([]);
+  const [creditCards, setCreditCards] = useState<CreditCard[]>([]);
+  const [bankAccounts, setBankAccounts] = useState<BankAccount[]>([]);
+  const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>([]);
+  const [incomeCategories, setIncomeCategories] = useState<CategoryDef[]>([]);
+  const [expenseCategories, setExpenseCategories] = useState<CategoryDef[]>([]);
 
   const [selectedMember, setSelectedMember] = useState<string | null>(null);
   const [dateRange, setDateRange] = useState<DateRange>(() => getCurrentMonthRange());
@@ -131,98 +165,247 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     useState<TransactionTypeFilter>("all");
   const [searchText, setSearchText] = useState("");
 
-  const addTransaction = useCallback(
-    (input: Omit<Transaction, "id"> & { id?: string }) => {
-      const next: Transaction = {
-        ...input,
-        id: input.id ?? generateUniqueId("tx"),
-      };
-      setTransactions((current) => [next, ...current]);
-      return next;
-    },
-    [],
+  const allCategories = useMemo(
+    () => [...incomeCategories, ...expenseCategories],
+    [incomeCategories, expenseCategories],
   );
 
-  const updateTransaction = useCallback((id: string, patch: Partial<Transaction>) => {
-    setTransactions((current) =>
-      current.map((item) => (item.id === id ? { ...item, ...patch } : item)),
-    );
-  }, []);
+  const refresh = useCallback(async () => {
+    if (!userId) {
+      const empty = emptySnapshot();
+      setTransactions(empty.transactions);
+      setGoals(empty.goals);
+      setCreditCards(empty.creditCards);
+      setBankAccounts(empty.bankAccounts);
+      setFamilyMembers(empty.familyMembers);
+      setIncomeCategories(empty.incomeCategories);
+      setExpenseCategories(empty.expenseCategories);
+      setIsLoading(false);
+      return;
+    }
 
-  const deleteTransaction = useCallback((id: string) => {
-    setTransactions((current) => current.filter((item) => item.id !== id));
-  }, []);
+    setIsLoading(true);
+    setError(null);
+    try {
+      await seedDefaultCategories(userId);
+      await generateRecurringForMonth(userId);
+      const snapshot = await loadFinanceSnapshot(userId);
+      setFamilyMembers(snapshot.familyMembers);
+      setBankAccounts(snapshot.bankAccounts);
+      setCreditCards(snapshot.creditCards);
+      setTransactions(snapshot.transactions);
+      setGoals(snapshot.goals);
+      setIncomeCategories(snapshot.incomeCategories);
+      setExpenseCategories(snapshot.expenseCategories);
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Falha ao carregar dados do Supabase.";
+      console.error("[finance]", err);
+      setError(message);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [userId]);
 
-  const addGoal = useCallback((input: Omit<Goal, "id"> & { id?: string }) => {
-    const next: Goal = { ...input, id: input.id ?? generateUniqueId("goal") };
-    setGoals((current) => [next, ...current]);
-    return next;
-  }, []);
+  useEffect(() => {
+    if (authLoading) return;
+    if (!isAuthenticated || !userId) {
+      const empty = emptySnapshot();
+      setTransactions(empty.transactions);
+      setGoals(empty.goals);
+      setCreditCards(empty.creditCards);
+      setBankAccounts(empty.bankAccounts);
+      setFamilyMembers(empty.familyMembers);
+      setIncomeCategories(empty.incomeCategories);
+      setExpenseCategories(empty.expenseCategories);
+      setIsLoading(false);
+      return;
+    }
+    void refresh();
+  }, [authLoading, isAuthenticated, userId, refresh]);
 
-  const updateGoal = useCallback((id: string, patch: Partial<Goal>) => {
-    setGoals((current) =>
-      current.map((item) => (item.id === id ? { ...item, ...patch } : item)),
-    );
-  }, []);
+  const addTransaction = useCallback(
+    (input: Omit<Transaction, "id"> & { id?: string }) => {
+      const optimistic: Transaction = {
+        ...input,
+        id: input.id ?? crypto.randomUUID(),
+      };
+      setTransactions((current) => [optimistic, ...current]);
+      if (userId) {
+        void insertTransaction(optimistic, allCategories, userId).catch((err) => {
+          console.error(err);
+          void refresh();
+        });
+      }
+      return optimistic;
+    },
+    [allCategories, refresh, userId],
+  );
 
-  const deleteGoal = useCallback((id: string) => {
-    setGoals((current) => current.filter((item) => item.id !== id));
-  }, []);
+  const updateTransaction = useCallback(
+    (id: string, patch: Partial<Transaction>) => {
+      setTransactions((current) =>
+        current.map((item) => (item.id === id ? { ...item, ...patch } : item)),
+      );
+      void patchTransaction(id, patch, allCategories).catch((err) => {
+        console.error(err);
+        void refresh();
+      });
+    },
+    [allCategories, refresh],
+  );
+
+  const deleteTransaction = useCallback(
+    (id: string) => {
+      setTransactions((current) => current.filter((item) => item.id !== id));
+      void removeTransaction(id).catch((err) => {
+        console.error(err);
+        void refresh();
+      });
+    },
+    [refresh],
+  );
+
+  const addGoal = useCallback(
+    (input: Omit<Goal, "id"> & { id?: string }) => {
+      const next: Goal = { ...input, id: input.id ?? crypto.randomUUID() };
+      setGoals((current) => [next, ...current]);
+      if (userId) {
+        void insertGoal(next, userId).catch((err) => {
+          console.error(err);
+          void refresh();
+        });
+      }
+      return next;
+    },
+    [refresh, userId],
+  );
+
+  const updateGoal = useCallback(
+    (id: string, patch: Partial<Goal>) => {
+      setGoals((current) =>
+        current.map((item) => (item.id === id ? { ...item, ...patch } : item)),
+      );
+      void patchGoal(id, patch).catch((err) => {
+        console.error(err);
+        void refresh();
+      });
+    },
+    [refresh],
+  );
+
+  const deleteGoal = useCallback(
+    (id: string) => {
+      setGoals((current) => current.filter((item) => item.id !== id));
+      void removeGoal(id).catch((err) => {
+        console.error(err);
+        void refresh();
+      });
+    },
+    [refresh],
+  );
 
   const addCreditCard = useCallback(
     (input: Omit<CreditCard, "id"> & { id?: string }) => {
       const next: CreditCard = {
         ...input,
-        id: input.id ?? generateUniqueId("card"),
+        id: input.id ?? crypto.randomUUID(),
+        expenseIds: input.expenseIds ?? [],
       };
       setCreditCards((current) => [next, ...current]);
+      if (userId) {
+        void insertCreditCard(next, userId).catch((err) => {
+          console.error(err);
+          void refresh();
+        });
+      }
       return next;
     },
-    [],
+    [refresh, userId],
   );
 
-  const updateCreditCard = useCallback((id: string, patch: Partial<CreditCard>) => {
-    setCreditCards((current) =>
-      current.map((item) => (item.id === id ? { ...item, ...patch } : item)),
-    );
-  }, []);
+  const updateCreditCard = useCallback(
+    (id: string, patch: Partial<CreditCard>) => {
+      setCreditCards((current) =>
+        current.map((item) => (item.id === id ? { ...item, ...patch } : item)),
+      );
+      void patchCreditCard(id, patch).catch((err) => {
+        console.error(err);
+        void refresh();
+      });
+    },
+    [refresh],
+  );
 
-  const deleteCreditCard = useCallback((id: string) => {
-    setCreditCards((current) => current.filter((item) => item.id !== id));
-  }, []);
+  const deleteCreditCard = useCallback(
+    (id: string) => {
+      setCreditCards((current) => current.filter((item) => item.id !== id));
+      void removeCreditCard(id).catch((err) => {
+        console.error(err);
+        void refresh();
+      });
+    },
+    [refresh],
+  );
 
   const addBankAccount = useCallback(
     (input: Omit<BankAccount, "id"> & { id?: string }) => {
       const next: BankAccount = {
         ...input,
-        id: input.id ?? generateUniqueId("acc"),
+        id: input.id ?? crypto.randomUUID(),
       };
       setBankAccounts((current) => [next, ...current]);
+      if (userId) {
+        void insertBankAccount(next, userId).catch((err) => {
+          console.error(err);
+          void refresh();
+        });
+      }
       return next;
     },
-    [],
+    [refresh, userId],
   );
 
-  const updateBankAccount = useCallback((id: string, patch: Partial<BankAccount>) => {
-    setBankAccounts((current) =>
-      current.map((item) => (item.id === id ? { ...item, ...patch } : item)),
-    );
-  }, []);
+  const updateBankAccount = useCallback(
+    (id: string, patch: Partial<BankAccount>) => {
+      setBankAccounts((current) =>
+        current.map((item) => (item.id === id ? { ...item, ...patch } : item)),
+      );
+      void patchBankAccount(id, patch).catch((err) => {
+        console.error(err);
+        void refresh();
+      });
+    },
+    [refresh],
+  );
 
-  const deleteBankAccount = useCallback((id: string) => {
-    setBankAccounts((current) => current.filter((item) => item.id !== id));
-  }, []);
+  const deleteBankAccount = useCallback(
+    (id: string) => {
+      setBankAccounts((current) => current.filter((item) => item.id !== id));
+      void removeBankAccount(id).catch((err) => {
+        console.error(err);
+        void refresh();
+      });
+    },
+    [refresh],
+  );
 
   const addFamilyMember = useCallback(
     (input: Omit<FamilyMember, "id"> & { id?: string }) => {
       const next: FamilyMember = {
         ...input,
-        id: input.id ?? generateUniqueId("member"),
+        id: input.id ?? crypto.randomUUID(),
       };
       setFamilyMembers((current) => [...current, next]);
+      if (userId) {
+        void insertFamilyMember(next, userId).catch((err) => {
+          console.error(err);
+          void refresh();
+        });
+      }
       return next;
     },
-    [],
+    [refresh, userId],
   );
 
   const updateFamilyMember = useCallback(
@@ -230,14 +413,25 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
       setFamilyMembers((current) =>
         current.map((item) => (item.id === id ? { ...item, ...patch } : item)),
       );
+      void patchFamilyMember(id, patch).catch((err) => {
+        console.error(err);
+        void refresh();
+      });
     },
-    [],
+    [refresh],
   );
 
-  const deleteFamilyMember = useCallback((id: string) => {
-    setFamilyMembers((current) => current.filter((item) => item.id !== id));
-    setSelectedMember((current) => (current === id ? null : current));
-  }, []);
+  const deleteFamilyMember = useCallback(
+    (id: string) => {
+      setFamilyMembers((current) => current.filter((item) => item.id !== id));
+      setSelectedMember((current) => (current === id ? null : current));
+      void removeFamilyMember(id).catch((err) => {
+        console.error(err);
+        void refresh();
+      });
+    },
+    [refresh],
+  );
 
   const addCategory = useCallback(
     (input: Omit<CategoryDef, "color"> & { color?: string }) => {
@@ -247,6 +441,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
         input.color ??
         CATEGORY_COLOR_POOL[list.length % CATEGORY_COLOR_POOL.length];
       const next: CategoryDef = {
+        id: crypto.randomUUID(),
         name: input.name.trim(),
         color,
         kind: input.kind,
@@ -258,9 +453,16 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
         setExpenseCategories((current) => [...current, next]);
       }
 
+      if (userId) {
+        void insertCategory(next, userId).catch((err) => {
+          console.error(err);
+          void refresh();
+        });
+      }
+
       return next;
     },
-    [expenseCategories, incomeCategories],
+    [expenseCategories, incomeCategories, refresh, userId],
   );
 
   const updateCategory = useCallback(
@@ -269,6 +471,8 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
       currentName: string,
       patch: Partial<Pick<CategoryDef, "name" | "color">>,
     ) => {
+      const list = kind === "income" ? incomeCategories : expenseCategories;
+      const target = list.find((item) => item.name === currentName);
       const nextName = patch.name?.trim();
       const rename = Boolean(nextName && nextName !== currentName);
 
@@ -296,21 +500,41 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
           ),
         );
       }
+
+      if (target?.id) {
+        void patchCategory(target.id, patch).catch((err) => {
+          console.error(err);
+          void refresh();
+        });
+      }
     },
-    [],
+    [expenseCategories, incomeCategories, refresh],
   );
 
-  const deleteCategory = useCallback((kind: TransactionType, name: string) => {
-    if (kind === "income") {
-      setIncomeCategories((current) =>
-        current.filter((item) => item.name !== name),
-      );
-    } else {
-      setExpenseCategories((current) =>
-        current.filter((item) => item.name !== name),
-      );
-    }
-  }, []);
+  const deleteCategory = useCallback(
+    (kind: TransactionType, name: string) => {
+      const list = kind === "income" ? incomeCategories : expenseCategories;
+      const target = list.find((item) => item.name === name);
+
+      if (kind === "income") {
+        setIncomeCategories((current) =>
+          current.filter((item) => item.name !== name),
+        );
+      } else {
+        setExpenseCategories((current) =>
+          current.filter((item) => item.name !== name),
+        );
+      }
+
+      if (target?.id) {
+        void removeCategory(target.id).catch((err) => {
+          console.error(err);
+          void refresh();
+        });
+      }
+    },
+    [expenseCategories, incomeCategories, refresh],
+  );
 
   const clearAllData = useCallback(() => {
     setTransactions([]);
@@ -324,7 +548,14 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     setDateRange(getCurrentMonthRange());
     setTransactionType("all");
     setSearchText("");
-  }, []);
+
+    if (userId) {
+      void clearUserFinanceData(userId)
+        .then(() => seedDefaultCategories(userId))
+        .then(() => refresh())
+        .catch((err) => console.error(err));
+    }
+  }, [refresh, userId]);
 
   const value = useMemo<FinanceContextValue>(() => {
     const filters = {
@@ -339,6 +570,10 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     const expenses = () => calculateExpensesForPeriod(filtered());
 
     return {
+      isLoading,
+      error,
+      refresh,
+
       transactions,
       goals,
       creditCards,
@@ -388,6 +623,9 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
       calculateSavingsRate: () => calculateSavingsRate(income(), expenses()),
     };
   }, [
+    isLoading,
+    error,
+    refresh,
     transactions,
     goals,
     creditCards,
